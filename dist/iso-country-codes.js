@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isCountryCode = exports.ISO_COUNTRY_CODES = void 0;
+exports.ISO_COUNTRY_CODES = void 0;
 /**
  * Fuente ÚNICA de verdad de los códigos de país ISO-3166-1 alpha-2 que Memivo
  * soporta. La consumen `memivo_client` (arma el selector de país) y `memivo_api`
@@ -36,7 +36,3 @@ exports.ISO_COUNTRY_CODES = [
     'AU', 'FJ', 'FM', 'KI', 'NR', 'NZ', 'PG', 'PW', 'SB', 'TO', 'TV', 'VU',
     'WS',
 ];
-const COUNTRY_CODE_SET = new Set(exports.ISO_COUNTRY_CODES);
-/** `true` si `value` es un código de país soportado (O(1)). */
-const isCountryCode = (value) => COUNTRY_CODE_SET.has(value);
-exports.isCountryCode = isCountryCode;

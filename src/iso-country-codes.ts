@@ -7,7 +7,7 @@
  * Agrupados por continente/región solo para lectura; el orden no importa (el
  * cliente ordena por nombre localizado y el server solo valida pertenencia).
  */
-export const ISO_COUNTRY_CODES = [
+export const ISO_COUNTRY_CODES: readonly string[] = [
   // Europa
   'AD', 'AL', 'AM', 'AT', 'AZ', 'BA', 'BE', 'BG', 'BY', 'CH', 'CY', 'CZ',
   'DE', 'DK', 'EE', 'ES', 'FI', 'FR', 'GB', 'GE', 'GR', 'HR', 'HU', 'IE',
@@ -32,13 +32,4 @@ export const ISO_COUNTRY_CODES = [
   // Oceanía
   'AU', 'FJ', 'FM', 'KI', 'NR', 'NZ', 'PG', 'PW', 'SB', 'TO', 'TV', 'VU',
   'WS',
-] as const;
-
-/** Unión literal de todos los códigos de país válidos. */
-export type CountryCode = (typeof ISO_COUNTRY_CODES)[number];
-
-const COUNTRY_CODE_SET: ReadonlySet<string> = new Set(ISO_COUNTRY_CODES);
-
-/** `true` si `value` es un código de país soportado (O(1)). */
-export const isCountryCode = (value: string): value is CountryCode =>
-  COUNTRY_CODE_SET.has(value);
+];

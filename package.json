@@ -1,6 +1,6 @@
 {
   "name": "@memivo/reference-data",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Fuente única de verdad de datos de referencia compartidos por memivo_client y memivo_api (códigos de país ISO-3166, etc.).",
   "license": "UNLICENSED",
   "main": "dist/index.js",

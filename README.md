@@ -15,12 +15,12 @@ tokens):
 ```jsonc
 // package.json de memivo_client y memivo_api
 "dependencies": {
-  "@memivo/reference-data": "github:Futuredevkev/memivo-reference-data#v1.0.0"
+  "@memivo/reference-data": "github:Futuredevkev/memivo_reference_data#v1.0.1"
 }
 ```
 
 ```ts
-import { ISO_COUNTRY_CODES, isCountryCode, type CountryCode } from '@memivo/reference-data';
+import { ISO_COUNTRY_CODES } from '@memivo/reference-data';
 ```
 
 - **client** re-exporta `ISO_COUNTRY_CODES` como `ISO_CODES` para armar el picker.
