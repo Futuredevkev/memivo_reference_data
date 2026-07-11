@@ -1,0 +1,4 @@
+node_modules/
+*.log
+# dist/ NO se ignora: se commitea para que `npm install github:...` funcione
+# sin necesidad de toolchain de build en el consumidor.
