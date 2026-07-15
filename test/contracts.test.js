@@ -66,6 +66,13 @@ test('runtime decision contracts expose values in addition to TypeScript types',
   assert.equal(chat.ChatRoleBadge.ADMIN, 'ADMIN');
 });
 
+test('UPLOAD_PARTIAL_FINALIZE_CONTEXTS solo admite professional_photo', () => {
+  const { UPLOAD_PARTIAL_FINALIZE_CONTEXTS, UploadContext } = media;
+  assert.ok(UPLOAD_PARTIAL_FINALIZE_CONTEXTS instanceof Set);
+  assert.deepEqual([...UPLOAD_PARTIAL_FINALIZE_CONTEXTS], [UploadContext.PROFESSIONAL_PHOTO]);
+  assert.equal(UPLOAD_PARTIAL_FINALIZE_CONTEXTS, contracts.UPLOAD_PARTIAL_FINALIZE_CONTEXTS);
+});
+
 test('el catálogo de notificaciones de chat solo contiene los tipos de mensajería', () => {
   const { NotificationType, CHAT_NOTIFICATION_TYPES } = notifications;
   assert.deepEqual([...CHAT_NOTIFICATION_TYPES], [
