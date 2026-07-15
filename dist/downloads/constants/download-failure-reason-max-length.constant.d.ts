@@ -1,0 +1,1 @@
+export declare const DOWNLOAD_FAILURE_REASON_MAX_LENGTH = 255;

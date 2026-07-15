@@ -1,0 +1,9 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.DownloadContext = void 0;
+exports.DownloadContext = {
+    PROFESSIONAL_PHOTOS_SELECTION: 'PROFESSIONAL_PHOTOS_SELECTION',
+    CHAT_FILE: 'CHAT_FILE',
+    PROFESSIONAL_PHOTOS_FOLDER_ALL: 'PROFESSIONAL_PHOTOS_FOLDER_ALL',
+    PROFESSIONAL_PHOTOS_FOLDERS_SELECTION: 'PROFESSIONAL_PHOTOS_FOLDERS_SELECTION',
+};

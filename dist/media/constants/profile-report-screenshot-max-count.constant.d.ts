@@ -1,0 +1,1 @@
+export declare const PROFILE_REPORT_SCREENSHOT_MAX_COUNT = 4;

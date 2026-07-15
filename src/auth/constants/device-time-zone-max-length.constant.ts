@@ -1,0 +1,1 @@
+export const DEVICE_TIME_ZONE_MAX_LENGTH = 64;

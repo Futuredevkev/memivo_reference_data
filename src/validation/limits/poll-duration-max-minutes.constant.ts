@@ -1,0 +1,1 @@
+export const POLL_DURATION_MAX_MINUTES = 10;

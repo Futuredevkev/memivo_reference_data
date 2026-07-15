@@ -1,0 +1,1 @@
+export const MEDIA_COMPOSITION_MAX_OFFSET = 1;

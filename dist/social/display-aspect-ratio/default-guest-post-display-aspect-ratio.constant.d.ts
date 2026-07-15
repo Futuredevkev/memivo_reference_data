@@ -1,0 +1,1 @@
+export declare const DEFAULT_GUEST_POST_DISPLAY_ASPECT_RATIO = 1;

@@ -1,0 +1,8 @@
+export declare enum DownloadManifestStatus {
+    CREATED = "CREATED",
+    IN_PROGRESS = "IN_PROGRESS",
+    COMPLETED = "COMPLETED",
+    PARTIAL = "PARTIAL",
+    EXPIRED = "EXPIRED",
+    CANCELLED = "CANCELLED"
+}

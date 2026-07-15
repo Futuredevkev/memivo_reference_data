@@ -1,0 +1,32 @@
+import type { ChatMessageType, ChatReactionType, SystemMessageAction } from '../enums';
+import type { ChatMessageFileResponse } from './internal/chat-message-file-response.interface';
+import type { ChatReactionCounts } from './chat-reaction-counts.type';
+import type { ChatReplyMessageResponse } from './internal/chat-reply-message-response.interface';
+import type { ChatUserSummary } from './chat-user-summary.interface';
+import type { PollResponse } from './poll-response.interface';
+import type { SystemMessageData } from './system-message-data.interface';
+export interface ChatMessageResponse<TTimestamp = string> {
+    id: string;
+    chatGroupId: string;
+    senderId: string | null;
+    content: string | null;
+    type: ChatMessageType;
+    isEdited: boolean;
+    created_at: TTimestamp;
+    sender?: ChatUserSummary | null;
+    files?: ChatMessageFileResponse[];
+    poll?: PollResponse<TTimestamp>;
+    replyToMessageId?: string | null;
+    replyToMessage?: ChatReplyMessageResponse | null;
+    systemAction?: SystemMessageAction | null;
+    systemData?: SystemMessageData | null;
+    sharedPostId?: string | null;
+    reactions?: ChatReactionCounts;
+    userReaction?: ChatReactionType | null;
+    viewOnce?: boolean;
+    filesDeleted?: boolean;
+    viewOnceHasContent?: boolean;
+    viewOnceViewedByMe?: boolean;
+    viewOnceOpenedCount?: number;
+    clientTempId?: string | null;
+}

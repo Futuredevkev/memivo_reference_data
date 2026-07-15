@@ -1,45 +1,102 @@
-# @memivo/reference-data
+# @memivo/contracts
 
-**Fuente única de verdad** de los datos de referencia compartidos entre
-`memivo_client` y `memivo_api`. Hoy: la lista canónica de códigos de país
-ISO-3166-1 alpha-2. Mañana: monedas, idiomas soportados, etc.
+Fuente única de verdad de los contratos públicos que deben interpretar igual
+`memivo_api` y `memivo_client`.
 
-Existe para que la lista de códigos **no viva duplicada** en los dos repos (y no
-puedan divergir → nunca un país que el cliente ofrece y el server rechaza).
+El repositorio conserva el nombre histórico `memivo_reference_data`, pero el
+paquete es `@memivo/contracts`. Además de países ISO contiene catálogos, eventos
+y payloads de sockets, códigos de error, validaciones públicas, límites de
+uploads y shapes de transporte compartidos.
+
+## Qué pertenece acá
+
+Un valor o tipo entra al paquete cuando cumple al menos una de estas reglas:
+
+1. API lo produce y cliente lo consume.
+2. Cliente lo envía y API lo valida.
+3. Ambos lados toman decisiones de runtime usando el mismo catálogo.
+4. Es una regla pública que la UI anticipa y el servidor hace cumplir.
+
+No pertenecen acá entidades ORM, decoradores ni clases ejecutables de Nest,
+servicios, SQL, límites operativos, configuración de Sentry, transforms
+privados de Cloudinary ni parámetros puramente visuales del cliente. El shape
+wire de un DTO sí pertenece: la clase del API implementa la interfaz compartida
+y el cliente consume esa misma interfaz.
+
+## Estructura
+
+Cada dominio mantiene sus categorías separadas y expone un barrel `index.ts`:
+
+```text
+src/
+  album/          enums + interfaces
+  auth/           constants + enums + interfaces
+  chat/           constants + enums + interfaces
+  common/         enums + interfaces
+  errors/         un catálogo por dominio + consolidado
+  highlights/     interfaces
+  media/          constants + enums + interfaces + types
+  notifications/  enums + interfaces
+  reactions/      constants + enums + interfaces
+  reference-data/ catálogos estáticos + type guards
+  reports/        enums + interfaces
+  sockets/        constants + interfaces
+  stories/        interfaces
+  validation/     límites + patrones + contraseñas comunes
+```
+
+El root exporta todo y también hay subpaths estables, por ejemplo
+`@memivo/contracts/auth`, `@memivo/contracts/errors`,
+`@memivo/contracts/media` y `@memivo/contracts/sockets`.
 
 ## Consumo
 
-Ambos repos lo instalan como dependencia de git (repo público, sin registry ni
-tokens):
+Las dependencias de release usan HTTPS para que instalaciones, VPS y CI no
+dependan de una clave SSH:
 
-```jsonc
-// package.json de memivo_client y memivo_api
-"dependencies": {
-  "@memivo/reference-data": "github:Futuredevkev/memivo_reference_data#v1.0.1"
+```json
+{
+  "dependencies": {
+    "@memivo/contracts": "git+https://github.com/Futuredevkev/memivo_reference_data.git#v2.0.0"
+  }
 }
 ```
 
 ```ts
-import { ISO_COUNTRY_CODES } from '@memivo/reference-data';
+import { ErrorCode, ISO_COUNTRY_CODES } from '@memivo/contracts';
+import { RegistrationPayload } from '@memivo/contracts/auth';
+import { RESOURCE_UPLOAD_LIMITS } from '@memivo/contracts/media';
+import { ALBUM_SOCKET_EVENTS } from '@memivo/contracts/sockets';
 ```
 
-- **client** re-exporta `ISO_COUNTRY_CODES` como `ISO_CODES` para armar el picker.
-- **api** re-exporta como `VALID_COUNTRY_CODES` para el `@IsIn(...)` de los DTOs.
+Durante desarrollo coordinado de los tres repos puede usarse temporalmente
+`file:../memivo-reference-data`; nunca debe quedar así en una rama de release.
 
-## Publicar un cambio
-
-1. Editar `src/`, correr `npm run build && npm test`.
-2. Commitear **incluyendo `dist/`** (se commitea a propósito: así el consumidor
-   instala sin toolchain de build).
-3. `git tag vX.Y.Z && git push --tags`.
-4. Bumpear el `#vX.Y.Z` en el `package.json` de ambos repos + `npm install`.
-
-## Build
-
-`dist/` es CommonJS + `.d.ts`, consumible por Metro (client) y NestJS (api).
+## Calidad y publicación
 
 ```bash
-npm install   # trae typescript (devDep)
-npm run build # tsc → dist/
-npm test      # node --test (zero deps)
+npm install
+npm run build
+npm test
+npm run audit:consumers
 ```
+
+`audit:consumers` recorre los AST de API y cliente y falla ante contratos
+duplicados no clasificados, códigos de error desconocidos o literales, errores
+sin traducción, exports compartidos muertos o valores de runtime que eluden el
+catálogo. `audit:consumers:verbose` muestra cada frontera intencional (por
+ejemplo, entidad ORM vs modelo normalizado o `Platform.OS` vs plataforma de
+sesión).
+
+El build limpia `dist/` antes de compilar. `dist/` se commitea a propósito: es
+CommonJS con declaraciones `.d.ts`, por lo que Metro y NestJS pueden instalar el
+paquete directamente desde Git sin ejecutar TypeScript.
+
+Para publicar:
+
+1. Modificar `src/` y tests.
+2. Ejecutar build, tests y auditoría.
+3. Commitear también `dist/`.
+4. Crear y pushear el tag semántico.
+5. Actualizar API y cliente al mismo tag HTTPS y regenerar sus lockfiles.
+6. Verificar instalación limpia y los builds de ambos consumidores.

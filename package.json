@@ -1,7 +1,7 @@
 {
-  "name": "@memivo/reference-data",
-  "version": "1.0.1",
-  "description": "Fuente única de verdad de datos de referencia compartidos por memivo_client y memivo_api (códigos de país ISO-3166, etc.).",
+  "name": "@memivo/contracts",
+  "version": "2.0.0",
+  "description": "Contratos, catálogos y reglas públicas compartidas por memivo_client y memivo_api.",
   "license": "UNLICENSED",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -9,16 +9,87 @@
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
+    },
+    "./album": {
+      "types": "./dist/album/index.d.ts",
+      "default": "./dist/album/index.js"
+    },
+    "./auth": {
+      "types": "./dist/auth/index.d.ts",
+      "default": "./dist/auth/index.js"
+    },
+    "./chat": {
+      "types": "./dist/chat/index.d.ts",
+      "default": "./dist/chat/index.js"
+    },
+    "./common": {
+      "types": "./dist/common/index.d.ts",
+      "default": "./dist/common/index.js"
+    },
+    "./downloads": {
+      "types": "./dist/downloads/index.d.ts",
+      "default": "./dist/downloads/index.js"
+    },
+    "./errors": {
+      "types": "./dist/errors/index.d.ts",
+      "default": "./dist/errors/index.js"
+    },
+    "./highlights": {
+      "types": "./dist/highlights/index.d.ts",
+      "default": "./dist/highlights/index.js"
+    },
+    "./media": {
+      "types": "./dist/media/index.d.ts",
+      "default": "./dist/media/index.js"
+    },
+    "./notifications": {
+      "types": "./dist/notifications/index.d.ts",
+      "default": "./dist/notifications/index.js"
+    },
+    "./reactions": {
+      "types": "./dist/reactions/index.d.ts",
+      "default": "./dist/reactions/index.js"
+    },
+    "./reference-data": {
+      "types": "./dist/reference-data/index.d.ts",
+      "default": "./dist/reference-data/index.js"
+    },
+    "./reports": {
+      "types": "./dist/reports/index.d.ts",
+      "default": "./dist/reports/index.js"
+    },
+    "./sockets": {
+      "types": "./dist/sockets/index.d.ts",
+      "default": "./dist/sockets/index.js"
+    },
+    "./social": {
+      "types": "./dist/social/index.d.ts",
+      "default": "./dist/social/index.js"
+    },
+    "./stories": {
+      "types": "./dist/stories/index.d.ts",
+      "default": "./dist/stories/index.js"
+    },
+    "./validation": {
+      "types": "./dist/validation/index.d.ts",
+      "default": "./dist/validation/index.js"
     }
   },
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "clean": "node scripts/clean-dist.js",
+    "build": "npm run clean && tsc -p tsconfig.json",
+    "audit:consumers": "node scripts/audit-consumers.js",
+    "audit:consumers:verbose": "node scripts/audit-consumers.js --verbose",
+    "audit:transport": "node scripts/audit-transport-surfaces.js",
     "test": "node --test"
   },
   "devDependencies": {
     "typescript": "^5.9.2"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.28.4"
   }
 }

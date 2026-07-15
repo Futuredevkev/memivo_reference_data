@@ -1,0 +1,22 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.DownloadErrorCode = void 0;
+var DownloadErrorCode;
+(function (DownloadErrorCode) {
+    DownloadErrorCode["DOWNLOAD_MANIFEST_INVALID_REQUEST"] = "DOWNLOAD_MANIFEST_INVALID_REQUEST";
+    DownloadErrorCode["DOWNLOAD_MANIFEST_INVALID_ALBUM"] = "DOWNLOAD_MANIFEST_INVALID_ALBUM";
+    DownloadErrorCode["DOWNLOAD_MANIFEST_FILE_NOT_FOUND"] = "DOWNLOAD_MANIFEST_FILE_NOT_FOUND";
+    DownloadErrorCode["DOWNLOAD_MANIFEST_FORBIDDEN"] = "DOWNLOAD_MANIFEST_FORBIDDEN";
+    DownloadErrorCode["DOWNLOAD_MANIFEST_NOT_FOUND"] = "DOWNLOAD_MANIFEST_NOT_FOUND";
+    DownloadErrorCode["DOWNLOAD_MANIFEST_CREATE_FAILED"] = "DOWNLOAD_MANIFEST_CREATE_FAILED";
+    DownloadErrorCode["DOWNLOAD_MANIFEST_CANCEL_FAILED"] = "DOWNLOAD_MANIFEST_CANCEL_FAILED";
+    DownloadErrorCode["DOWNLOAD_MANIFEST_ITEM_COMPLETE_FAILED"] = "DOWNLOAD_MANIFEST_ITEM_COMPLETE_FAILED";
+    // Download jobs (server-side bulk, §9)
+    DownloadErrorCode["DOWNLOAD_JOB_EMPTY"] = "DOWNLOAD_JOB_EMPTY";
+    DownloadErrorCode["DOWNLOAD_JOB_TOO_MANY_PHOTOS"] = "DOWNLOAD_JOB_TOO_MANY_PHOTOS";
+    DownloadErrorCode["DOWNLOAD_JOB_TOO_MANY_ACTIVE"] = "DOWNLOAD_JOB_TOO_MANY_ACTIVE";
+    DownloadErrorCode["DOWNLOAD_JOB_NOT_FOUND"] = "DOWNLOAD_JOB_NOT_FOUND";
+    DownloadErrorCode["DOWNLOAD_JOB_FORBIDDEN"] = "DOWNLOAD_JOB_FORBIDDEN";
+    DownloadErrorCode["DOWNLOAD_JOB_CREATE_FAILED"] = "DOWNLOAD_JOB_CREATE_FAILED";
+    DownloadErrorCode["DOWNLOAD_JOB_CANCEL_FAILED"] = "DOWNLOAD_JOB_CANCEL_FAILED";
+})(DownloadErrorCode || (exports.DownloadErrorCode = DownloadErrorCode = {}));

@@ -1,6 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { ISO_COUNTRY_CODES } = require('../dist/index.js');
+const { ISO_COUNTRY_CODES, isIsoCountryCode } = require('../dist/index.js');
 
 test('expone exactamente 203 códigos ISO-3166 alpha-2 únicos', () => {
   assert.equal(ISO_COUNTRY_CODES.length, 203);
@@ -11,4 +11,9 @@ test('todo código es 2 letras mayúsculas', () => {
   for (const code of ISO_COUNTRY_CODES) {
     assert.match(code, /^[A-Z]{2}$/, `código inválido: ${code}`);
   }
+});
+
+test('el type guard runtime acepta sólo países soportados', () => {
+  assert.equal(isIsoCountryCode('UY'), true);
+  assert.equal(isIsoCountryCode('ZZ'), false);
 });

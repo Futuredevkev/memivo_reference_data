@@ -1,0 +1,1 @@
+export declare const MEDIA_COMPOSITION_MIN_OFFSET = -1;

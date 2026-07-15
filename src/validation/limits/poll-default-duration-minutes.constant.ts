@@ -1,0 +1,1 @@
+export const POLL_DEFAULT_DURATION_MINUTES = 5;

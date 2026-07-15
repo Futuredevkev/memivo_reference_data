@@ -1,0 +1,1 @@
+export declare const GUEST_POST_LANDSCAPE_DISPLAY_ASPECT_RATIO = 1.91;

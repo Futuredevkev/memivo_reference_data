@@ -1,0 +1,4 @@
+export declare enum AlbumInviteType {
+    EXTERNAL_ALBUM_SHARE = "EXTERNAL_ALBUM_SHARE",
+    EXTERNAL_POST_SHARE = "EXTERNAL_POST_SHARE"
+}

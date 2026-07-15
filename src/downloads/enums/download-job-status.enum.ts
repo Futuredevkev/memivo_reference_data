@@ -1,0 +1,7 @@
+export enum DownloadJobStatus {
+  IN_PROGRESS = 'IN_PROGRESS',
+  COMPLETED = 'COMPLETED',
+  PARTIAL = 'PARTIAL',
+  EXPIRED = 'EXPIRED',
+  CANCELLED = 'CANCELLED',
+}

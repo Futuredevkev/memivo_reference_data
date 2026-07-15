@@ -1,0 +1,1 @@
+export const MEDIA_COMPOSITION_MAX_SCALE = 4;
