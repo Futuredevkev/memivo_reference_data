@@ -29,5 +29,7 @@ export declare const ALBUM_SOCKET_EVENTS: {
         readonly ALBUM_VISIBILITY_CHANGED_RECEIVED: "album-visibility-changed-received";
         readonly POST_DELETED: "post-deleted";
         readonly STORY_COMMENT_CREATED: "story-comment.created";
+        readonly STORY_POLL_RESULTS: "story-poll.results";
+        readonly STORY_POLL_CLOSED: "story-poll.closed";
     };
 };

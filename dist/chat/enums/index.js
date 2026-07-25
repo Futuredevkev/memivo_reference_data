@@ -20,5 +20,4 @@ __exportStar(require("./chat-message-type.enum"), exports);
 __exportStar(require("./chat-reaction-action.enum"), exports);
 __exportStar(require("./chat-reaction-type.enum"), exports);
 __exportStar(require("./chat-role-badge.constant"), exports);
-__exportStar(require("./poll-status.enum"), exports);
 __exportStar(require("./system-message-action.enum"), exports);

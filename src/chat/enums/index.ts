@@ -4,5 +4,4 @@ export * from './chat-message-type.enum';
 export * from './chat-reaction-action.enum';
 export * from './chat-reaction-type.enum';
 export * from './chat-role-badge.constant';
-export * from './poll-status.enum';
 export * from './system-message-action.enum';

@@ -54,6 +54,8 @@ __exportStar(require("./socket-join-error-payload.interface"), exports);
 __exportStar(require("./socket-rate-limit-payload.interface"), exports);
 __exportStar(require("./stories-updated-payload.interface"), exports);
 __exportStar(require("./story-comment-created-payload.interface"), exports);
+__exportStar(require("./story-poll-closed-payload.interface"), exports);
+__exportStar(require("./story-poll-results-payload.interface"), exports);
 __exportStar(require("./story-room-payload.interface"), exports);
 __exportStar(require("./story-tag-removed-payload.interface"), exports);
 __exportStar(require("./story-view-count-updated-payload.interface"), exports);

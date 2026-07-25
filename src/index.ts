@@ -8,6 +8,7 @@ export * from './errors';
 export * from './highlights';
 export * from './media';
 export * from './notifications';
+export * from './polls';
 export * from './reactions';
 export * from './reports';
 export * from './sockets';

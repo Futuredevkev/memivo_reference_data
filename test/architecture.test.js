@@ -14,6 +14,7 @@ const expectedDomains = [
   'highlights',
   'media',
   'notifications',
+  'polls',
   'reactions',
   'reference-data',
   'reports',

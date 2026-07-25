@@ -3,7 +3,6 @@ import type { ChatMessageFileResponse } from './internal/chat-message-file-respo
 import type { ChatReactionCounts } from './chat-reaction-counts.type';
 import type { ChatReplyMessageResponse } from './internal/chat-reply-message-response.interface';
 import type { ChatUserSummary } from './chat-user-summary.interface';
-import type { PollResponse } from './poll-response.interface';
 import type { SystemMessageData } from './system-message-data.interface';
 export interface ChatMessageResponse<TTimestamp = string> {
     id: string;
@@ -15,7 +14,6 @@ export interface ChatMessageResponse<TTimestamp = string> {
     created_at: TTimestamp;
     sender?: ChatUserSummary | null;
     files?: ChatMessageFileResponse[];
-    poll?: PollResponse<TTimestamp>;
     replyToMessageId?: string | null;
     replyToMessage?: ChatReplyMessageResponse | null;
     systemAction?: SystemMessageAction | null;

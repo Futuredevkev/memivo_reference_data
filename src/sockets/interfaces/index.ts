@@ -38,6 +38,8 @@ export * from './socket-join-error-payload.interface';
 export * from './socket-rate-limit-payload.interface';
 export * from './stories-updated-payload.interface';
 export * from './story-comment-created-payload.interface';
+export * from './story-poll-closed-payload.interface';
+export * from './story-poll-results-payload.interface';
 export * from './story-room-payload.interface';
 export * from './story-tag-removed-payload.interface';
 export * from './story-view-count-updated-payload.interface';

@@ -14,6 +14,7 @@ import type { PhotoUploadNotificationMetadata } from './photo-upload-notificatio
 import type { PhotosBatchUploadMetadata } from './photos-batch-upload-metadata.interface';
 import type { PollNotificationMetadata } from './poll-notification-metadata.interface';
 import type { ReactionOnPhotoMetadata } from './reaction-on-photo-metadata.interface';
+import type { StoryCommentNotificationMetadata } from './story-comment-notification-metadata.interface';
 import type { StoryNotificationMetadata } from './story-notification-metadata.interface';
 import type { StoryUploadNotificationMetadata } from './story-upload-notification-metadata.interface';
 export type NotificationMetadataByType = {
@@ -49,7 +50,7 @@ export type NotificationMetadataByType = {
     [NotificationType.CHAT_MESSAGE_REACTION]: ChatReactionNotificationMetadata;
     [NotificationType.POLL_CREATED]: PollNotificationMetadata;
     [NotificationType.TAGGED_IN_STORY]: StoryNotificationMetadata;
-    [NotificationType.STORY_COMMENT]: StoryNotificationMetadata;
+    [NotificationType.STORY_COMMENT]: StoryCommentNotificationMetadata;
     [NotificationType.GUEST_POST_UPLOAD_READY]: PhotoUploadNotificationMetadata;
     [NotificationType.STORY_UPLOAD_READY]: StoryUploadNotificationMetadata;
     [NotificationType.PROFESSIONAL_PHOTOS_UPLOAD_READY]: PhotosBatchUploadMetadata;

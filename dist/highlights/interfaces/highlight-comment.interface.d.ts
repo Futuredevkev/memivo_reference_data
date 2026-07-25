@@ -5,6 +5,11 @@ export interface HighlightComment<TTimestamp = string, TRole extends string = Al
     text: string;
     guestPostId: string;
     user: HighlightActor<TRole>;
-    reactionCount: number;
+    /**
+     * Métrica del slot. Se llama `count` y no `reactionCount` porque no siempre
+     * son reacciones: en "el comentario con más respuestas" es un conteo de
+     * respuestas, y el nombre viejo afirmaba lo contrario.
+     */
+    count: number;
     created_at: TTimestamp;
 }

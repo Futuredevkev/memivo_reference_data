@@ -1,6 +1,6 @@
-import type { MemivoPost } from '../../highlights';
+import type { MemivoMoment } from '../../highlights';
 
-export interface MemivoMomentsUpdatedPayload<TTimestamp = string> {
+export interface MemivoMomentsUpdatedPayload {
   albumId: string;
-  moments: MemivoPost<TTimestamp>[];
+  moments: MemivoMoment[];
 }

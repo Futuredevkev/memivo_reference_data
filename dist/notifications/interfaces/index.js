@@ -35,5 +35,6 @@ __exportStar(require("./photo-upload-notification-metadata.interface"), exports)
 __exportStar(require("./photos-batch-upload-metadata.interface"), exports);
 __exportStar(require("./poll-notification-metadata.interface"), exports);
 __exportStar(require("./reaction-on-photo-metadata.interface"), exports);
+__exportStar(require("./story-comment-notification-metadata.interface"), exports);
 __exportStar(require("./story-notification-metadata.interface"), exports);
 __exportStar(require("./story-upload-notification-metadata.interface"), exports);

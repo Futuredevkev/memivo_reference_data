@@ -1,5 +1,7 @@
 export * from './add-story-tag-request.interface';
 export * from './album-stories-response.interface';
+export * from './archived-stories-query-request.interface';
+export * from './create-story-poll-request.interface';
 export * from './story-author.interface';
 export * from './story-comment-author.interface';
 export * from './story-comment-response.interface';

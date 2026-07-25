@@ -32,5 +32,7 @@ exports.ALBUM_SOCKET_EVENTS = {
         ALBUM_VISIBILITY_CHANGED_RECEIVED: 'album-visibility-changed-received',
         POST_DELETED: 'post-deleted',
         STORY_COMMENT_CREATED: 'story-comment.created',
+        STORY_POLL_RESULTS: 'story-poll.results',
+        STORY_POLL_CLOSED: 'story-poll.closed',
     },
 };

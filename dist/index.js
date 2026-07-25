@@ -24,6 +24,7 @@ __exportStar(require("./errors"), exports);
 __exportStar(require("./highlights"), exports);
 __exportStar(require("./media"), exports);
 __exportStar(require("./notifications"), exports);
+__exportStar(require("./polls"), exports);
 __exportStar(require("./reactions"), exports);
 __exportStar(require("./reports"), exports);
 __exportStar(require("./sockets"), exports);

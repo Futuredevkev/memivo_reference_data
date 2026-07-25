@@ -19,5 +19,6 @@ export * from './photo-upload-notification-metadata.interface';
 export * from './photos-batch-upload-metadata.interface';
 export * from './poll-notification-metadata.interface';
 export * from './reaction-on-photo-metadata.interface';
+export * from './story-comment-notification-metadata.interface';
 export * from './story-notification-metadata.interface';
 export * from './story-upload-notification-metadata.interface';
