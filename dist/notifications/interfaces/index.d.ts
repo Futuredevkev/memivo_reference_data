@@ -9,7 +9,6 @@ export * from './is-notification-response.function';
 export * from './notification-metadata-by-type.type';
 export * from './notification-metadata-view.type';
 export * from './notification-metadata.type';
-export * from './notification-payload.interface';
 export * from './notification-response.interface';
 export * from './notification-socket-payload.interface';
 export * from './notification-transport-response.type';

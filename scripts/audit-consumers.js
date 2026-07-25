@@ -4,10 +4,21 @@ const ts = require('typescript');
 
 const packageRoot = resolve(__dirname, '..');
 const workspaceRoot = dirname(packageRoot);
+const packageSrc = resolve(packageRoot, 'src');
+// Las rutas se pueden sobreescribir por entorno para que el gate se pueda ejercitar
+// contra repos sintéticos: sin esa costura, la única forma de probar que la auditoría
+// detecta un duplicado sería tener el duplicado de verdad en un consumidor.
 const roots = {
-  api: resolve(workspaceRoot, 'memivo_api', 'src'),
-  client: resolve(workspaceRoot, 'memivo_client', 'src'),
+  api: process.env.MEMIVO_AUDIT_API_SRC
+    ? resolve(process.env.MEMIVO_AUDIT_API_SRC)
+    : resolve(workspaceRoot, 'memivo_api', 'src'),
+  client: process.env.MEMIVO_AUDIT_CLIENT_SRC
+    ? resolve(process.env.MEMIVO_AUDIT_CLIENT_SRC)
+    : resolve(workspaceRoot, 'memivo_client', 'src'),
 };
+// El paquete entra como un lado más de la comparación: un contrato duplicado por UN
+// solo consumidor nunca forma el par api×cliente y se colaba entero por el gate.
+const declarationRoots = { ...roots, package: packageSrc };
 
 const intentionalBoundaries = new Map([
   ['class:Album', 'Server ORM entity and normalized client model are different layers.'],
@@ -29,6 +40,25 @@ const intentionalBoundaries = new Map([
   ['const:SENTRY_TRACES_SAMPLE_RATE_DEFAULT', 'Configuración operativa independiente por runtime.'],
   ['type:CloudinaryTransformResourceType', 'Unión primitiva local; no representa el mismo contrato de dominio que los tipos visuales.'],
   ['const:SENSITIVE_KEYS', 'Cada runtime redacta superficies y credenciales diferentes.'],
+  ['class:MemivoMoment', 'Entidad ORM del ranking persistido; el ítem que viaja al cliente es la unión MemivoMoment.'],
+  ['interface:AlbumGuest', 'Modelo de UI normalizado del cliente; el shape HTTP compartido lo valida el servicio.'],
+  ['const:EMAIL_REGEX', 'Redacción de PII en Sentry (global, sin anclas) vs validación de un email completo.'],
+]);
+
+/**
+ * Duplicados REALES cuyo arreglo vive en el repo consumidor: el paquete no puede
+ * cerrarlos, así que no tumban su gate, pero quedan listados con el archivo y el
+ * contrato que deben adoptar. Al adoptarlo, la entrada deja de matchear y el reporte
+ * la muestra en `resolvedConsumerAdoption` para que se borre de esta tabla.
+ */
+const pendingConsumerAdoption = new Map([
+  ['api:const:MESSAGE_CONTEXT_DEFAULT_LIMIT', 'chat/constants/chat-message: importar MESSAGE_CONTEXT_DEFAULT_LIMIT de @memivo/contracts/chat en vez de redeclarar el 40.'],
+  ['api:const:CLOUDINARY_RESOURCE_TYPES', 'cloudinary/constants/cloudinary: usar CLOUDINARY_UPLOAD_RESOURCE_TYPES de @memivo/contracts/media.'],
+  ['api:type:MediaFilterId', 'cloudinary/types: usar el MediaFilterId que su propio barrel de constantes ya re-exporta de @memivo/contracts/media.'],
+  ['client:type:AuthTokens', 'store/auth/authSession: usar AuthTokens de @memivo/contracts/auth.'],
+  ['client:interface:BlockedUserSummary', 'types/block: usar BlockedUserSummary de @memivo/contracts; la copia local relaja name/lastName/avatarUrl a opcionales y esconde si el API emite null.'],
+  ['client:interface:BlockedUsersListResponse', 'types/block: usar BlockedUsersListResponse de @memivo/contracts (PaginatedResponse compartido).'],
+  ['client:const:VIDEO_EXTENSIONS', 'utils/file-utils: usar ALLOWED_VIDEO_FORMATS de @memivo/contracts/media.'],
 ]);
 
 const intentionalLocalErrorCodes = new Map([
@@ -120,9 +150,17 @@ function stable(value) {
   return JSON.stringify(value);
 }
 
+function isPublicPackageFile(file) {
+  // Mismo recorte que `exportedSharedSymbols`: los barrels no declaran nada propio y
+  // `internal/` son piezas privadas que ningún dominio re-exporta.
+  return basename(file) !== 'index.ts' && !/[\\/]internal[\\/]/.test(file);
+}
+
 function declarations(side) {
   const output = [];
-  for (const file of walk(roots[side])) {
+  const root = declarationRoots[side];
+  for (const file of walk(root)) {
+    if (side === 'package' && !isPublicPackageFile(file)) continue;
     const { text, source } = sourceFile(file);
     const sharedImports = new Set();
     for (const statement of source.statements) {
@@ -145,6 +183,25 @@ function declarations(side) {
       if (declarationText.includes('@memivo/contracts')) return true;
       return [...sharedImports].some((name) => new RegExp(`\\b${name}\\b`).test(declarationText));
     };
+    // Un alias local de un tipo compartido SIGUE siendo el contrato compartido, así que
+    // lo que se derive de él tampoco es una redefinición propia: sin este cierre,
+    // `type Wire = Shared<X>` seguido de `type Local = Omit<Wire, 'k'> & {...}` se
+    // denunciaba como duplicado del contrato del que justamente deriva.
+    for (let grew = true; grew; ) {
+      grew = false;
+      for (const statement of source.statements) {
+        const names = ts.isVariableStatement(statement)
+          ? statement.declarationList.declarations
+              .filter((declaration) => ts.isIdentifier(declaration.name))
+              .map((declaration) => declaration.name.text)
+          : [statement.name?.text].filter(Boolean);
+        for (const name of names) {
+          if (sharedImports.has(name) || !isSharedBacked(statement)) continue;
+          sharedImports.add(name);
+          grew = true;
+        }
+      }
+    }
     for (const statement of source.statements) {
       let kind;
       let name;
@@ -184,7 +241,7 @@ function declarations(side) {
               kind: 'const',
               name: declaration.name.text,
               signature: value,
-              file: relative(roots[side], file),
+              file: relative(root, file),
             });
           }
         }
@@ -192,61 +249,89 @@ function declarations(side) {
       }
       if (kind && name && signature !== undefined) {
         if (isSharedBacked(statement)) continue;
-        output.push({ side, kind, name, signature, file: relative(roots[side], file) });
+        output.push({ side, kind, name, signature, file: relative(root, file) });
       }
     }
   }
   return output;
 }
 
+function evaluatePair(left, right) {
+  const sameName = left.name.toLowerCase() === right.name.toLowerCase();
+  const sameSignature = stable(left.signature) === stable(right.signature);
+  const memberNames = (signature) =>
+    Array.isArray(signature)
+      ? new Set(
+          signature
+            .filter((member) => typeof member === 'string')
+            .map((member) => member.match(/^([^?:]+)/)?.[1])
+            .filter(Boolean),
+        )
+      : new Set();
+  const leftMembers = memberNames(left.signature);
+  const rightMembers = memberNames(right.signature);
+  const sharedMembers = [...leftMembers].filter((member) => rightMembers.has(member));
+  const overlap = Math.min(leftMembers.size, rightMembers.size)
+    ? sharedMembers.length / Math.min(leftMembers.size, rightMembers.size)
+    : 0;
+  const stem = (name) => name
+    .replace(/^(?:I)(?=[A-Z])/, '')
+    .replace(/(?:Dto|Request|Payload|Input|Response|Interface)$/i, '')
+    .toLowerCase();
+  const dtoCandidate =
+    left.kind === 'class' &&
+    /Dto$/.test(left.name) &&
+    leftMembers.size >= 2 &&
+    rightMembers.size >= 2 &&
+    overlap >= 0.8 &&
+    (stem(left.name) === stem(right.name) || sharedMembers.length >= 3);
+  // Sin coincidencia de nombre, la forma es la única evidencia: dos shapes de 2
+  // campos (`{ id; url }`, `{ downloadUrl; fileName }`) chocan por casualidad entre
+  // dominios distintos y ahogarían la señal. Un VALOR literal idéntico (catálogos,
+  // límites) sí prueba duplicación aunque el nombre difiera.
+  const substantial = Array.isArray(left.signature)
+    ? left.signature.length >= 3
+    : typeof left.signature === 'object' || String(left.signature).length >= 6;
+  if (!sameName && !(sameSignature && substantial) && !dtoCandidate) return undefined;
+
+  return { sameName, sameSignature, dtoCandidate, left, right };
+}
+
 function findCrossRepoRisks() {
   const api = declarations('api');
   const client = declarations('client');
+  const shared = declarations('package');
   const risks = [];
   const intentional = [];
+  const pending = [];
+  const matchedPendingKeys = new Set();
 
-  for (const left of api) {
-    for (const right of client) {
-      const sameName = left.name.toLowerCase() === right.name.toLowerCase();
-      const sameSignature = stable(left.signature) === stable(right.signature);
-      const memberNames = (signature) =>
-        Array.isArray(signature)
-          ? new Set(
-              signature
-                .filter((member) => typeof member === 'string')
-                .map((member) => member.match(/^([^?:]+)/)?.[1])
-                .filter(Boolean),
-            )
-          : new Set();
-      const leftMembers = memberNames(left.signature);
-      const rightMembers = memberNames(right.signature);
-      const sharedMembers = [...leftMembers].filter((member) => rightMembers.has(member));
-      const overlap = Math.min(leftMembers.size, rightMembers.size)
-        ? sharedMembers.length / Math.min(leftMembers.size, rightMembers.size)
-        : 0;
-      const stem = (name) => name
-        .replace(/^(?:I)(?=[A-Z])/, '')
-        .replace(/(?:Dto|Request|Payload|Input|Response|Interface)$/i, '')
-        .toLowerCase();
-      const dtoCandidate =
-        left.kind === 'class' &&
-        /Dto$/.test(left.name) &&
-        leftMembers.size >= 2 &&
-        rightMembers.size >= 2 &&
-        overlap >= 0.8 &&
-        (stem(left.name) === stem(right.name) || sharedMembers.length >= 3);
-      const substantial = Array.isArray(left.signature)
-        ? left.signature.length >= 2
-        : typeof left.signature === 'object' || String(left.signature).length >= 6;
-      if (!sameName && !(sameSignature && substantial) && !dtoCandidate) continue;
-
-      const item = { sameName, sameSignature, dtoCandidate, api: left, client: right };
-      const boundary = intentionalBoundaries.get(`${left.kind}:${left.name}`);
-      if (boundary) intentional.push({ ...item, reason: boundary });
-      else risks.push(item);
+  // El consumidor va SIEMPRE a la izquierda: la tabla de fronteras intencionales está
+  // escrita con sus nombres (entidad ORM, modelo normalizado) y debe clasificar igual
+  // el par api×cliente que el par consumidor×paquete.
+  for (const [lefts, rights] of [[api, client], [api, shared], [client, shared]]) {
+    for (const left of lefts) {
+      for (const right of rights) {
+        const item = evaluatePair(left, right);
+        if (!item) continue;
+        const boundary = intentionalBoundaries.get(`${left.kind}:${left.name}`);
+        if (boundary) {
+          intentional.push({ ...item, reason: boundary });
+          continue;
+        }
+        const pendingKey = `${left.side}:${left.kind}:${left.name}`;
+        const adoption = pendingConsumerAdoption.get(pendingKey);
+        if (adoption && right.side === 'package') {
+          matchedPendingKeys.add(pendingKey);
+          pending.push({ ...item, fix: adoption });
+          continue;
+        }
+        risks.push(item);
+      }
     }
   }
-  return { risks, intentional };
+  const resolved = [...pendingConsumerAdoption.keys()].filter((key) => !matchedPendingKeys.has(key));
+  return { risks, intentional, pending, resolved };
 }
 
 function combinedText(side, excludedFragment) {
@@ -268,13 +353,16 @@ function memberReferences(text) {
 }
 
 function exportedSharedSymbols() {
-  const symbols = new Set();
-  for (const file of walk(resolve(packageRoot, 'src'))) {
+  // Símbolo -> dominio (`errors`, `media`, ...) para poder resolver los `export *`
+  // de subpath, que consumen un dominio entero sin nombrar sus símbolos.
+  const symbols = new Map();
+  for (const file of walk(packageSrc)) {
     const { source } = sourceFile(file);
     if (basename(file) === 'index.ts') continue;
     // `internal/` holds private building blocks that no domain barrel re-exports;
     // they are exported only for sibling imports, so they are not public surface.
     if (/[\\/]internal[\\/]/.test(file)) continue;
+    const domain = relative(packageSrc, file).split(/[\\/]/)[0];
     for (const statement of source.statements) {
       if (!statement.modifiers?.some((modifier) => modifier.kind === ts.SyntaxKind.ExportKeyword)) continue;
       if (
@@ -284,15 +372,123 @@ function exportedSharedSymbols() {
         ts.isFunctionDeclaration(statement) ||
         ts.isClassDeclaration(statement)
       ) {
-        if (statement.name) symbols.add(statement.name.text);
+        if (statement.name) symbols.set(statement.name.text, domain);
       } else if (ts.isVariableStatement(statement)) {
         for (const declaration of statement.declarationList.declarations) {
-          if (ts.isIdentifier(declaration.name)) symbols.add(declaration.name.text);
+          if (ts.isIdentifier(declaration.name)) symbols.set(declaration.name.text, domain);
         }
       }
     }
   }
-  return [...symbols].sort();
+  return symbols;
+}
+
+/**
+ * Nombres que los consumidores IMPORTAN del paquete, leídos del AST.
+ *
+ * Antes esto era un `match` de la palabra sobre el texto concatenado de los dos
+ * repos: un símbolo local homónimo —o la palabra suelta dentro de un comentario—
+ * alcanzaba para dar por vivo un export muerto. `wildcardDomains` cubre el único
+ * caso que no se puede resolver por nombre (`export *`, `import * as`), donde el
+ * consumidor toma el dominio entero.
+ */
+/**
+ * Símbolos que el PROPIO paquete referencia desde otro archivo suyo.
+ *
+ * Sin esto, `unusedSharedExports` mide mal: los 19 enums por dominio de
+ * `errors/` no los importa ningún consumidor —importan el `ErrorCode`
+ * consolidado— pero son exactamente las piezas con las que ese consolidado se
+ * arma (`errors/index.ts`). Marcarlos como muertos es al revés: son la fuente
+ * de verdad. Lo mismo `MB`, que alimenta `RESOURCE_UPLOAD_LIMITS`.
+ *
+ * El gate estuvo verde por accidente hasta ahora: el api tenía 19 archivos que
+ * sólo hacían `export { XErrorCode } from '@memivo/contracts/errors'` sin que
+ * nadie los importara. Eran dead code que, de paso, satisfacía esta cuenta.
+ * Al borrarlos, el gate empezó a reportar 19 falsos positivos — o sea que la
+ * cuenta nunca midió lo que dice medir.
+ *
+ * Queda como muerto de verdad sólo lo que ni el paquete ni los consumidores
+ * tocan.
+ */
+function symbolsReferencedInsidePackage() {
+  const referenced = new Set();
+  for (const file of walk(packageSrc)) {
+    const { source } = sourceFile(file);
+    const visit = (node) => {
+      // Sólo identificadores en posición de USO. La declaración propia no
+      // cuenta: si contara, todo símbolo se auto-justificaría.
+      if (ts.isIdentifier(node)) {
+        const parent = node.parent;
+        const isOwnName =
+          parent &&
+          'name' in parent &&
+          parent.name === node &&
+          (ts.isEnumDeclaration(parent) ||
+            ts.isInterfaceDeclaration(parent) ||
+            ts.isTypeAliasDeclaration(parent) ||
+            ts.isFunctionDeclaration(parent) ||
+            ts.isClassDeclaration(parent) ||
+            ts.isVariableDeclaration(parent));
+        if (!isOwnName) referenced.add(node.text);
+      }
+      ts.forEachChild(node, visit);
+    };
+    ts.forEachChild(source, visit);
+  }
+  return referenced;
+}
+
+function importedSharedNames() {
+  const names = new Set();
+  const wildcardDomains = new Set();
+  // Los agregados (`VALIDATION.MIN_AGE_YEARS`, `RESOURCE_UPLOAD_LIMITS[...]`) consumen
+  // un símbolo sin importarlo por nombre, y casi siempre desde otro archivo que el
+  // que hace el import. Se juntan todos los accesos y se resuelven al final contra
+  // los objetos que sí vienen del paquete.
+  const propertyAccesses = [];
+  const sharedObjectNames = new Set();
+  const domainOf = (specifier) => specifier.replace(/^@memivo\/contracts\/?/, '') || '*';
+  for (const side of Object.keys(roots)) {
+    for (const file of walk(roots[side])) {
+      const { source } = sourceFile(file);
+      for (const statement of source.statements) {
+        const isImport = ts.isImportDeclaration(statement);
+        const isExport = ts.isExportDeclaration(statement);
+        if (!isImport && !isExport) continue;
+        const specifier = statement.moduleSpecifier;
+        if (!specifier || !ts.isStringLiteral(specifier)) continue;
+        if (!specifier.text.startsWith('@memivo/contracts')) continue;
+        const bindings = isImport ? statement.importClause?.namedBindings : statement.exportClause;
+        if (isImport && statement.importClause?.name) wildcardDomains.add(domainOf(specifier.text));
+        if (!bindings) {
+          // `export * from '@memivo/contracts/errors'`: reexporta el dominio completo.
+          if (isExport) wildcardDomains.add(domainOf(specifier.text));
+          continue;
+        }
+        if (ts.isNamedImports(bindings) || ts.isNamedExports(bindings)) {
+          for (const element of bindings.elements) {
+            names.add((element.propertyName ?? element.name).text);
+            // El alias local también cuenta como puerta al agregado: el cliente
+            // re-exporta varios contratos con otro nombre.
+            sharedObjectNames.add(element.name.text);
+          }
+        } else {
+          wildcardDomains.add(domainOf(specifier.text));
+        }
+      }
+      const visit = (node) => {
+        if (ts.isPropertyAccessExpression(node) && ts.isIdentifier(node.expression)) {
+          propertyAccesses.push([node.expression.text, node.name.text]);
+        }
+        ts.forEachChild(node, visit);
+      };
+      visit(source);
+    }
+  }
+  for (const [object, property] of propertyAccesses) {
+    if (names.has(object) || sharedObjectNames.has(object)) names.add(property);
+  }
+  return { names, wildcardDomains };
 }
 
 function localeErrorKeys(locale) {
@@ -468,11 +664,17 @@ for (const side of Object.keys(roots)) {
   }
 }
 
-const allConsumerText = `${combinedText('api')}\n${clientText}`;
-const unusedSharedExports = exportedSharedSymbols().filter((symbol) => {
-  const matches = allConsumerText.match(new RegExp(`\\b${symbol}\\b`, 'g'));
-  return !matches;
-});
+const sharedExports = exportedSharedSymbols();
+const { names: importedSymbols, wildcardDomains } = importedSharedNames();
+const packageInternalReferences = symbolsReferencedInsidePackage();
+const unusedSharedExports = [...sharedExports]
+  .filter(([symbol, domain]) =>
+    !importedSymbols.has(symbol) &&
+    !packageInternalReferences.has(symbol) &&
+    !wildcardDomains.has('*') &&
+    !wildcardDomains.has(domain))
+  .map(([symbol]) => symbol)
+  .sort();
 const localeCoverage = Object.fromEntries(
   ['en', 'es', 'pt'].map((locale) => {
     const keys = localeErrorKeys(locale);
@@ -495,6 +697,8 @@ const report = {
     clientExplicitlyHandledErrorCodes: clientErrorReferences.size,
     crossRepoRisks: crossRepo.risks.length,
     intentionalBoundaries: crossRepo.intentional.length,
+    pendingConsumerAdoption: crossRepo.pending.length,
+    resolvedConsumerAdoption: crossRepo.resolved.length,
     unusedSharedExports: unusedSharedExports.length,
     localeCoverage: Object.fromEntries(
       Object.entries(localeCoverage).map(([locale, coverage]) => [locale, coverage.translated]),
@@ -511,7 +715,13 @@ const report = {
   },
   crossRepo: verbose
     ? crossRepo
-    : { risks: crossRepo.risks, intentionalCount: crossRepo.intentional.length },
+    : {
+        risks: crossRepo.risks,
+        intentionalCount: crossRepo.intentional.length,
+        // La deuda se imprime SIEMPRE: es lo que hay que llevarle al repo consumidor.
+        pending: crossRepo.pending.map(({ fix, left }) => ({ fix, declaredIn: `${left.side}:${left.file}` })),
+        resolved: crossRepo.resolved,
+      },
   unusedSharedExports,
   localeCoverage,
   rawRuntimeLiterals: unexpectedRawRuntimeLiterals,

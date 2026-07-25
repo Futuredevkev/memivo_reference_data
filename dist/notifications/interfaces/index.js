@@ -25,7 +25,6 @@ __exportStar(require("./is-notification-response.function"), exports);
 __exportStar(require("./notification-metadata-by-type.type"), exports);
 __exportStar(require("./notification-metadata-view.type"), exports);
 __exportStar(require("./notification-metadata.type"), exports);
-__exportStar(require("./notification-payload.interface"), exports);
 __exportStar(require("./notification-response.interface"), exports);
 __exportStar(require("./notification-socket-payload.interface"), exports);
 __exportStar(require("./notification-transport-response.type"), exports);
