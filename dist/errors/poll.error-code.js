@@ -19,5 +19,8 @@ var PollErrorCode;
     PollErrorCode["POLL_NOT_FOUND"] = "POLL_NOT_FOUND";
     PollErrorCode["POLL_NOT_ACTIVE"] = "POLL_NOT_ACTIVE";
     PollErrorCode["POLL_EXPIRED"] = "POLL_EXPIRED";
-    PollErrorCode["POLL_ALREADY_VOTED"] = "POLL_ALREADY_VOTED";
+    // `POLL_ALREADY_VOTED` se ELIMINÓ: votar de nuevo no es un error. Re-tocar la
+    // misma opción es idempotente y tocar otra cambia el voto, así que el código
+    // no tenía quién lo emitiera — sólo una traducción en tres idiomas para un
+    // mensaje que nadie iba a ver.
 })(PollErrorCode || (exports.PollErrorCode = PollErrorCode = {}));

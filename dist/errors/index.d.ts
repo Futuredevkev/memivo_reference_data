@@ -113,7 +113,6 @@ export declare const ErrorCode: {
     readonly POLL_NOT_FOUND: PollErrorCode.POLL_NOT_FOUND;
     readonly POLL_NOT_ACTIVE: PollErrorCode.POLL_NOT_ACTIVE;
     readonly POLL_EXPIRED: PollErrorCode.POLL_EXPIRED;
-    readonly POLL_ALREADY_VOTED: PollErrorCode.POLL_ALREADY_VOTED;
     readonly CHAT_FILE_NOT_FOUND: ChatErrorCode.CHAT_FILE_NOT_FOUND;
     readonly CHAT_MESSAGE_NOT_FOUND: ChatErrorCode.CHAT_MESSAGE_NOT_FOUND;
     readonly CHAT_MESSAGE_FORBIDDEN: ChatErrorCode.CHAT_MESSAGE_FORBIDDEN;

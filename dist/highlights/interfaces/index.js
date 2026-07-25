@@ -22,5 +22,3 @@ __exportStar(require("./highlight-story-poll.interface"), exports);
 __exportStar(require("./highlight-story.interface"), exports);
 __exportStar(require("./highlight-user.interface"), exports);
 __exportStar(require("./memivo-moments-response.interface"), exports);
-__exportStar(require("./memivo-post-moment.interface"), exports);
-__exportStar(require("./memivo-story-moment.interface"), exports);

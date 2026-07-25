@@ -6,5 +6,3 @@ export * from './highlight-story-poll.interface';
 export * from './highlight-story.interface';
 export * from './highlight-user.interface';
 export * from './memivo-moments-response.interface';
-export * from './memivo-post-moment.interface';
-export * from './memivo-story-moment.interface';
