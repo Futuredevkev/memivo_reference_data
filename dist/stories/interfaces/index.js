@@ -18,6 +18,7 @@ __exportStar(require("./add-story-tag-request.interface"), exports);
 __exportStar(require("./album-stories-response.interface"), exports);
 __exportStar(require("./archived-stories-query-request.interface"), exports);
 __exportStar(require("./create-story-poll-request.interface"), exports);
+__exportStar(require("./story-overlay-position.interface"), exports);
 __exportStar(require("./story-author.interface"), exports);
 __exportStar(require("./story-comment-author.interface"), exports);
 __exportStar(require("./story-comment-response.interface"), exports);
