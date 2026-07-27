@@ -1,0 +1,23 @@
+#!/bin/sh
+#
+# Corre los tres gates del SSOT antes de dejar pushear.
+#
+# Van EN SERIE a propósito: son los que leen el `src/` de los tres repos, y
+# correr dos a la vez con Docker arriba es exactamente cómo se consiguen
+# resultados que no se pueden reproducir.
+#
+# Instalación (una vez por clon):
+#   git config core.hooksPath .githooks
+#
+# Para saltearlo en un caso puntual y a sabiendas: `git push --no-verify`.
+
+set -e
+
+echo "pre-push: audit:consumers"
+npm run audit:consumers
+
+echo "pre-push: audit:transport"
+npm run audit:transport
+
+echo "pre-push: test"
+npm test

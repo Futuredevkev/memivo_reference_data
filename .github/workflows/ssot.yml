@@ -1,0 +1,76 @@
+name: SSOT gates
+
+# Los tres gates que protegen el SSOT entre repos —`audit:consumers`,
+# `audit:transport` y la suite de `node --test`— eran los ÚNICOS capaces de ver
+# que el api y el cliente digan lo mismo, y no tenían ningún workflow: dependían
+# enteramente de que alguien se acordara de correrlos a mano en una tercera
+# consola.
+#
+# Los dos auditores resuelven a los consumidores como directorios HERMANOS en
+# disco (`audit-consumers.js:5-18`, `audit-transport-surfaces.js:6-9`), cosa que
+# un runner con un solo checkout no puede darles. Por eso los tres checkouts van
+# a `path:` hermanos bajo `github.workspace`: así el layout que los scripts
+# esperan se reproduce tal cual y no hace falta ninguna variable de entorno.
+# (`audit-consumers.js` además acepta `MEMIVO_AUDIT_API_SRC` /
+# `MEMIVO_AUDIT_CLIENT_SRC`, pero `audit-transport-surfaces.js` NO, así que la
+# costura por env no sirve para los dos.)
+#
+# REQUISITO PARA QUE ESTO CORRA: un secret `MEMIVO_REPOS_TOKEN` en este repo,
+# con permiso de lectura sobre `Futuredevkev/memivo_api` y
+# `Futuredevkev/memivo_client`. Sin ese secret los dos checkouts fallan.
+# Mientras el secret no exista, este workflow va a estar en rojo — es
+# deliberado: un gate cross-repo que no puede leer los otros dos repos no
+# está pasando, está ciego.
+
+on:
+  pull_request:
+  push:
+    branches: [main, 'v*']
+
+permissions:
+  contents: read
+
+jobs:
+  ssot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout contracts
+        uses: actions/checkout@v4
+        with:
+          path: memivo-reference-data
+
+      - name: Checkout api
+        uses: actions/checkout@v4
+        with:
+          repository: Futuredevkev/memivo_api
+          token: ${{ secrets.MEMIVO_REPOS_TOKEN }}
+          path: memivo_api
+
+      - name: Checkout client
+        uses: actions/checkout@v4
+        with:
+          repository: Futuredevkev/memivo_client
+          token: ${{ secrets.MEMIVO_REPOS_TOKEN }}
+          path: memivo_client
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install
+        working-directory: memivo-reference-data
+        run: npm ci
+
+      # Los tres, EN SERIE. Nunca dos a la vez.
+      - name: audit:consumers
+        working-directory: memivo-reference-data
+        run: npm run audit:consumers
+
+      - name: audit:transport
+        working-directory: memivo-reference-data
+        run: npm run audit:transport
+
+      - name: test
+        working-directory: memivo-reference-data
+        run: npm test
