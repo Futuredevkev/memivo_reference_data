@@ -1,4 +1,4 @@
-const { readFileSync, readdirSync } = require('node:fs');
+const { existsSync, readFileSync, readdirSync } = require('node:fs');
 const { basename, dirname, join, relative, resolve } = require('node:path');
 const ts = require('typescript');
 
@@ -20,18 +20,22 @@ const roots = {
 // solo consumidor nunca forma el par api×cliente y se colaba entero por el gate.
 const declarationRoots = { ...roots, package: packageSrc };
 
+/**
+ * Excusas para pares que SÍ se forman y que no son un defecto.
+ *
+ * La clave es `${kind}:${name}` — sin lado y sin firma. Eso las hace potentes y
+ * peligrosas a la vez: mientras una entrada esté acá, CUALQUIER declaración con ese
+ * nombre, en cualquiera de los dos consumidores y con la forma que sea, queda excusada
+ * sin llegar nunca a `crossRepoRisks`. Una entrada que dejó de matchear no es inocua:
+ * es una excusa en blanco esperando a que alguien escriba el nombre.
+ *
+ * Por eso el reporte publica `resolvedBoundaries` y el gate FALLA con ellas: una
+ * entrada acá tiene que estar ganándose el lugar en cada corrida.
+ */
 const intentionalBoundaries = new Map([
   ['class:Album', 'Server ORM entity and normalized client model are different layers.'],
-  ['class:Role', 'Server ORM entity; the public wire subset is shared as UserRole.'],
-  ['class:User', 'Server ORM entity with persistence-only secrets and relations; the public and authenticated wire subsets are shared as PublicUserResponse and UserResponse.'],
-  ['class:ChatGroup', 'Server ORM entity and normalized client model are different layers.'],
-  ['class:ChatMember', 'Server ORM entity and normalized client model are different layers.'],
-  ['class:ChatMessage', 'Server ORM entity and normalized client model are different layers.'],
   ['class:Folder', 'Server ORM entity and normalized client model are different layers.'],
   ['class:Notification', 'Server ORM entity and transport model have different timestamps and relations.'],
-  ['class:PollOption', 'Server ORM entity and normalized client model are different layers.'],
-  ['class:PollVote', 'Server ORM entity and normalized client model are different layers.'],
-  ['class:Poll', 'Server ORM entity and normalized client model are different layers.'],
   ['class:GuestPost', 'Server ORM entity and normalized client model are different layers.'],
   ['class:PhotoTag', 'Server ORM entity and normalized client model are different layers.'],
   ['class:Photo', 'Server ORM entity and normalized client model are different layers.'],
@@ -252,6 +256,59 @@ function declarations(side) {
         output.push({ side, kind, name, signature, file: relative(root, file) });
       }
     }
+
+    // El recorrido de arriba sólo mira `source.statements`: el NIVEL SUPERIOR del
+    // archivo. Un patrón del contrato copiado dentro del argumento de un decorador
+    // (`@Matches(/^\+[1-9]\d{6,14}$/)`) o dentro del cuerpo de una función
+    // (`const emailRegex = /.../` adentro de `validateEmailFormat`) nunca entraba al
+    // corpus, así que no podía formar par con el símbolo del paquete y
+    // `crossRepoRisks` no lo podía ver NUNCA. Tres copias byte a byte de
+    // EMAIL_REGEX, INTERNATIONAL_PHONE_REGEX e INSTAGRAM_HANDLE_REGEX vivían así en
+    // el api con el gate en verde.
+    //
+    // Se recolectan sólo REGEX y sólo en los consumidores: un regex idéntico es
+    // prueba de duplicación por sí solo (`substantial` es true para un objeto), no
+    // necesita coincidencia de nombre, y acotarlo a regex mantiene la señal alta.
+    // El paquete no lo necesita: ahí los patrones se declaran en el nivel superior,
+    // que es la convención.
+    if (side !== 'package') {
+      const topLevelInitializers = new Set(
+        source.statements
+          .filter(ts.isVariableStatement)
+          .flatMap((statement) => statement.declarationList.declarations.map((d) => d.initializer))
+          .filter(Boolean),
+      );
+      const visit = (node) => {
+        if (ts.isRegularExpressionLiteral(node) && !topLevelInitializers.has(node)) {
+          const value = literalValue(node, source);
+          if (value !== undefined) {
+            // El nombre de la variable si lo hay (`const emailRegex = /.../`). Si el
+            // regex es anónimo —el caso del decorador— el nombre lleva la ubicación
+            // para que sea ÚNICO: un placeholder compartido haría `sameName` true
+            // entre dos regex que no tienen nada que ver y ahogaría el reporte. Sin
+            // nombre que comparar, el cruce queda donde corresponde: la firma, que
+            // para un regex es evidencia suficiente por sí sola.
+            const parent = node.parent;
+            const line =
+              source.getLineAndCharacterOfPosition(node.getStart(source)).line + 1;
+            const name =
+              parent && ts.isVariableDeclaration(parent) && ts.isIdentifier(parent.name)
+                ? parent.name.text
+                : `InlineRegex@${relative(root, file).replace(/\\/g, '/')}:${line}`;
+            output.push({
+              side,
+              kind: 'const',
+              name,
+              signature: value,
+              file: relative(root, file),
+              inlineRegex: true,
+            });
+          }
+        }
+        ts.forEachChild(node, visit);
+      };
+      ts.forEachChild(source, visit);
+    }
   }
   return output;
 }
@@ -305,6 +362,7 @@ function findCrossRepoRisks() {
   const intentional = [];
   const pending = [];
   const matchedPendingKeys = new Set();
+  const matchedBoundaryKeys = new Set();
 
   // El consumidor va SIEMPRE a la izquierda: la tabla de fronteras intencionales está
   // escrita con sus nombres (entidad ORM, modelo normalizado) y debe clasificar igual
@@ -312,10 +370,20 @@ function findCrossRepoRisks() {
   for (const [lefts, rights] of [[api, client], [api, shared], [client, shared]]) {
     for (const left of lefts) {
       for (const right of rights) {
+        // Un regex recolectado del interior de un decorador o de un cuerpo de
+        // función sólo se cruza contra EL PAQUETE. El defecto que persigue es «un
+        // consumidor reimplementó un patrón que ya vive en el contrato»; que el api
+        // y el cliente escriban los dos `/\s+/g` —uno para normalizar un asunto de
+        // mail, el otro para un accessibilityLabel— no es un contrato compartido, y
+        // dejar que formen par ahoga la señal (medido: 4 pares reales contra 4 de
+        // casualidad, y sin este corte el reporte llegaba a 1174).
+        if ((left.inlineRegex || right.inlineRegex) && right.side !== 'package') continue;
         const item = evaluatePair(left, right);
         if (!item) continue;
-        const boundary = intentionalBoundaries.get(`${left.kind}:${left.name}`);
+        const boundaryKey = `${left.kind}:${left.name}`;
+        const boundary = intentionalBoundaries.get(boundaryKey);
         if (boundary) {
+          matchedBoundaryKeys.add(boundaryKey);
           intentional.push({ ...item, reason: boundary });
           continue;
         }
@@ -331,7 +399,17 @@ function findCrossRepoRisks() {
     }
   }
   const resolved = [...pendingConsumerAdoption.keys()].filter((key) => !matchedPendingKeys.has(key));
-  return { risks, intentional, pending, resolved };
+  // Mismo mecanismo que `resolved`, para la otra tabla. Sin esto, una entrada de
+  // `intentionalBoundaries` que dejó de matchear es INVISIBLE y se acumula — y no es
+  // inocua: la clave es `${kind}:${name}`, sin lado ni firma, así que mientras siga
+  // en el mapa cualquier `class User` / `class Poll` que aparezca en el futuro, en
+  // CUALQUIERA de los dos consumidores y con la forma que sea (incluso una copia
+  // literal del contrato compartido), se clasifica como frontera intencional y nunca
+  // llega a `crossRepoRisks`. Una excusa que caducó es una excusa en blanco.
+  const resolvedBoundaries = [...intentionalBoundaries.keys()].filter(
+    (key) => !matchedBoundaryKeys.has(key),
+  );
+  return { risks, intentional, pending, resolved, resolvedBoundaries };
 }
 
 function combinedText(side, excludedFragment) {
@@ -493,6 +571,19 @@ function importedSharedNames() {
 
 function localeErrorKeys(locale) {
   const file = resolve(roots.client, 'i18n', 'locales', `${locale}.ts`);
+  // Sin esto el fallo es un ENOENT crudo con el stack de `fs.readFileSync`, que no
+  // nombra ni el locale ni el gate. Pasa de verdad: al ejercitar el auditor contra un
+  // repo sintético por la costura `MEMIVO_AUDIT_CLIENT_SRC` —que es para lo que la
+  // costura existe— el script moría antes de imprimir una sola línea del reporte.
+  // Se sigue tratando como error duro: un locale que no está es cobertura que no se
+  // puede medir, no cobertura vacía.
+  if (!existsSync(file)) {
+    throw new Error(
+      `audit:consumers — falta el archivo de locale "${locale}": ${file}. ` +
+        'La cobertura de traducciones de los 195 códigos de error se mide contra los 3 ' +
+        'locales del cliente; si el cliente apunta a otro lado, revisá MEMIVO_AUDIT_CLIENT_SRC.',
+    );
+  }
   const { source } = sourceFile(file);
   const keys = new Set();
   const visit = (node) => {
@@ -699,6 +790,7 @@ const report = {
     intentionalBoundaries: crossRepo.intentional.length,
     pendingConsumerAdoption: crossRepo.pending.length,
     resolvedConsumerAdoption: crossRepo.resolved.length,
+    resolvedBoundaries: crossRepo.resolvedBoundaries.length,
     unusedSharedExports: unusedSharedExports.length,
     localeCoverage: Object.fromEntries(
       Object.entries(localeCoverage).map(([locale, coverage]) => [locale, coverage.translated]),
@@ -721,6 +813,9 @@ const report = {
         // La deuda se imprime SIEMPRE: es lo que hay que llevarle al repo consumidor.
         pending: crossRepo.pending.map(({ fix, left }) => ({ fix, declaredIn: `${left.side}:${left.file}` })),
         resolved: crossRepo.resolved,
+        // Se imprime SIEMPRE, igual que `resolved`: son excusas que ya no excusan nada
+        // y que hay que borrar del mapa.
+        resolvedBoundaries: crossRepo.resolvedBoundaries,
       },
   unusedSharedExports,
   localeCoverage,
@@ -736,6 +831,13 @@ if (
   apiUnusedErrorCodes.length ||
   literalErrorCodes.length ||
   crossRepo.risks.length ||
+  // Una frontera intencional que ya no matchea nada es una excusa en blanco: la clave
+  // no lleva lado ni firma, así que sigue tapando cualquier declaración futura con ese
+  // nombre. Es más estricto que `resolvedConsumerAdoption` —que sólo informa— a
+  // propósito: aquella significa "un consumidor adoptó el contrato", que es una buena
+  // noticia con tarea de limpieza; ésta significa "hay un agujero de cobertura puesto
+  // a mano y nadie lo sabe".
+  crossRepo.resolvedBoundaries.length ||
   unusedSharedExports.length ||
   unexpectedRawRuntimeLiterals.length ||
   Object.values(localeCoverage).some((coverage) => coverage.missing.length)

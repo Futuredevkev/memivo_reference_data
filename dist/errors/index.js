@@ -3,8 +3,22 @@
  * Barrel export para todos los códigos de error
  * Permite importar desde un solo lugar manteniendo la organización modular
  */
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ErrorCode = exports.OAuthErrorCode = exports.LikeErrorCode = exports.DownloadErrorCode = exports.UploadErrorCode = exports.BlockErrorCode = exports.ModerationErrorCode = exports.ReportErrorCode = exports.StoryCommentErrorCode = exports.StoryErrorCode = exports.ReactionErrorCode = exports.MailErrorCode = exports.CommentErrorCode = exports.PollErrorCode = exports.ChatErrorCode = exports.PhotoErrorCode = exports.FolderErrorCode = exports.AlbumErrorCode = exports.UserErrorCode = exports.AuthErrorCode = exports.CommonErrorCode = void 0;
+exports.OAuthErrorCode = exports.LikeErrorCode = exports.DownloadErrorCode = exports.UploadErrorCode = exports.BlockErrorCode = exports.ModerationErrorCode = exports.ReportErrorCode = exports.StoryCommentErrorCode = exports.StoryErrorCode = exports.ReactionErrorCode = exports.MailErrorCode = exports.CommentErrorCode = exports.PollErrorCode = exports.ChatErrorCode = exports.PhotoErrorCode = exports.FolderErrorCode = exports.AlbumErrorCode = exports.UserErrorCode = exports.AuthErrorCode = exports.CommonErrorCode = void 0;
 const common_error_code_1 = require("./common.error-code");
 Object.defineProperty(exports, "CommonErrorCode", { enumerable: true, get: function () { return common_error_code_1.CommonErrorCode; } });
 const auth_error_code_1 = require("./auth.error-code");
@@ -45,53 +59,4 @@ const like_error_code_1 = require("./like.error-code");
 Object.defineProperty(exports, "LikeErrorCode", { enumerable: true, get: function () { return like_error_code_1.LikeErrorCode; } });
 const oauth_error_code_1 = require("./oauth.error-code");
 Object.defineProperty(exports, "OAuthErrorCode", { enumerable: true, get: function () { return oauth_error_code_1.OAuthErrorCode; } });
-/**
- * Enum consolidado para retrocompatibilidad
- * Combina todos los códigos de error en un solo objeto
- *
- * @example
- * import { ErrorCode } from 'src/common/constants/error-codes';
- * throw new BadRequestException({ errorCode: ErrorCode.AUTH_INVALID_CREDENTIALS });
- */
-exports.ErrorCode = {
-    // Common
-    ...common_error_code_1.CommonErrorCode,
-    // Auth
-    ...auth_error_code_1.AuthErrorCode,
-    // User
-    ...user_error_code_1.UserErrorCode,
-    // Album
-    ...album_error_code_1.AlbumErrorCode,
-    // Folder
-    ...folder_error_code_1.FolderErrorCode,
-    // Photo
-    ...photo_error_code_1.PhotoErrorCode,
-    // Chat
-    ...chat_error_code_1.ChatErrorCode,
-    // Poll
-    ...poll_error_code_1.PollErrorCode,
-    // Comment
-    ...comment_error_code_1.CommentErrorCode,
-    // Mail
-    ...mail_error_code_1.MailErrorCode,
-    // Reaction
-    ...reaction_error_code_1.ReactionErrorCode,
-    // Story
-    ...story_error_code_1.StoryErrorCode,
-    // StoryComment
-    ...story_comment_error_code_1.StoryCommentErrorCode,
-    // Report
-    ...report_error_code_1.ReportErrorCode,
-    // Moderation
-    ...moderation_error_code_1.ModerationErrorCode,
-    // Block
-    ...block_error_code_1.BlockErrorCode,
-    // Upload
-    ...upload_error_code_1.UploadErrorCode,
-    // Download
-    ...download_error_code_1.DownloadErrorCode,
-    // Like
-    ...like_error_code_1.LikeErrorCode,
-    // OAuth
-    ...oauth_error_code_1.OAuthErrorCode,
-};
+__exportStar(require("./error-code.constant"), exports);
