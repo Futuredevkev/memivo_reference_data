@@ -22,6 +22,7 @@ __exportStar(require("./album-activity-entry.interface"), exports);
 __exportStar(require("./album-activity-query-request.interface"), exports);
 __exportStar(require("./album-delete-response.interface"), exports);
 __exportStar(require("./album-guest.interface"), exports);
+__exportStar(require("./album-access-reset-response.interface"), exports);
 __exportStar(require("./album-invite-album-preview-response.interface"), exports);
 __exportStar(require("./album-invite-post-preview-response.interface"), exports);
 __exportStar(require("./album-invite-preview-base-response.interface"), exports);
