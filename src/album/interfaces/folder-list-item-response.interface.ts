@@ -3,7 +3,6 @@ import type { CoverPhotoData } from './cover-photo-data.interface';
 export interface FolderListItemResponse<TTimestamp = string> {
   id: string;
   name: string;
-  description: string | null;
   position: number;
   photoCount: number;
   cover: CoverPhotoData | null;

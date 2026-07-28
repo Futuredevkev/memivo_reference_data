@@ -19,7 +19,6 @@ export declare const VALIDATION: {
     readonly POLL_DEFAULT_DURATION_MINUTES: 5;
     readonly GROUP_NAME_MAX: 100;
     readonly FOLDER_NAME_MAX: 100;
-    readonly FOLDER_DESCRIPTION_MAX: 500;
     readonly COMMENT_MAX: 280;
     readonly RESPONSE_MAX: 280;
     readonly POST_DESCRIPTION_MAX: 500;

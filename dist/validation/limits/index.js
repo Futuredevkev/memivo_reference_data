@@ -22,7 +22,6 @@ __exportStar(require("./batch-min-items.constant"), exports);
 __exportStar(require("./chat-caption-max.constant"), exports);
 __exportStar(require("./chat-message-max.constant"), exports);
 __exportStar(require("./comment-max.constant"), exports);
-__exportStar(require("./folder-description-max.constant"), exports);
 __exportStar(require("./folder-name-max.constant"), exports);
 __exportStar(require("./generic-batch-max.constant"), exports);
 __exportStar(require("./group-name-max.constant"), exports);

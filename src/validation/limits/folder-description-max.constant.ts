@@ -1,1 +1,0 @@
-export const FOLDER_DESCRIPTION_MAX = 500;

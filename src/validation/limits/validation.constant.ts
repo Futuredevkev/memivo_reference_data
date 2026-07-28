@@ -6,7 +6,6 @@ import { BATCH_MIN_ITEMS } from './batch-min-items.constant';
 import { CHAT_CAPTION_MAX } from './chat-caption-max.constant';
 import { CHAT_MESSAGE_MAX } from './chat-message-max.constant';
 import { COMMENT_MAX } from './comment-max.constant';
-import { FOLDER_DESCRIPTION_MAX } from './folder-description-max.constant';
 import { FOLDER_NAME_MAX } from './folder-name-max.constant';
 import { GENERIC_BATCH_MAX } from './generic-batch-max.constant';
 import { GROUP_NAME_MAX } from './group-name-max.constant';
@@ -51,7 +50,6 @@ export const VALIDATION = {
   POLL_DEFAULT_DURATION_MINUTES,
   GROUP_NAME_MAX,
   FOLDER_NAME_MAX,
-  FOLDER_DESCRIPTION_MAX,
   COMMENT_MAX,
   RESPONSE_MAX,
   POST_DESCRIPTION_MAX,

@@ -9,7 +9,6 @@ const batch_min_items_constant_1 = require("./batch-min-items.constant");
 const chat_caption_max_constant_1 = require("./chat-caption-max.constant");
 const chat_message_max_constant_1 = require("./chat-message-max.constant");
 const comment_max_constant_1 = require("./comment-max.constant");
-const folder_description_max_constant_1 = require("./folder-description-max.constant");
 const folder_name_max_constant_1 = require("./folder-name-max.constant");
 const generic_batch_max_constant_1 = require("./generic-batch-max.constant");
 const group_name_max_constant_1 = require("./group-name-max.constant");
@@ -53,7 +52,6 @@ exports.VALIDATION = {
     POLL_DEFAULT_DURATION_MINUTES: poll_default_duration_minutes_constant_1.POLL_DEFAULT_DURATION_MINUTES,
     GROUP_NAME_MAX: group_name_max_constant_1.GROUP_NAME_MAX,
     FOLDER_NAME_MAX: folder_name_max_constant_1.FOLDER_NAME_MAX,
-    FOLDER_DESCRIPTION_MAX: folder_description_max_constant_1.FOLDER_DESCRIPTION_MAX,
     COMMENT_MAX: comment_max_constant_1.COMMENT_MAX,
     RESPONSE_MAX: response_max_constant_1.RESPONSE_MAX,
     POST_DESCRIPTION_MAX: post_description_max_constant_1.POST_DESCRIPTION_MAX,

@@ -6,7 +6,6 @@ export * from './batch-min-items.constant';
 export * from './chat-caption-max.constant';
 export * from './chat-message-max.constant';
 export * from './comment-max.constant';
-export * from './folder-description-max.constant';
 export * from './folder-name-max.constant';
 export * from './generic-batch-max.constant';
 export * from './group-name-max.constant';
