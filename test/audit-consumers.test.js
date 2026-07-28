@@ -25,7 +25,7 @@ function runAudit({ api = '', client = '' }) {
   if (api) writeFileSync(join(apiSrc, 'fixture.ts'), api, 'utf8');
   if (client) writeFileSync(join(clientSrc, 'fixture.ts'), client, 'utf8');
 
-  // El auditor mide la cobertura de traducciones de los 195 códigos de error contra
+  // El auditor mide la cobertura de traducciones de los 194 códigos de error contra
   // los 3 locales del cliente, así que un cliente sintético tiene que parecer un
   // cliente. Van vacíos a propósito: acá no se está midiendo cobertura de i18n.
   const locales = join(clientSrc, 'i18n', 'locales');

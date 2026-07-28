@@ -580,7 +580,7 @@ function localeErrorKeys(locale) {
   if (!existsSync(file)) {
     throw new Error(
       `audit:consumers — falta el archivo de locale "${locale}": ${file}. ` +
-        'La cobertura de traducciones de los 195 códigos de error se mide contra los 3 ' +
+        'La cobertura de traducciones de los 194 códigos de error se mide contra los 3 ' +
         'locales del cliente; si el cliente apunta a otro lado, revisá MEMIVO_AUDIT_CLIENT_SRC.',
     );
   }

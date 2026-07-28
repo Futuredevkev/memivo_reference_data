@@ -10,10 +10,10 @@ const chat = require('../dist/chat/index.js');
 const notifications = require('../dist/notifications/index.js');
 const social = require('../dist/social/index.js');
 
-test('el catálogo consolidado expone 195 códigos de error únicos', () => {
+test('el catálogo consolidado expone 194 códigos de error únicos', () => {
   const values = Object.values(errors.ErrorCode);
 
-  assert.equal(values.length, 195);
+  assert.equal(values.length, 194);
   assert.equal(new Set(values).size, values.length);
 });
 
