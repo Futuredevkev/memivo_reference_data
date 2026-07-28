@@ -17,6 +17,13 @@ var AlbumActionType;
     AlbumActionType["STORY_COMMENT_DELETED"] = "STORY_COMMENT_DELETED";
     AlbumActionType["ALBUM_UPDATED"] = "ALBUM_UPDATED";
     AlbumActionType["ALBUM_VISIBILITY_CHANGED"] = "ALBUM_VISIBILITY_CHANGED";
+    /**
+     * El dueño rotó el acceso: QR nuevo + invite-links revocados. Deja rastro
+     * porque invalida TODOS los links repartidos hasta ese momento — es la acción
+     * de álbum con más alcance sobre gente de afuera, y sin registro nadie puede
+     * explicar después por qué un link dejó de funcionar.
+     */
+    AlbumActionType["ALBUM_ACCESS_RESET"] = "ALBUM_ACCESS_RESET";
     AlbumActionType["ALBUM_COVER_CHANGED"] = "ALBUM_COVER_CHANGED";
     AlbumActionType["FOLDER_CREATED"] = "FOLDER_CREATED";
     AlbumActionType["FOLDER_RENAMED"] = "FOLDER_RENAMED";
