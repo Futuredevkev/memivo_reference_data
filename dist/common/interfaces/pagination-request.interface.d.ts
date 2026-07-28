@@ -4,5 +4,4 @@ export interface PaginationRequest {
     cursor?: string;
     q?: string;
     search?: string;
-    filters?: Record<string, string | number | boolean>;
 }
