@@ -23,10 +23,10 @@ const social = require('../dist/social/index.js');
 // es el comportamiento idempotente correcto y el que el bloque 7 consagró. El
 // código estaba declarado y traducido a tres idiomas para una condición que el
 // usuario no podía ver nunca.
-test('el catálogo consolidado expone 195 códigos de error únicos', () => {
+test('el catálogo consolidado expone 194 códigos de error únicos', () => {
   const values = Object.values(errors.ErrorCode);
 
-  assert.equal(values.length, 195);
+  assert.equal(values.length, 194);
   assert.equal(new Set(values).size, values.length);
 });
 
@@ -131,4 +131,12 @@ test('los presets de aspect ratio de guest post conservan valores y el snap coin
   assert.equal(snap(undefined), 1);
   assert.equal(snap(Number.NaN), 1);
   assert.equal(snap(-3), 1);
+});
+
+test('la ventana de contexto de comentarios queda acotada por contrato', () => {
+  assert.equal(social.COMMENT_CONTEXT_DEFAULT_LIMIT, 15);
+  assert.equal(social.COMMENT_CONTEXT_MIN_LIMIT, 3);
+  assert.equal(social.COMMENT_CONTEXT_MAX_LIMIT, 50);
+  assert.ok(social.COMMENT_CONTEXT_MIN_LIMIT <= social.COMMENT_CONTEXT_DEFAULT_LIMIT);
+  assert.ok(social.COMMENT_CONTEXT_DEFAULT_LIMIT <= social.COMMENT_CONTEXT_MAX_LIMIT);
 });
