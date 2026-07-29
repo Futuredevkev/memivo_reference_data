@@ -16,10 +16,17 @@ const social = require('../dist/social/index.js');
 // `GUEST_POST_EDIT_FORBIDDEN`, `USER_PASSWORD_NOT_SET`,
 // `REACTION_TARGET_FORBIDDEN`) y −2 que quedaron sin ningún emisor en el api
 // (`USER_INVALID_PASSWORD`, `PHOTO_DELETE_FORBIDDEN`).
-test('el catálogo consolidado expone 196 códigos de error únicos', () => {
+//
+// Bloque 28: −1 más. `UPLOAD_INTENT_FILE_ALREADY_COMPLETED` tenía UN emisor,
+// `validateFileNotCompleted`, que no llamaba nadie: el camino real de
+// re-completar un archivo devuelve el `File` existente en vez de tirar 409, que
+// es el comportamiento idempotente correcto y el que el bloque 7 consagró. El
+// código estaba declarado y traducido a tres idiomas para una condición que el
+// usuario no podía ver nunca.
+test('el catálogo consolidado expone 195 códigos de error únicos', () => {
   const values = Object.values(errors.ErrorCode);
 
-  assert.equal(values.length, 196);
+  assert.equal(values.length, 195);
   assert.equal(new Set(values).size, values.length);
 });
 
