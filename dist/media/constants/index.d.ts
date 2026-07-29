@@ -1,3 +1,4 @@
+export * from './allowed-image-mime-types.constant';
 export * from './allowed-video-formats.constant';
 export * from './chat-audio-max-duration-ms.constant';
 export * from './chat-video-max-duration-ms.constant';

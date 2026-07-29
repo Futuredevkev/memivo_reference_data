@@ -1,6 +1,6 @@
 {
   "name": "@memivo/contracts",
-  "version": "4.11.0",
+  "version": "4.12.0",
   "description": "Contratos, catálogos y reglas públicas compartidas por memivo_client y memivo_api.",
   "license": "UNLICENSED",
   "main": "dist/index.js",
@@ -92,8 +92,5 @@
   },
   "devDependencies": {
     "typescript": "^5.9.2"
-  },
-  "dependencies": {
-    "@babel/runtime": "^7.28.4"
   }
 }

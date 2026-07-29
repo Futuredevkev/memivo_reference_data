@@ -15,3 +15,4 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./profile-report-reason.enum"), exports);
+__exportStar(require("./profile-report-status.enum"), exports);

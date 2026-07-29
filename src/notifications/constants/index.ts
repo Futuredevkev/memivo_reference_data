@@ -1,3 +1,4 @@
+export * from './actor-avatar-notification-types.constant';
 export * from './chat-notification-types.constant';
 export * from './chat-suppression-types.constant';
 export * from './post-suppression-types.constant';
