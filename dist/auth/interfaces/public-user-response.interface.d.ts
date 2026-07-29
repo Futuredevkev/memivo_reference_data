@@ -10,7 +10,8 @@ export interface PublicUserResponse<TTimestamp = string> {
     avatar?: UserAvatarFile;
     instagram?: string[];
     linkedin?: string[];
-    phone?: string;
+    /** `null` cuando no hay teléfono cargado o el dueño lo borró (D-27). */
+    phone?: string | null;
     birthDate?: TTimestamp;
     country?: IsoCountryCode;
 }

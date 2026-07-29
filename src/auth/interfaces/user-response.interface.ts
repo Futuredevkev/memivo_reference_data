@@ -20,7 +20,13 @@ export interface UserResponse<TTimestamp = string> {
   avatar?: UserAvatarFile;
   instagram?: string[];
   linkedin?: string[];
-  phone?: string;
+  /**
+   * `null` cuando el dueño lo borró (bloque 36, H-306). Declararlo sólo
+   * opcional era la mentira que el bloque 23 desarmó en otros cinco sitios: la
+   * columna es nullable y el mapper la copia tal cual, así que el cable lleva
+   * `null` y el contrato decía que no podía.
+   */
+  phone?: string | null;
   isPhonePublic?: boolean;
   birthDate?: TTimestamp;
   language?: LanguageCode;
