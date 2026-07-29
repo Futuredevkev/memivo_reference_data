@@ -1,6 +1,13 @@
 import type { LanguageCode } from '../../common';
-import type { IsoCountryCode } from '../../reference-data';
 
+/**
+ * `birthDate` y `country` NO están acá a propósito (decisión 29 + H-090).
+ *
+ * El servidor los aceptaba, los validaba y los persistía, y ninguna pantalla de
+ * edición los arma: se fijan al registrarse y son inmutables por decisión de
+ * producto. Un contrato que declara un campo que nadie puede mandar es una
+ * mentira que invita a implementar la pantalla que no queremos.
+ */
 export interface UpdateProfilePayload {
   name?: string;
   lastName?: string;
@@ -13,8 +20,6 @@ export interface UpdateProfilePayload {
   linkedin?: string[];
   phone?: string;
   isPhonePublic?: boolean;
-  birthDate?: string;
   language?: LanguageCode;
-  country?: IsoCountryCode;
   acceptedTerms?: boolean;
 }
