@@ -12,7 +12,6 @@ export interface UpdateProfilePayload {
     lastName?: string;
     email?: string;
     password?: string;
-    confirmPassword?: string;
     currentPassword?: string;
     totp?: string;
     instagram?: string[];

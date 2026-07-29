@@ -33,6 +33,7 @@ export * from './sessions-closed-response.interface';
 export * from './sessions-response.interface';
 export * from './two-factor-secret-response.interface';
 export * from './two-factor-status-response.interface';
+export * from './regenerate-backup-codes-response.interface';
 export * from './update-device-locale-payload.interface';
 export * from './update-notification-settings-payload.interface';
 export * from './update-profile-payload.interface';

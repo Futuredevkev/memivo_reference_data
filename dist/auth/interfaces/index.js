@@ -49,6 +49,7 @@ __exportStar(require("./sessions-closed-response.interface"), exports);
 __exportStar(require("./sessions-response.interface"), exports);
 __exportStar(require("./two-factor-secret-response.interface"), exports);
 __exportStar(require("./two-factor-status-response.interface"), exports);
+__exportStar(require("./regenerate-backup-codes-response.interface"), exports);
 __exportStar(require("./update-device-locale-payload.interface"), exports);
 __exportStar(require("./update-notification-settings-payload.interface"), exports);
 __exportStar(require("./update-profile-payload.interface"), exports);
