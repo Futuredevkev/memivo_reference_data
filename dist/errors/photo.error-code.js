@@ -8,9 +8,11 @@ var PhotoErrorCode;
 (function (PhotoErrorCode) {
     // Photos
     PhotoErrorCode["PHOTO_NOT_FOUND"] = "PHOTO_NOT_FOUND";
-    PhotoErrorCode["PHOTO_DELETE_FORBIDDEN"] = "PHOTO_DELETE_FORBIDDEN";
     PhotoErrorCode["GUEST_POST_NOT_FOUND"] = "GUEST_POST_NOT_FOUND";
     PhotoErrorCode["GUEST_POST_EMPTY"] = "GUEST_POST_EMPTY";
+    /** Editar una publicación ajena. Usaba `PHOTO_DELETE_FORBIDDEN`, cuya copia
+     * habla de BORRAR fotos: el único caller es el PATCH de edición. */
+    PhotoErrorCode["GUEST_POST_EDIT_FORBIDDEN"] = "GUEST_POST_EDIT_FORBIDDEN";
     PhotoErrorCode["GUEST_VIDEO_TOO_LONG"] = "GUEST_VIDEO_TOO_LONG";
     // Photo Tags
     PhotoErrorCode["PHOTO_TAG_ALREADY_EXISTS"] = "PHOTO_TAG_ALREADY_EXISTS";

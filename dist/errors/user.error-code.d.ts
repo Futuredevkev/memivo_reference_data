@@ -6,7 +6,10 @@ export declare enum UserErrorCode {
     USER_BANNED = "USER_BANNED",
     USER_NO_CHANGES = "USER_NO_CHANGES",
     USER_PENDING_UPDATE_NOT_FOUND = "USER_PENDING_UPDATE_NOT_FOUND",
-    USER_INVALID_PASSWORD = "USER_INVALID_PASSWORD",
+    /** La cuenta NO tiene contraseña seteada (cuenta legacy / sólo social). Usaba
+     * `USER_INVALID_PASSWORD`, así que se le decía «la contraseña es incorrecta»
+     * a quien no tiene ninguna: reintentaba para siempre. */
+    USER_PASSWORD_NOT_SET = "USER_PASSWORD_NOT_SET",
     USER_PHONE_TAKEN = "USER_PHONE_TAKEN",
     USER_UPDATE_DEVICE_LOCALE_FAILED = "USER_UPDATE_DEVICE_LOCALE_FAILED",
     USER_DELETE_FAILED = "USER_DELETE_FAILED",

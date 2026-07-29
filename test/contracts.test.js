@@ -10,10 +10,16 @@ const chat = require('../dist/chat/index.js');
 const notifications = require('../dist/notifications/index.js');
 const social = require('../dist/social/index.js');
 
-test('el catálogo consolidado expone 194 códigos de error únicos', () => {
+// El número se mueve con el catálogo, y por eso el test vale: obliga a que
+// agregar o borrar un código sea un acto deliberado. Bloque 24: +4 códigos que
+// describen la condición real (`CHAT_MESSAGE_ALREADY_PINNED`,
+// `GUEST_POST_EDIT_FORBIDDEN`, `USER_PASSWORD_NOT_SET`,
+// `REACTION_TARGET_FORBIDDEN`) y −2 que quedaron sin ningún emisor en el api
+// (`USER_INVALID_PASSWORD`, `PHOTO_DELETE_FORBIDDEN`).
+test('el catálogo consolidado expone 196 códigos de error únicos', () => {
   const values = Object.values(errors.ErrorCode);
 
-  assert.equal(values.length, 194);
+  assert.equal(values.length, 196);
   assert.equal(new Set(values).size, values.length);
 });
 

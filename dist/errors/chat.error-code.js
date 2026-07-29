@@ -40,6 +40,10 @@ var ChatErrorCode;
     // Pinned Messages
     ChatErrorCode["CHAT_PINNED_MESSAGE_NOT_FOUND"] = "CHAT_PINNED_MESSAGE_NOT_FOUND";
     ChatErrorCode["CHAT_PINNED_MESSAGE_FORBIDDEN"] = "CHAT_PINNED_MESSAGE_FORBIDDEN";
+    /** El mensaje YA está fijado. No es un problema de permisos: dos de los tres
+     * sitios que usaban `CHAT_PINNED_MESSAGE_FORBIDDEN` significaban esto, y el
+     * cliente le decía «no tenés permiso» a alguien que sí lo tiene. */
+    ChatErrorCode["CHAT_MESSAGE_ALREADY_PINNED"] = "CHAT_MESSAGE_ALREADY_PINNED";
     // Reactions
     ChatErrorCode["CHAT_REACTION_TOGGLE_FAILED"] = "CHAT_REACTION_TOGGLE_FAILED";
 })(ChatErrorCode || (exports.ChatErrorCode = ChatErrorCode = {}));

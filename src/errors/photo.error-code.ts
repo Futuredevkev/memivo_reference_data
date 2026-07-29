@@ -4,9 +4,11 @@
 export enum PhotoErrorCode {
   // Photos
   PHOTO_NOT_FOUND = 'PHOTO_NOT_FOUND',
-  PHOTO_DELETE_FORBIDDEN = 'PHOTO_DELETE_FORBIDDEN',
   GUEST_POST_NOT_FOUND = 'GUEST_POST_NOT_FOUND',
   GUEST_POST_EMPTY = 'GUEST_POST_EMPTY',
+  /** Editar una publicación ajena. Usaba `PHOTO_DELETE_FORBIDDEN`, cuya copia
+   * habla de BORRAR fotos: el único caller es el PATCH de edición. */
+  GUEST_POST_EDIT_FORBIDDEN = 'GUEST_POST_EDIT_FORBIDDEN',
   GUEST_VIDEO_TOO_LONG = 'GUEST_VIDEO_TOO_LONG',
 
   // Photo Tags
