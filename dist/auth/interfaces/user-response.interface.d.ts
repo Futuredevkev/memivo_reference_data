@@ -8,13 +8,9 @@ export interface UserResponse<TTimestamp = string> {
     name: string;
     lastName: string;
     email: string;
-    isActive: boolean;
-    isRegisterVerified: boolean;
     twoFactorEnabled: boolean;
     notificationsEnabled: boolean;
-    lastActiveAt?: TTimestamp;
     created_at?: TTimestamp;
-    updated_at?: TTimestamp;
     roles?: UserRole[];
     avatar?: UserAvatarFile;
     instagram?: string[];

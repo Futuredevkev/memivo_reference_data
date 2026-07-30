@@ -20,5 +20,4 @@ export interface AlbumHighlights<
   mostCommentedStory: HighlightStory<TTimestamp, TRole> | null;
   mostVotedStoryPoll: HighlightStoryPoll<TTimestamp, TRole> | null;
   mostInteractiveUser: HighlightUser<TRole> | null;
-  updated_at: TTimestamp;
 }

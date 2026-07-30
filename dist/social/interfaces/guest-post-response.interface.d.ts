@@ -7,7 +7,6 @@ export interface GuestPostResponse<TTimestamp = string> {
     id: string;
     description: string | null;
     displayAspectRatio: number | null;
-    userId: string;
     albumId: string;
     user: SocialAuthor & {
         albumRole: AlbumMemberRole;
@@ -18,6 +17,5 @@ export interface GuestPostResponse<TTimestamp = string> {
     commentsCount: number;
     isLikedByUser: boolean;
     created_at: TTimestamp;
-    updated_at: TTimestamp;
     album?: GuestPostAlbumSummary;
 }

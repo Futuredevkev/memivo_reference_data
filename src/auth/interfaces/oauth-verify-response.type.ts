@@ -1,10 +1,15 @@
 import { OAuthVerificationIntent } from '../constants';
 import type { AuthTokens } from './auth-tokens.interface';
 
-export type OAuthVerifyResponse<TUser> =
+/**
+ * El `user` NO viaja en la rama de sesión (H-029): el cliente ramifica por
+ * `tokens` / `requires2FA` / `intent`, guarda los tokens y refresca el perfil
+ * con `GET /user/login-user` — `applyOAuthSession` ni siquiera acepta un user.
+ * Serializarlo era mandar PII (email, teléfono, cumpleaños, país) sin lector.
+ */
+export type OAuthVerifyResponse =
   | {
       ok: true;
-      user: TUser;
       tokens: AuthTokens;
     }
   | {

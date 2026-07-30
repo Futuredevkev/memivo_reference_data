@@ -3,7 +3,6 @@ import type { DownloadManifestItemPayload } from './download-manifest-item-paylo
 
 export interface DownloadManifestResponse {
   manifestId: string;
-  status: DownloadManifestStatus;
   expiresAt: string;
   items: DownloadManifestItemPayload[];
 }

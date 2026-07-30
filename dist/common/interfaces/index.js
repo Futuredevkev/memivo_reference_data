@@ -14,7 +14,6 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-__exportStar(require("./block-user-response.interface"), exports);
 __exportStar(require("./blocked-user-summary.interface"), exports);
 __exportStar(require("./blocked-users-list-response.type"), exports);
 __exportStar(require("./hidden-user-ids-response.interface"), exports);
@@ -24,4 +23,3 @@ __exportStar(require("./paginated-response.interface"), exports);
 __exportStar(require("./pagination-meta.interface"), exports);
 __exportStar(require("./pagination-request.interface"), exports);
 __exportStar(require("./sorted-pagination-request.interface"), exports);
-__exportStar(require("./unblock-user-response.interface"), exports);

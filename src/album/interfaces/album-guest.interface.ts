@@ -9,5 +9,4 @@ export interface AlbumGuest<TTimestamp = string> {
   role?: AlbumMemberRole;
   isCreator?: boolean;
   isOrganizer?: boolean;
-  roles?: { id: string; name: string }[];
 }

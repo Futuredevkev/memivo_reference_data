@@ -51,8 +51,6 @@ __exportStar(require("./invited-chat-members-response.interface"), exports);
 __exportStar(require("./manage-chat-member-request.interface"), exports);
 __exportStar(require("./mark-chat-read-request.interface"), exports);
 __exportStar(require("./open-view-once-response.interface"), exports);
-__exportStar(require("./pin-chat-message-response.type"), exports);
-__exportStar(require("./pinned-chat-message-response.interface"), exports);
 __exportStar(require("./send-shared-post-message-request.interface"), exports);
 __exportStar(require("./send-text-message-request.interface"), exports);
 __exportStar(require("./system-message-data.interface"), exports);

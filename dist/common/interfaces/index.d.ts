@@ -1,4 +1,3 @@
-export * from './block-user-response.interface';
 export * from './blocked-user-summary.interface';
 export * from './blocked-users-list-response.type';
 export * from './hidden-user-ids-response.interface';
@@ -8,4 +7,3 @@ export * from './paginated-response.interface';
 export * from './pagination-meta.interface';
 export * from './pagination-request.interface';
 export * from './sorted-pagination-request.interface';
-export * from './unblock-user-response.interface';

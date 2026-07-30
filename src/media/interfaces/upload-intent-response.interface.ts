@@ -2,6 +2,5 @@ import type { UploadIntentFileSignature } from './internal/upload-intent-file-si
 
 export interface UploadIntentResponse {
   uploadId: string;
-  expiresAt: string;
   files: UploadIntentFileSignature[];
 }

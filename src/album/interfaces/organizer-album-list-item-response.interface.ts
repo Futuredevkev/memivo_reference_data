@@ -21,5 +21,4 @@ export interface OrganizerAlbumListItemResponse<TTimestamp = string>
   coverPhotoThumbnailUrl: string | null;
   creatorId: string;
   created_at: TTimestamp;
-  updated_at: TTimestamp;
 }

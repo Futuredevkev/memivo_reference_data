@@ -9,8 +9,6 @@ export interface AlbumActivityEntry<TTimestamp = string> {
     targetType: AlbumActionTargetType;
     targetUserId: string | null;
     targetName: string | null;
-    targetId: string | null;
     detail: AlbumActionDetail | null;
-    correlationId: string | null;
     createdAt: TTimestamp;
 }

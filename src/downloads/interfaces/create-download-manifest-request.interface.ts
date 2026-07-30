@@ -5,5 +5,4 @@ export interface CreateDownloadManifestRequest {
   context: DownloadContext;
   albumId?: string;
   items: CreateDownloadManifestItemRequest[];
-  payload?: Record<string, unknown>;
 }

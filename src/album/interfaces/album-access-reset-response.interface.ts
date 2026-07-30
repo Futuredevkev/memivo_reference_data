@@ -14,6 +14,4 @@ export interface AlbumAccessResetResponse {
   qrCode: string;
   /** URL universal `/join/:qrCode` ya armada, para compartir o pintar el QR. */
   joinUrl: string;
-  /** Cuántos invite-links activos quedaron revocados. Informativo para la UI. */
-  revokedInvites: number;
 }

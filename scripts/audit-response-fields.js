@@ -14,21 +14,44 @@
  * que además es PII; `POST /auth/2fa/generate` renderizaba un PNG data-URI de
  * 4,3 KB que el cliente descarta porque pinta el QR él mismo.
  *
- * Cómo mide. Por cada propiedad de una interface o type de respuesta
- * (`*Response`, `*Payload`, `*Result`, `*Entry`, `*ListItem`), busca el nombre
- * como identificador en `memivo_client/src`. **El selector es permisivo a
- * propósito**: alcanza con que el nombre aparezca escrito. Un falso negativo
- * deja un campo muerto un tiempo más; un falso positivo hace que alguien borre
- * un campo que la app SÍ lee, y eso es una pantalla rota. Los campos que se
- * leen por spread o por acceso dinámico son justamente los que un selector
- * estricto no puede ver.
+ * ── QUÉ SE AUDITA ──────────────────────────────────────────────────────────
  *
- * ⚠️ TODAVÍA NO ESTÁ ENCADENADO EN `npm run quality`, y el motivo importa: hoy
- * reporta 21 campos reales y un gate que arranca en rojo obliga a apagarlo, que
- * es la excusa en blanco que estos gates existen para no repartir. Se enciende
- * cuando el bloque 41 termine de borrarlos —la regla y la migración de los
- * sitios son UN solo trabajo—; el inventario ya medido está en
- * `RESOLUCION-PROGRESO.md`, bloque 41.
+ * El universo NO son los tipos con sufijo de respuesta: son ésos **más todo lo
+ * que se alcanza desde ellos**. La primera versión miraba sólo el sufijo y eso
+ * la dejaba ciega en su propio terreno — medido: 182 tipos con sufijo y **83
+ * más alcanzables sin sufijo**, entre ellos `AlbumGuest` (donde vivían los
+ * roles de plataforma de H-011), `UploadIntentFileSignature` (los seis campos
+ * muertos de H-058) y `PhotoTag`. Un campo no es menos muerto por viajar
+ * anidado, y la forma anidada es justamente donde más se acumula.
+ *
+ * Los `*Request` quedan fuera aunque se los alcance: sus campos los lee el API,
+ * no la app, y exigirles un lector en el cliente sería pedir lo contrario de lo
+ * que son.
+ *
+ * ── CÓMO SE DECIDE QUE ALGUIEN LO LEE ──────────────────────────────────────
+ *
+ * Buscando el nombre como identificador en `memivo_client/src`. **El selector
+ * es permisivo a propósito y esa asimetría es la decisión de diseño del gate**:
+ * un falso negativo deja un campo muerto un tiempo más; un falso positivo hace
+ * que alguien borre un campo que la app SÍ lee, y eso es una pantalla rota. Los
+ * campos que se leen por spread o por acceso dinámico son justamente los que un
+ * selector estricto no puede ver.
+ *
+ * ── EL LÍMITE, ESCRITO PARA QUE NO SE DESCUBRA DOS VECES ────────────────────
+ *
+ * El precio de esa permisividad es que **el gate no puede ver los campos de
+ * NOMBRE COMÚN**: `roles`, `position`, `userId`, `updated_at`, `payload`,
+ * `sizeBytes` aparecen escritos en el cliente sobre OTROS tipos, así que un
+ * match por nombre los da por vivos. El bloque 41 los cerró a mano —salieron de
+ * las fichas, no del auditor— y por eso los dos conjuntos se complementan: el
+ * auditor encontró 21 que ninguna ficha tenía, y las fichas encontraron los de
+ * nombre común que el auditor no puede ver.
+ *
+ * Endurecer el selector para taparlo exige resolución de tipos del lado del
+ * cliente (un `ts.Program` sobre memivo_client con el `dist` instalado), y ese
+ * `dist` hoy no coincide con el `src` de este paquete (ver D-25): el gate
+ * pasaría a reportar según un artefacto desfasado, que es peor que no verlos.
+ * Si algún día el repin se destraba, ése es el camino.
  *
  * Uso: node scripts/audit-response-fields.js [--verbose]
  */
@@ -47,8 +70,9 @@ const clientSrc = process.env.MEMIVO_AUDIT_CLIENT_SRC
 const verbose = process.argv.includes('--verbose');
 
 /**
- * Los sufijos que marcan un tipo que VIAJA de vuelta al cliente. No se auditan
- * los `*Request`: sus campos los lee el API, no la app.
+ * Los sufijos que marcan un tipo que VIAJA de vuelta al cliente. Son las
+ * SEMILLAS del recorrido, no el universo: todo lo que se alcanza desde ellas se
+ * audita igual.
  */
 const RESPONSE_SUFFIXES = [
   'Response',
@@ -63,13 +87,26 @@ const RESPONSE_SUFFIXES = [
 /**
  * Campos que se declaran a propósito sin lector en el cliente. Cada uno dice
  * POR QUÉ: sin el motivo, la excusa es una excusa en blanco y el auditor deja
- * de servir.
+ * de servir. Una entrada cuyo campo ya no existe también es una excusa en
+ * blanco —excusa cualquier campo futuro con ese nombre— así que el gate la
+ * rechaza igual que a la que caducó por tener lector.
  */
+const AUDIT_EVIDENCE =
+  'audit-log: el tipo gobierna también la columna jsonb `album_action_logs.detail`, ' +
+  'que es append-only y sobrevive al borrado del objeto — borrarlo es perder ' +
+  'evidencia, no bytes (única respuesta a «qué se borró» / «cómo se llamaba antes»)';
+
+// Sólo los que el gate REPORTA. `folderIds` y `newName` son de la misma
+// familia y tampoco tienen lector, pero su nombre colisiona con otros tipos del
+// cliente, así que el matcher permisivo los da por vivos y una excusa para
+// ellos caducaría en cada corrida. Su motivo vive en el docblock del tipo, que
+// es donde se lee.
 const INTENTIONAL_WITHOUT_READER = new Map([
-  [
-    'UploadIntentFileSignature.uploadIntentFileId',
-    'lo devuelve el finalize del server contra sí mismo; el cliente sólo lo reenvía',
-  ],
+  ['AlbumActionDetail.folderNames', AUDIT_EVIDENCE],
+  ['AlbumActionDetail.oldRole', AUDIT_EVIDENCE],
+  ['AlbumActionDetail.newRole', AUDIT_EVIDENCE],
+  ['AlbumActionDetail.oldName', AUDIT_EVIDENCE],
+  ['AlbumActionDetail.revokedInvites', AUDIT_EVIDENCE],
 ]);
 
 const collectFiles = (directory, extensions) => {
@@ -93,12 +130,10 @@ const clientText = collectFiles(clientSrc, ['.ts', '.tsx'])
   .map((file) => readFileSync(file, 'utf8'))
   .join('\n');
 
-const clientReads = (field) =>
-  new RegExp(`\\b${field}\\b`).test(clientText);
+const clientReads = (field) => new RegExp(`\\b${field}\\b`).test(clientText);
 
-// --- Los campos que los contratos declaran como respuesta ------------------
-const orphans = [];
-let audited = 0;
+// --- Todas las declaraciones del paquete, por nombre -----------------------
+const declarations = new Map();
 
 for (const file of collectFiles(packageSrc, ['.ts'])) {
   const source = ts.createSourceFile(
@@ -109,48 +144,105 @@ for (const file of collectFiles(packageSrc, ['.ts'])) {
   );
 
   const visit = (node) => {
-    const isResponseShape =
-      (ts.isInterfaceDeclaration(node) || ts.isTypeAliasDeclaration(node)) &&
-      RESPONSE_SUFFIXES.some((suffix) => node.name.text.endsWith(suffix));
-
-    if (isResponseShape) {
-      const members = ts.isInterfaceDeclaration(node)
-        ? node.members
-        : ts.isTypeLiteralNode(node.type)
-          ? node.type.members
-          : [];
-
-      for (const member of members) {
-        if (!ts.isPropertySignature(member) || !member.name) continue;
-        const field = member.name.getText(source);
-        const qualified = `${node.name.text}.${field}`;
-        audited += 1;
-
-        if (INTENTIONAL_WITHOUT_READER.has(qualified)) continue;
-        if (clientReads(field)) continue;
-
-        orphans.push({
-          qualified,
-          where: `${relative(packageRoot, file)}:${
-            source.getLineAndCharacterOfPosition(member.getStart(source)).line + 1
-          }`,
-        });
-      }
+    if (ts.isInterfaceDeclaration(node) || ts.isTypeAliasDeclaration(node)) {
+      declarations.set(node.name.text, { node, source, file });
     }
-
     ts.forEachChild(node, visit);
   };
 
   visit(source);
 }
 
+const membersOf = ({ node }) => {
+  if (ts.isInterfaceDeclaration(node)) return node.members;
+  if (ts.isTypeAliasDeclaration(node) && ts.isTypeLiteralNode(node.type)) {
+    return node.type.members;
+  }
+  return [];
+};
+
+/** Nombres de tipo referenciados en cualquier parte de la declaración. */
+const referencedTypeNames = ({ node, source }) => {
+  const names = new Set();
+  const walk = (current) => {
+    if (ts.isTypeReferenceNode(current)) {
+      names.add(current.typeName.getText(source).split('.')[0]);
+    }
+    if (ts.isExpressionWithTypeArguments(current)) {
+      names.add(current.expression.getText(source).split('.')[0]);
+    }
+    ts.forEachChild(current, walk);
+  };
+  walk(node);
+  return names;
+};
+
+const isRequestShape = (name) => name.endsWith('Request');
+
+// Semillas + cierre transitivo. Un `*Request` alcanzado desde una respuesta
+// sigue sirviendo de puente (puede contener formas que sí viajan), así que se
+// recorre; lo que no se hace es exigirle lector a SUS campos.
+const auditable = new Set(
+  [...declarations.keys()].filter(
+    (name) =>
+      RESPONSE_SUFFIXES.some((suffix) => name.endsWith(suffix)) &&
+      !isRequestShape(name),
+  ),
+);
+const pending = [...auditable];
+
+while (pending.length > 0) {
+  const current = declarations.get(pending.pop());
+  if (!current) continue;
+
+  for (const referenced of referencedTypeNames(current)) {
+    if (!declarations.has(referenced) || auditable.has(referenced)) continue;
+    auditable.add(referenced);
+    pending.push(referenced);
+  }
+}
+
+// --- Los campos que esos tipos declaran ------------------------------------
+const orphans = [];
+const auditedFields = new Set();
+
+for (const name of [...auditable].sort()) {
+  if (isRequestShape(name)) continue;
+  const declaration = declarations.get(name);
+
+  for (const member of membersOf(declaration)) {
+    if (!ts.isPropertySignature(member) || !member.name) continue;
+    const field = member.name.getText(declaration.source);
+    const qualified = `${name}.${field}`;
+    auditedFields.add(qualified);
+
+    if (INTENTIONAL_WITHOUT_READER.has(qualified)) continue;
+    if (clientReads(field)) continue;
+
+    orphans.push({
+      qualified,
+      where: `${relative(packageRoot, declaration.file)}:${
+        declaration.source.getLineAndCharacterOfPosition(
+          member.getStart(declaration.source),
+        ).line + 1
+      }`,
+    });
+  }
+}
+
 // --- Las excusas tienen que ganarse el lugar en cada corrida ---------------
-const staleExcuses = [...INTENTIONAL_WITHOUT_READER.keys()].filter((qualified) => {
-  const field = qualified.split('.')[1];
-  return clientReads(field);
-});
+const staleExcuses = [...INTENTIONAL_WITHOUT_READER.keys()].filter(
+  (qualified) => clientReads(qualified.split('.')[1]),
+);
+
+const phantomExcuses = [...INTENTIONAL_WITHOUT_READER.keys()].filter(
+  (qualified) => !auditedFields.has(qualified),
+);
 
 if (verbose) {
+  process.stdout.write(
+    `audit:response-fields: ${auditable.size} tipos alcanzables desde una respuesta\n`,
+  );
   for (const orphan of orphans) {
     process.stdout.write(`  · ${orphan.qualified} (${orphan.where})\n`);
   }
@@ -161,6 +253,15 @@ if (staleExcuses.length > 0) {
     '\nExcusas de INTENTIONAL_WITHOUT_READER que ya no aplican (el cliente SÍ lee el campo):\n',
   );
   for (const excuse of staleExcuses) process.stderr.write(`  ✗ ${excuse}\n`);
+  process.exit(1);
+}
+
+if (phantomExcuses.length > 0) {
+  process.stderr.write(
+    '\nExcusas de INTENTIONAL_WITHOUT_READER para campos que ya no existen\n' +
+      '(una excusa sin campo excusa cualquier campo futuro con ese nombre):\n',
+  );
+  for (const excuse of phantomExcuses) process.stderr.write(`  ✗ ${excuse}\n`);
   process.exit(1);
 }
 
@@ -179,5 +280,6 @@ if (orphans.length > 0) {
 }
 
 process.stdout.write(
-  `audit:response-fields: ${audited} campos de respuesta, todos con lector.\n`,
+  `audit:response-fields: ${auditedFields.size} campos de respuesta en ` +
+    `${auditable.size} tipos, todos con lector.\n`,
 );

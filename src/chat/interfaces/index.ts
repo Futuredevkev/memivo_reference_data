@@ -35,8 +35,6 @@ export * from './invited-chat-members-response.interface';
 export * from './manage-chat-member-request.interface';
 export * from './mark-chat-read-request.interface';
 export * from './open-view-once-response.interface';
-export * from './pin-chat-message-response.type';
-export * from './pinned-chat-message-response.interface';
 export * from './send-shared-post-message-request.interface';
 export * from './send-text-message-request.interface';
 export * from './system-message-data.interface';

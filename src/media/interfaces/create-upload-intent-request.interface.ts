@@ -7,6 +7,4 @@ export interface CreateUploadIntentRequest {
   albumId?: string;
   groupId?: string;
   files: CreateUploadIntentFileRequest[];
-  payloadHash?: string;
-  payload?: FinalizeUploadPayload;
 }

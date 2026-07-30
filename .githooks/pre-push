@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Corre los tres gates del SSOT antes de dejar pushear.
+# Corre los cuatro gates del SSOT antes de dejar pushear.
 #
 # Van EN SERIE a propósito: son los que leen el `src/` de los tres repos, y
 # correr dos a la vez con Docker arriba es exactamente cómo se consiguen
@@ -18,6 +18,9 @@ npm run audit:consumers
 
 echo "pre-push: audit:transport"
 npm run audit:transport
+
+echo "pre-push: audit:response-fields"
+npm run audit:response-fields
 
 echo "pre-push: test"
 npm test

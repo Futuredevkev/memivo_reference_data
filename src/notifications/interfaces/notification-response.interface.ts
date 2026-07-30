@@ -5,8 +5,6 @@ import type { NotificationMetadata } from './notification-metadata.type';
 export interface NotificationResponse<TTimestamp = string> {
   id: string;
   type: NotificationType;
-  recipientId: string;
-  actorId?: string | null;
   resourceId: string;
   isRead: boolean;
   metadata: NotificationMetadata | null;

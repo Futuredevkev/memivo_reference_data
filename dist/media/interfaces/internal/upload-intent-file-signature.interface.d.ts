@@ -1,13 +1,21 @@
-import type { ResourceType } from '../../enums';
-import type { CloudinaryUploadResourceType } from '../cloudinary-upload-resource-type.type';
+/**
+ * Lo que el cliente necesita para subirle UN archivo a Cloudinary por su
+ * cuenta: la firma, sus parámetros y a dónde mandarlo. `clientFileId` es lo
+ * único que existe para el matching contra la selección local.
+ *
+ * Se fueron seis campos que el cliente no leía (H-058): `publicId`,
+ * `resourceType`, `memivoResourceType`, `cloudName` —el subdominio ya viene
+ * dentro de `uploadUrl`— y, el peor, `fileId`. Ése no era sólo peso: era una
+ * trampa. Convivía con los `fileIds` de los finalize bajo un nombre casi igual
+ * y el MISMO tipo `string`, pero es el id de la fila `upload_intent_files` (que
+ * existe desde el momento cero) y no el de un `File` (que recién existe después
+ * del complete). Armar `finalizeStory({ fileIds: [intent.files[0].fileId] })`
+ * TIPABA PERFECTO y devolvía un 400 «Uploaded files do not match the upload
+ * intent» sin la menor pista de cuál era el problema.
+ */
 export interface UploadIntentFileSignature {
     clientFileId: string;
-    fileId: string;
-    publicId: string;
     uploadPublicId: string;
-    resourceType: CloudinaryUploadResourceType;
-    memivoResourceType: ResourceType;
-    cloudName: string;
     apiKey: string;
     timestamp: number;
     signature: string;

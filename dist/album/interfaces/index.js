@@ -20,7 +20,6 @@ __exportStar(require("./album-action-detail.interface"), exports);
 __exportStar(require("./album-activity-actor.interface"), exports);
 __exportStar(require("./album-activity-entry.interface"), exports);
 __exportStar(require("./album-activity-query-request.interface"), exports);
-__exportStar(require("./album-delete-response.interface"), exports);
 __exportStar(require("./album-guest.interface"), exports);
 __exportStar(require("./album-access-reset-response.interface"), exports);
 __exportStar(require("./album-invite-album-preview-response.interface"), exports);
@@ -48,7 +47,6 @@ __exportStar(require("./get-organizer-albums-query-request.interface"), exports)
 __exportStar(require("./manage-album-participants-request.interface"), exports);
 __exportStar(require("./organizer-album-list-item-response.interface"), exports);
 __exportStar(require("./organizer-album-response.interface"), exports);
-__exportStar(require("./participant-mutation-response.interface"), exports);
 __exportStar(require("./redeem-album-invite-request.interface"), exports);
 __exportStar(require("./scan-qr-request.interface"), exports);
 __exportStar(require("./scan-qr-response.type"), exports);

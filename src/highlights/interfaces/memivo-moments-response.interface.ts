@@ -6,5 +6,4 @@ export interface MemivoMomentsResponse<
   TRole extends string = AlbumMemberRole,
 > {
   moments: MemivoMoment<TRole>[];
-  updatedAt: TTimestamp;
 }

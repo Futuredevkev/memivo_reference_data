@@ -88,6 +88,9 @@
     "audit:consumers": "node scripts/audit-consumers.js",
     "audit:consumers:verbose": "node scripts/audit-consumers.js --verbose",
     "audit:transport": "node scripts/audit-transport-surfaces.js",
+    "audit:response-fields": "node scripts/audit-response-fields.js",
+    "audit:response-fields:verbose": "node scripts/audit-response-fields.js --verbose",
+    "quality": "npm run audit:consumers && npm run audit:transport && npm run audit:response-fields && npm test",
     "test": "node --test"
   },
   "devDependencies": {

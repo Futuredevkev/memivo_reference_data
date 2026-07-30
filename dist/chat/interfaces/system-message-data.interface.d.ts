@@ -3,5 +3,4 @@ export interface SystemMessageData {
     targetUserName?: string;
     actorId?: string;
     actorName?: string;
-    pinnedMessageId?: string;
 }
