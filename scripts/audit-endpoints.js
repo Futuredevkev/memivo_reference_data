@@ -38,6 +38,9 @@ const roots = {
     ? resolve(process.env.MEMIVO_AUDIT_CLIENT_SRC)
     : resolve(workspaceRoot, 'memivo_client', 'src'),
 };
+const moderationReadme = process.env.MEMIVO_AUDIT_MODERATION_README
+  ? resolve(process.env.MEMIVO_AUDIT_MODERATION_README)
+  : join(roots.api, 'moderation', 'README.md');
 
 /**
  * Huérfanos LEGÍTIMOS: no los llama la app y está bien. Clave: `MÉTODO /path`
@@ -111,6 +114,42 @@ const collectEndpoints = () => {
 };
 
 /**
+ * Rutas operativas que el manual de moderación le entrega a quien trabaja con
+ * Postman. Un typo acá no es prosa desactualizada: es una instrucción que da
+ * 404 en un incidente. Se extraen únicamente líneas HTTP explícitas, se quita
+ * el prefijo global de la app y se comparan método + esqueleto contra los
+ * decorators reales.
+ */
+const collectDocumentedModerationEndpoints = () => {
+  if (!existsSync(moderationReadme)) {
+    return {
+      missingReadme: true,
+      endpoints: [],
+    };
+  }
+
+  const source = readFileSync(moderationReadme, 'utf8');
+  const documentedByKey = new Map();
+  const routeLine = /^(GET|POST|PUT|PATCH|DELETE)\s+(\S+)/gm;
+  let match;
+  while ((match = routeLine.exec(source)) !== null) {
+    const withoutQuery = match[2].split('?')[0];
+    const path = withoutQuery.replace(/^\/api\/v1(?=\/|$)/, '') || '/';
+    const endpoint = {
+      method: match[1],
+      path,
+      skeleton: skeleton(path),
+    };
+    documentedByKey.set(`${endpoint.method} ${endpoint.skeleton}`, endpoint);
+  }
+
+  return {
+    missingReadme: false,
+    endpoints: [...documentedByKey.values()],
+  };
+};
+
+/**
  * Fragmentos de ruta que el cliente puede producir.
  *
  * PERMISIVO A PROPÓSITO, y la asimetría es la razón: un falso negativo deja un
@@ -158,6 +197,7 @@ const staticPrefix = (path) => {
 
 const endpoints = collectEndpoints();
 const clientCalls = collectClientCalls();
+const documentedModeration = collectDocumentedModerationEndpoints();
 
 const orphans = [];
 const clientPrefixes = [...clientCalls];
@@ -173,6 +213,15 @@ for (const endpoint of endpoints) {
 const declaredKeys = new Set(Object.keys(INTENTIONAL_WITHOUT_CLIENT));
 const liveKeys = new Set(endpoints.map((e) => `${e.method} ${e.path}`));
 const staleExcuses = [...declaredKeys].filter((key) => !liveKeys.has(key));
+const liveSkeletonKeys = new Set(
+  endpoints.map((endpoint) => `${endpoint.method} ${endpoint.skeleton}`),
+);
+const staleModerationDocs = documentedModeration.endpoints
+  .filter(
+    (endpoint) =>
+      !liveSkeletonKeys.has(`${endpoint.method} ${endpoint.skeleton}`),
+  )
+  .map((endpoint) => `${endpoint.method} ${endpoint.path}`);
 
 const report = {
   endpoints: endpoints.length,
@@ -180,13 +229,27 @@ const report = {
   intentionalWithoutClient: declaredKeys.size,
   orphans,
   staleExcuses,
+  documentedModerationEndpoints: documentedModeration.endpoints.length,
+  moderationReadmeMissing: documentedModeration.missingReadme,
+  staleModerationDocs,
 };
 
 if (process.argv.includes('--verbose')) {
   console.log(JSON.stringify(report, null, 2));
 }
 
-if (orphans.length > 0) {
+if (documentedModeration.missingReadme) {
+  console.error(
+    `audit:endpoints: no existe el manual de moderación esperado en ${moderationReadme}.`,
+  );
+  process.exitCode = 1;
+} else if (staleModerationDocs.length > 0) {
+  console.error(
+    `audit:endpoints: ${staleModerationDocs.length} ruta(s) del manual de moderación no existen:\n  ${staleModerationDocs.join('\n  ')}\n\n` +
+      'Corregí el manual o restaurá el decorator: una instrucción operativa que da 404 no puede quedar publicada.',
+  );
+  process.exitCode = 1;
+} else if (orphans.length > 0) {
   console.error(
     `audit:endpoints: ${orphans.length} endpoint(s) sin consumidor en el cliente:\n  ${orphans.join('\n  ')}\n\n` +
       'Cada uno es superficie HTTP autenticada que hay que revisar en cada auditoría\n' +
@@ -204,6 +267,7 @@ if (orphans.length > 0) {
 } else {
   console.log(
     `audit:endpoints: ${endpoints.length} endpoints, todos con consumidor ` +
-      `(${declaredKeys.size} huérfanos legítimos declarados).`,
+      `(${declaredKeys.size} huérfanos legítimos declarados); ` +
+      `${documentedModeration.endpoints.length} rutas operativas de moderación verificadas.`,
   );
 }
