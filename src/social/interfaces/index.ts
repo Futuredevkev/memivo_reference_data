@@ -14,7 +14,6 @@ export * from './guest-post-album-summary.interface';
 export * from './guest-post-operation-response.interface';
 export * from './guest-post-photo.interface';
 export * from './guest-post-response.interface';
-export * from './photo-basic-info.interface';
 export * from './photo-delete-response.interface';
 export * from './photo-tag.interface';
 export * from './professional-photo-list-item.interface';

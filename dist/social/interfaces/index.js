@@ -30,7 +30,6 @@ __exportStar(require("./guest-post-album-summary.interface"), exports);
 __exportStar(require("./guest-post-operation-response.interface"), exports);
 __exportStar(require("./guest-post-photo.interface"), exports);
 __exportStar(require("./guest-post-response.interface"), exports);
-__exportStar(require("./photo-basic-info.interface"), exports);
 __exportStar(require("./photo-delete-response.interface"), exports);
 __exportStar(require("./photo-tag.interface"), exports);
 __exportStar(require("./professional-photo-list-item.interface"), exports);
