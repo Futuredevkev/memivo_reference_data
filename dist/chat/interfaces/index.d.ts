@@ -1,4 +1,3 @@
-export * from './chat-file-download-response.interface';
 export * from './chat-group-last-message.interface';
 export * from './chat-group-response.interface';
 export * from './chat-group-update.type';

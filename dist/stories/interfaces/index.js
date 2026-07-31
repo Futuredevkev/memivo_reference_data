@@ -14,7 +14,6 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-__exportStar(require("./add-story-tag-request.interface"), exports);
 __exportStar(require("./album-stories-response.interface"), exports);
 __exportStar(require("./archived-stories-query-request.interface"), exports);
 __exportStar(require("./create-story-poll-request.interface"), exports);
@@ -25,4 +24,3 @@ __exportStar(require("./story-comment-response.interface"), exports);
 __exportStar(require("./story-file-info.interface"), exports);
 __exportStar(require("./story-response.interface"), exports);
 __exportStar(require("./story-tag-info.interface"), exports);
-__exportStar(require("./story-tag-response.interface"), exports);

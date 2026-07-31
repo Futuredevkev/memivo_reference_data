@@ -43,6 +43,5 @@ export * from './user-response.interface';
 export * from './user-role.interface';
 export * from './validate-email-request.interface';
 export * from './validate-email-response.interface';
-export * from './verify-access-response.interface';
 export * from './verify-login-code-request.interface';
 export * from './verify-two-factor-login-request.interface';

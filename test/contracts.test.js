@@ -23,10 +23,16 @@ const social = require('../dist/social/index.js');
 // es el comportamiento idempotente correcto y el que el bloque 7 consagró. El
 // código estaba declarado y traducido a tres idiomas para una condición que el
 // usuario no podía ver nunca.
-test('el catálogo consolidado expone 194 códigos de error únicos', () => {
+// Bloque 42: −2 más. `CHAT_MEMBER_ALREADY_EXISTS` y `STORY_FILE_REQUIRED` los
+// emitían los dos validators que ese bloque borró por no tener llamador, y sus
+// condiciones ya están cubiertas por otro mecanismo: `inviteMembers` FILTRA a
+// los que ya son miembros en batch (invitar es idempotente, no tira 409) y el
+// archivo de la historia llega ya resuelto por el finalize del upload intent.
+// Ninguna de las dos podía llegarle al usuario. Se fueron con sus 3 copias.
+test('el catálogo consolidado expone 192 códigos de error únicos', () => {
   const values = Object.values(errors.ErrorCode);
 
-  assert.equal(values.length, 194);
+  assert.equal(values.length, 192);
   assert.equal(new Set(values).size, values.length);
 });
 

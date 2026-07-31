@@ -92,7 +92,6 @@ export declare const ErrorCode: {
     readonly STORY_EXPIRED: StoryCommentErrorCode.STORY_EXPIRED;
     readonly STORY_NOT_FOUND: StoryErrorCode.STORY_NOT_FOUND;
     readonly STORY_FORBIDDEN: StoryErrorCode.STORY_FORBIDDEN;
-    readonly STORY_FILE_REQUIRED: StoryErrorCode.STORY_FILE_REQUIRED;
     readonly STORY_VIDEO_TOO_LONG: StoryErrorCode.STORY_VIDEO_TOO_LONG;
     readonly STORY_DELETE_FAILED: StoryErrorCode.STORY_DELETE_FAILED;
     readonly STORY_VIEW_FAILED: StoryErrorCode.STORY_VIEW_FAILED;
@@ -136,7 +135,6 @@ export declare const ErrorCode: {
     readonly CHAT_MEMBER_NOT_FOUND: ChatErrorCode.CHAT_MEMBER_NOT_FOUND;
     readonly CHAT_MEMBER_INVALID_STATUS: ChatErrorCode.CHAT_MEMBER_INVALID_STATUS;
     readonly CHAT_ADMIN_REQUIRED: ChatErrorCode.CHAT_ADMIN_REQUIRED;
-    readonly CHAT_MEMBER_ALREADY_EXISTS: ChatErrorCode.CHAT_MEMBER_ALREADY_EXISTS;
     readonly CHAT_MEMBER_ALREADY_ADMIN: ChatErrorCode.CHAT_MEMBER_ALREADY_ADMIN;
     readonly CHAT_MEMBER_NOT_ADMIN: ChatErrorCode.CHAT_MEMBER_NOT_ADMIN;
     readonly CHAT_CANNOT_KICK_SELF: ChatErrorCode.CHAT_CANNOT_KICK_SELF;

@@ -346,9 +346,22 @@ function evaluatePair(left, right) {
   // campos (`{ id; url }`, `{ downloadUrl; fileName }`) chocan por casualidad entre
   // dominios distintos y ahogarían la señal. Un VALOR literal idéntico (catálogos,
   // límites) sí prueba duplicación aunque el nombre difiera.
-  const substantial = Array.isArray(left.signature)
-    ? left.signature.length >= 3
-    : typeof left.signature === 'object' || String(left.signature).length >= 6;
+  //
+  // ⚠️ Una firma AUSENTE no es evidencia de nada, y esto no era obvio: con
+  // `left.signature === null`, `typeof null === 'object'` daba `substantial =
+  // true`, y como `stable(null) === stable(null)` también daba `sameSignature`,
+  // el par se formaba entre dos `const` module-private cualesquiera. Medido: un
+  // solo `const current` del api producía DIECISIETE riesgos contra constantes
+  // sueltas del cliente (`onSessionExpired`, `toastTimer`, `loadedIndex`…), y
+  // el gate venía en ROJO desde el bloque 39 sin que nadie lo viera, porque las
+  // corridas leían el JSON del reporte y no el exit code.
+  const substantial =
+    left.signature == null
+      ? false
+      : Array.isArray(left.signature)
+        ? left.signature.length >= 3
+        : typeof left.signature === 'object' ||
+          String(left.signature).length >= 6;
   if (!sameName && !(sameSignature && substantial) && !dtoCandidate) return undefined;
 
   return { sameName, sameSignature, dtoCandidate, left, right };

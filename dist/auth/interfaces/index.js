@@ -59,6 +59,5 @@ __exportStar(require("./user-response.interface"), exports);
 __exportStar(require("./user-role.interface"), exports);
 __exportStar(require("./validate-email-request.interface"), exports);
 __exportStar(require("./validate-email-response.interface"), exports);
-__exportStar(require("./verify-access-response.interface"), exports);
 __exportStar(require("./verify-login-code-request.interface"), exports);
 __exportStar(require("./verify-two-factor-login-request.interface"), exports);

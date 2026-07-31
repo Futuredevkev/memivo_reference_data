@@ -1,6 +1,4 @@
 export * from './add-photo-tag-request.interface';
-export * from './check-likes-status-request.interface';
-export * from './check-likes-status-response.interface';
 export * from './comment-created-response.interface';
 export * from './comment-context-meta.interface';
 export * from './comment-context-response.interface';
@@ -19,7 +17,6 @@ export * from './guest-post-response.interface';
 export * from './photo-basic-info.interface';
 export * from './photo-delete-response.interface';
 export * from './photo-tag.interface';
-export * from './post-liker-response.interface';
 export * from './professional-photo-list-item.interface';
 export * from './professional-photo-upload-result.interface';
 export * from './reaction-batch-request.interface';

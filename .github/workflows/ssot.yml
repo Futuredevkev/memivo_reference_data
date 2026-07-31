@@ -75,6 +75,10 @@ jobs:
         working-directory: memivo-reference-data
         run: npm run audit:response-fields
 
+      - name: audit:endpoints
+        working-directory: memivo-reference-data
+        run: npm run audit:endpoints
+
       - name: test
         working-directory: memivo-reference-data
         run: npm test

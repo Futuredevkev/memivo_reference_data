@@ -15,8 +15,6 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./add-photo-tag-request.interface"), exports);
-__exportStar(require("./check-likes-status-request.interface"), exports);
-__exportStar(require("./check-likes-status-response.interface"), exports);
 __exportStar(require("./comment-created-response.interface"), exports);
 __exportStar(require("./comment-context-meta.interface"), exports);
 __exportStar(require("./comment-context-response.interface"), exports);
@@ -35,7 +33,6 @@ __exportStar(require("./guest-post-response.interface"), exports);
 __exportStar(require("./photo-basic-info.interface"), exports);
 __exportStar(require("./photo-delete-response.interface"), exports);
 __exportStar(require("./photo-tag.interface"), exports);
-__exportStar(require("./post-liker-response.interface"), exports);
 __exportStar(require("./professional-photo-list-item.interface"), exports);
 __exportStar(require("./professional-photo-upload-result.interface"), exports);
 __exportStar(require("./reaction-batch-request.interface"), exports);

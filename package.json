@@ -1,6 +1,6 @@
 {
   "name": "@memivo/contracts",
-  "version": "4.21.0",
+  "version": "4.22.0",
   "description": "Contratos, catálogos y reglas públicas compartidas por memivo_client y memivo_api.",
   "license": "UNLICENSED",
   "main": "dist/index.js",
@@ -89,8 +89,10 @@
     "audit:consumers:verbose": "node scripts/audit-consumers.js --verbose",
     "audit:transport": "node scripts/audit-transport-surfaces.js",
     "audit:response-fields": "node scripts/audit-response-fields.js",
+    "audit:endpoints": "node scripts/audit-endpoints.js",
+    "audit:endpoints:verbose": "node scripts/audit-endpoints.js --verbose",
     "audit:response-fields:verbose": "node scripts/audit-response-fields.js --verbose",
-    "quality": "npm run audit:consumers && npm run audit:transport && npm run audit:response-fields && npm test",
+    "quality": "npm run audit:consumers && npm run audit:transport && npm run audit:response-fields && npm run audit:endpoints && npm test",
     "test": "node --test"
   },
   "devDependencies": {

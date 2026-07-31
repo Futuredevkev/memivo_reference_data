@@ -1,4 +1,3 @@
-export * from './add-story-tag-request.interface';
 export * from './album-stories-response.interface';
 export * from './archived-stories-query-request.interface';
 export * from './create-story-poll-request.interface';
@@ -9,4 +8,3 @@ export * from './story-comment-response.interface';
 export * from './story-file-info.interface';
 export * from './story-response.interface';
 export * from './story-tag-info.interface';
-export * from './story-tag-response.interface';
