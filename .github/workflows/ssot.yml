@@ -25,7 +25,7 @@ name: SSOT gates
 on:
   pull_request:
   push:
-    branches: [main, 'v*']
+    branches: [main, 'v*', 'resolucion-*']
 
 permissions:
   contents: read
@@ -53,6 +53,19 @@ jobs:
           repository: Futuredevkev/memivo_client
           token: ${{ secrets.MEMIVO_REPOS_TOKEN }}
           path: memivo_client
+
+      - name: Align consumers to the audited branch when available
+        env:
+          AUDIT_REF: ${{ github.head_ref || github.ref_name }}
+        run: |
+          for repository in memivo_api memivo_client; do
+            if git -C "$repository" ls-remote --exit-code origin "refs/heads/$AUDIT_REF"; then
+              git -C "$repository" fetch --depth=1 origin "$AUDIT_REF"
+              git -C "$repository" checkout --detach FETCH_HEAD
+            else
+              echo "::notice::$repository has no $AUDIT_REF branch; auditing its default branch"
+            fi
+          done
 
       - uses: actions/setup-node@v4
         with:
