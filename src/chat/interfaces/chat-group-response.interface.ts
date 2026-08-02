@@ -7,6 +7,8 @@ export interface ChatGroupResponse<TTimestamp = string> {
   name?: string | null;
   creatorId: string;
   created_at: TTimestamp;
+  /** Canonical activity key used by the server cursor and every client sort. */
+  lastMessageAt: TTimestamp;
   unreadCount: number;
   avatarUrl?: string | null;
   avatarThumbnailUrl?: string | null;
