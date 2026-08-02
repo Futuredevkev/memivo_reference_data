@@ -7,6 +7,7 @@ export * from './album-title-min.constant';
 export * from './batch-min-items.constant';
 export * from './chat-caption-max.constant';
 export * from './chat-message-max.constant';
+export * from './client-temp-id-max-length.constant';
 export * from './comment-max.constant';
 export * from './folder-name-max.constant';
 export * from './generic-batch-max.constant';

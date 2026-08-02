@@ -9,11 +9,20 @@
  * `oldName` el único del nombre anterior de una que se renombró; el nombre
  * actual ya no existe en ningún lado.
  *
- * Los siete campos sin lector están declarados en
- * `INTENTIONAL_WITHOUT_READER` del auditor con este motivo. La UI arma su
- * oración con `photoCount`, `folderCount`, `archived`, `changedFields` e
- * `isVisible`; el resto existe para la pregunta forense, que se contesta
- * contra la base.
+ * Son SIETE los campos sin lector: `folderIds`, `folderNames`, `oldRole`,
+ * `newRole`, `oldName`, `newName` y `revokedInvites`.
+ *
+ * CINCO están declarados en `INTENTIONAL_WITHOUT_READER` del auditor con este
+ * motivo. Los otros dos —`folderIds` y `newName`— NO están, y es deliberado: su
+ * nombre colisiona con otros tipos del cliente, así que el matcher permisivo del
+ * auditor los da por vivos y nunca los reporta; una excusa para ellos sería
+ * configuración muerta que caduca en cada corrida. Su motivo es éste, y este
+ * docblock es el único lugar donde se lee — está dicho también en
+ * `scripts/audit-response-fields.js`, arriba del mapa.
+ *
+ * La UI arma su oración con `photoCount`, `folderCount`, `archived`,
+ * `changedFields` e `isVisible`; el resto existe para la pregunta forense, que
+ * se contesta contra la base.
  */
 export interface AlbumActionDetail {
     photoCount?: number;

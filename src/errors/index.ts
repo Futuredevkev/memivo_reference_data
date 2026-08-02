@@ -49,3 +49,4 @@ export {
 };
 
 export * from './error-code.constant';
+export * from './api-error-envelope.interface';

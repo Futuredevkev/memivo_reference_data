@@ -53,6 +53,22 @@
  * pasaría a reportar según un artefacto desfasado, que es peor que no verlos.
  * Si algún día el repin se destraba, ése es el camino.
  *
+ * ── OTRO LÍMITE, EL DE LOS 4 AUDITORES DEL PAQUETE ──────────────────────────
+ *
+ * Este auditor arma su universo por SUFIJO de nombre de tipo (`Response`,
+ * `Payload`, `Result`, …) más el cierre transitivo desde ahí — nunca abre un
+ * `.entity.ts` ni compara contra la fila que Postgres devuelve. Lo mismo vale
+ * para `audit-consumers.js` (compara símbolos declarados, incluida su forma,
+ * pero sólo entre api/cliente/paquete) y para `audit-transport-surfaces.js`
+ * y `audit-endpoints.js` (cruzan rutas y decoradores, no shapes). Un campo
+ * que un service arma A MANO en un objeto literal, cuyo controller NO anota
+ * el tipo de retorno (`Promise<XResponse>` explícito), puede driftear sin que
+ * ninguno de los 4 lo vea: la protección estructural para ese caso la da
+ * `tsc` del api contra la anotación, no este paquete. Documentado acá, no
+ * arreglado (severidad baja, hallazgo de la lente `contratos-consistencia`):
+ * evaluar si vale la pena que `audit-endpoints.js` exija tipo de retorno
+ * anotado en todo handler es tarea de otro bloque.
+ *
  * Uso: node scripts/audit-response-fields.js [--verbose]
  */
 const { existsSync, readFileSync, readdirSync } = require('node:fs');

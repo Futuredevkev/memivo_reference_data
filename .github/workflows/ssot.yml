@@ -21,11 +21,39 @@ name: SSOT gates
 # Mientras el secret no exista, este workflow va a estar en rojo — es
 # deliberado: un gate cross-repo que no puede leer los otros dos repos no
 # está pasando, está ciego.
+#
+# COBERTURA EN LAS DOS DIRECCIONES (H-169): el `push:` de abajo sólo reacciona
+# cuando el que se mueve es CONTRATOS. Un push a una branch de `memivo_api` o
+# `memivo_client` no dispara nada acá por sí solo, así que un cambio que rompa
+# el SSOT en cualquiera de los dos consumidores viajaría sin gate hasta que
+# alguien volviera a tocar contratos — que es la dirección que MENOS se mueve.
+# El `workflow_dispatch` de abajo cierra ese círculo, y desde 2026-08-02 los dos
+# consumidores lo usan: el último paso de `quality.yml` en api y en cliente
+# corre `gh workflow run ssot.yml -f audit_ref=<su rama>` y después espera el
+# resultado con `gh run watch --exit-status`, así que un SSOT roto por el lado
+# del consumidor pone en rojo la CI DEL CONSUMIDOR, que es donde se está
+# mirando en ese momento.
+#
+# Ese paso reemplazó a un `npm --prefix ../memivo-reference-data run
+# audit:consumers` encadenado al script `quality` de los dos repos: andaba en la
+# máquina de desarrollo, donde los tres son hermanos en disco, y fallaba con
+# exit 127 en TODA corrida de CI porque ese directorio no existe en un runner
+# con un solo checkout. Además cubría 1 de los 4 auditores.
 
 on:
   pull_request:
   push:
     branches: [main, 'v*', 'resolucion-*']
+  # Input para que `memivo_api`/`memivo_client` disparen este gate desde SU
+  # propio `quality.yml` cuando ellos son los que se movieron (ver nota de
+  # arriba). Si no llega `audit_ref`, el paso de abajo usa `github.ref_name`
+  # de este repo, igual que el disparo por `push`.
+  workflow_dispatch:
+    inputs:
+      audit_ref:
+        description: 'Branch del repo consumidor que disparó este gate (api o cliente).'
+        required: false
+        type: string
 
 permissions:
   contents: read
@@ -56,7 +84,7 @@ jobs:
 
       - name: Align consumers to the audited branch when available
         env:
-          AUDIT_REF: ${{ github.head_ref || github.ref_name }}
+          AUDIT_REF: ${{ inputs.audit_ref || github.head_ref || github.ref_name }}
         run: |
           for repository in memivo_api memivo_client; do
             if git -C "$repository" ls-remote --exit-code origin "refs/heads/$AUDIT_REF"; then

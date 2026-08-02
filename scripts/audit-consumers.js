@@ -53,17 +53,17 @@ const intentionalBoundaries = new Map([
  * Duplicados REALES cuyo arreglo vive en el repo consumidor: el paquete no puede
  * cerrarlos, así que no tumban su gate, pero quedan listados con el archivo y el
  * contrato que deben adoptar. Al adoptarlo, la entrada deja de matchear y el reporte
- * la muestra en `resolvedConsumerAdoption` para que se borre de esta tabla.
+ * la muestra en `resolvedConsumerAdoption` — y el gate FALLA mientras siga ahí (ver el
+ * chequeo de `crossRepo.pending.length` más abajo), igual que `resolvedBoundaries`.
+ *
+ * Antes esta lista era sólo informativa (`pendingConsumerAdoption` no tumbaba el
+ * gate) y los 7 duplicados que nombraba sobrevivieron dos bloques enteros sin que
+ * nada lo forzara. Una lista de deuda que no rompe nada es una lista que crece: por
+ * eso ahora, en cuanto un consumidor adopta el contrato, ESTA entrada se borra en el
+ * mismo commit — dejarla puesta con la migración ya hecha es la misma excusa en
+ * blanco que ya se describe para `intentionalBoundaries`.
  */
-const pendingConsumerAdoption = new Map([
-  ['api:const:MESSAGE_CONTEXT_DEFAULT_LIMIT', 'chat/constants/chat-message: importar MESSAGE_CONTEXT_DEFAULT_LIMIT de @memivo/contracts/chat en vez de redeclarar el 40.'],
-  ['api:const:CLOUDINARY_RESOURCE_TYPES', 'cloudinary/constants/cloudinary: usar CLOUDINARY_UPLOAD_RESOURCE_TYPES de @memivo/contracts/media.'],
-  ['api:type:MediaFilterId', 'cloudinary/types: usar el MediaFilterId que su propio barrel de constantes ya re-exporta de @memivo/contracts/media.'],
-  ['client:type:AuthTokens', 'store/auth/authSession: usar AuthTokens de @memivo/contracts/auth.'],
-  ['client:interface:BlockedUserSummary', 'types/block: usar BlockedUserSummary de @memivo/contracts; la copia local relaja name/lastName/avatarUrl a opcionales y esconde si el API emite null.'],
-  ['client:interface:BlockedUsersListResponse', 'types/block: usar BlockedUsersListResponse de @memivo/contracts (PaginatedResponse compartido).'],
-  ['client:const:VIDEO_EXTENSIONS', 'utils/file-utils: usar ALLOWED_VIDEO_FORMATS de @memivo/contracts/media.'],
-]);
+const pendingConsumerAdoption = new Map([]);
 
 const intentionalLocalErrorCodes = new Map([
   ['client:UPLOAD_INTERRUPTED', 'Estado local persistido del pipeline; nunca cruza la API.'],
@@ -844,6 +844,12 @@ if (
   apiUnusedErrorCodes.length ||
   literalErrorCodes.length ||
   crossRepo.risks.length ||
+  // Un duplicado real que el propio auditor ya nombró y quedó vivo: la lista existe
+  // para llevarle la tarea al consumidor, no para acumular deuda que nadie mira. Antes
+  // `pendingConsumerAdoption` era sólo informativa y sus 7 entradas sobrevivieron dos
+  // bloques enteros sin tumbar nada — el mismo defecto que `resolvedBoundaries` corrige
+  // del otro lado del mapa.
+  crossRepo.pending.length ||
   // Una frontera intencional que ya no matchea nada es una excusa en blanco: la clave
   // no lleva lado ni firma, así que sigue tapando cualquier declaración futura con ese
   // nombre. Es más estricto que `resolvedConsumerAdoption` —que sólo informa— a
