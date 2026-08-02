@@ -1,4 +1,6 @@
 import { ALBUM_DESCRIPTION_MAX } from './album-description-max.constant';
+import { ALBUM_ACCESS_PASSWORD_MAX } from './album-access-password-max.constant';
+import { ALBUM_ACCESS_PASSWORD_MIN } from './album-access-password-min.constant';
 import { ALBUM_MEMBER_BATCH_MAX } from './album-member-batch-max.constant';
 import { ALBUM_TITLE_MAX } from './album-title-max.constant';
 import { ALBUM_TITLE_MIN } from './album-title-min.constant';
@@ -37,6 +39,8 @@ export const VALIDATION = {
   ALBUM_TITLE_MIN,
   ALBUM_TITLE_MAX,
   ALBUM_DESCRIPTION_MAX,
+  ALBUM_ACCESS_PASSWORD_MIN,
+  ALBUM_ACCESS_PASSWORD_MAX,
   BATCH_MIN_ITEMS,
   ALBUM_MEMBER_BATCH_MAX,
   GENERIC_BATCH_MAX,

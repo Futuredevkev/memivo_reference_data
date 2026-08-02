@@ -15,6 +15,8 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./album-description-max.constant"), exports);
+__exportStar(require("./album-access-password-max.constant"), exports);
+__exportStar(require("./album-access-password-min.constant"), exports);
 __exportStar(require("./album-member-batch-max.constant"), exports);
 __exportStar(require("./album-title-max.constant"), exports);
 __exportStar(require("./album-title-min.constant"), exports);

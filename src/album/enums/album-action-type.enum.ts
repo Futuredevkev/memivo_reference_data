@@ -20,6 +20,8 @@ export enum AlbumActionType {
    * explicar después por qué un link dejó de funcionar.
    */
   ALBUM_ACCESS_RESET = 'ALBUM_ACCESS_RESET',
+  /** The owner enabled, changed, or removed the album access password. */
+  ALBUM_ACCESS_PASSWORD_CHANGED = 'ALBUM_ACCESS_PASSWORD_CHANGED',
   ALBUM_COVER_CHANGED = 'ALBUM_COVER_CHANGED',
   FOLDER_CREATED = 'FOLDER_CREATED',
   FOLDER_RENAMED = 'FOLDER_RENAMED',

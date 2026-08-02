@@ -1,5 +1,4 @@
-export interface ScanQrRequest {
-    qrCode: string;
+export interface JoinAlbumRequest {
     /** Required only when the target album is password-protected. */
     password?: string;
 }

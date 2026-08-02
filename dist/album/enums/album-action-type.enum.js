@@ -24,6 +24,8 @@ var AlbumActionType;
      * explicar después por qué un link dejó de funcionar.
      */
     AlbumActionType["ALBUM_ACCESS_RESET"] = "ALBUM_ACCESS_RESET";
+    /** The owner enabled, changed, or removed the album access password. */
+    AlbumActionType["ALBUM_ACCESS_PASSWORD_CHANGED"] = "ALBUM_ACCESS_PASSWORD_CHANGED";
     AlbumActionType["ALBUM_COVER_CHANGED"] = "ALBUM_COVER_CHANGED";
     AlbumActionType["FOLDER_CREATED"] = "FOLDER_CREATED";
     AlbumActionType["FOLDER_RENAMED"] = "FOLDER_RENAMED";

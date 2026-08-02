@@ -18,5 +18,7 @@ export interface OrganizerAlbumListItemResponse<TTimestamp = string> extends Alb
     coverPhoto: string | null;
     coverPhotoThumbnailUrl: string | null;
     creatorId: string;
+    /** Whether new joins are protected. The hash is never part of the wire contract. */
+    hasAccessPassword: boolean;
     created_at: TTimestamp;
 }

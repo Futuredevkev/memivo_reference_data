@@ -1,4 +1,6 @@
 export * from './album-description-max.constant';
+export * from './album-access-password-max.constant';
+export * from './album-access-password-min.constant';
 export * from './album-member-batch-max.constant';
 export * from './album-title-max.constant';
 export * from './album-title-min.constant';

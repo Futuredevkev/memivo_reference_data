@@ -41,4 +41,6 @@ export interface AlbumActionDetail {
      * auditoría — es una credencial.
      */
     revokedInvites?: number;
+    /** New protection state; the password itself is deliberately never logged. */
+    hasAccessPassword?: boolean;
 }

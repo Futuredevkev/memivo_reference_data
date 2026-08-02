@@ -6,6 +6,8 @@ export declare const VALIDATION: {
     readonly ALBUM_TITLE_MIN: 3;
     readonly ALBUM_TITLE_MAX: 100;
     readonly ALBUM_DESCRIPTION_MAX: 500;
+    readonly ALBUM_ACCESS_PASSWORD_MIN: 6;
+    readonly ALBUM_ACCESS_PASSWORD_MAX: 64;
     readonly BATCH_MIN_ITEMS: 1;
     readonly ALBUM_MEMBER_BATCH_MAX: 50;
     readonly GENERIC_BATCH_MAX: 100;

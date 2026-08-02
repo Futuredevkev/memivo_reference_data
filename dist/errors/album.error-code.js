@@ -15,6 +15,8 @@ var AlbumErrorCode;
     AlbumErrorCode["ALBUM_INVITE_EXPIRED"] = "ALBUM_INVITE_EXPIRED";
     AlbumErrorCode["ALBUM_OWNER_SCAN_FORBIDDEN"] = "ALBUM_OWNER_SCAN_FORBIDDEN";
     AlbumErrorCode["ALBUM_ALREADY_SCANNED"] = "ALBUM_ALREADY_SCANNED";
+    AlbumErrorCode["ALBUM_PASSWORD_REQUIRED"] = "ALBUM_PASSWORD_REQUIRED";
+    AlbumErrorCode["ALBUM_PASSWORD_INVALID"] = "ALBUM_PASSWORD_INVALID";
     AlbumErrorCode["ALBUM_NOT_SCANNED"] = "ALBUM_NOT_SCANNED";
     AlbumErrorCode["PARTICIPANT_NOT_FOUND"] = "PARTICIPANT_NOT_FOUND";
 })(AlbumErrorCode || (exports.AlbumErrorCode = AlbumErrorCode = {}));

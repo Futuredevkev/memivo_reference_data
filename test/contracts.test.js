@@ -29,10 +29,10 @@ const social = require('../dist/social/index.js');
 // los que ya son miembros en batch (invitar es idempotente, no tira 409) y el
 // archivo de la historia llega ya resuelto por el finalize del upload intent.
 // Ninguna de las dos podía llegarle al usuario. Se fueron con sus 3 copias.
-test('el catálogo consolidado expone 192 códigos de error únicos', () => {
+test('el catálogo consolidado expone 194 códigos de error únicos', () => {
   const values = Object.values(errors.ErrorCode);
 
-  assert.equal(values.length, 192);
+  assert.equal(values.length, 194);
   assert.equal(new Set(values).size, values.length);
 });
 

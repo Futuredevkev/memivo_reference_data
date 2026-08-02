@@ -2,6 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.VALIDATION = void 0;
 const album_description_max_constant_1 = require("./album-description-max.constant");
+const album_access_password_max_constant_1 = require("./album-access-password-max.constant");
+const album_access_password_min_constant_1 = require("./album-access-password-min.constant");
 const album_member_batch_max_constant_1 = require("./album-member-batch-max.constant");
 const album_title_max_constant_1 = require("./album-title-max.constant");
 const album_title_min_constant_1 = require("./album-title-min.constant");
@@ -39,6 +41,8 @@ exports.VALIDATION = {
     ALBUM_TITLE_MIN: album_title_min_constant_1.ALBUM_TITLE_MIN,
     ALBUM_TITLE_MAX: album_title_max_constant_1.ALBUM_TITLE_MAX,
     ALBUM_DESCRIPTION_MAX: album_description_max_constant_1.ALBUM_DESCRIPTION_MAX,
+    ALBUM_ACCESS_PASSWORD_MIN: album_access_password_min_constant_1.ALBUM_ACCESS_PASSWORD_MIN,
+    ALBUM_ACCESS_PASSWORD_MAX: album_access_password_max_constant_1.ALBUM_ACCESS_PASSWORD_MAX,
     BATCH_MIN_ITEMS: batch_min_items_constant_1.BATCH_MIN_ITEMS,
     ALBUM_MEMBER_BATCH_MAX: album_member_batch_max_constant_1.ALBUM_MEMBER_BATCH_MAX,
     GENERIC_BATCH_MAX: generic_batch_max_constant_1.GENERIC_BATCH_MAX,
