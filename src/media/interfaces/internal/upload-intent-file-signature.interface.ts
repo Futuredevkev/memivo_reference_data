@@ -22,16 +22,22 @@ export interface UploadIntentFileSignature {
   folder: string;
   uploadUrl: string;
   /**
-   * Tope de bytes que el servidor FIRMÓ para este archivo. El cliente lo
-   * reenvía tal cual a Cloudinary como `max_file_size`.
+   * Formatos que el servidor FIRMÓ para este archivo, separados por coma (por
+   * ejemplo `'jpeg,jpg,png,webp,heic,heif'`). El cliente lo reenvía tal cual a
+   * Cloudinary como `allowed_formats`.
    *
-   * No es informativo: viaja DENTRO de la firma, así que Cloudinary lo hace
-   * cumplir en el ingress y el cliente no lo puede aflojar (un valor distinto
-   * invalida la firma entera). Antes se firmaban sólo `timestamp`, `folder` y
-   * `public_id`: bytes, format, width, height y duration los declaraba el
-   * cliente en el `/complete` y la firma de respuesta de Cloudinary —que cubre
-   * `{public_id, version}`— no los avalaba, así que `RESOURCE_UPLOAD_LIMITS`
-   * era consultivo y un video de 500 MB podía persistirse como `sizeBytes: 1000`.
+   * No es informativo: viaja DENTRO de la firma, así que mandarlo es
+   * obligatorio —omitirlo o cambiarlo invalida la firma entera— y Cloudinary
+   * rechaza en el ingress cualquier archivo cuyo formato real no esté en la
+   * lista (`400 Image file format X not allowed`), antes de guardar un byte.
+   * Es el único tope que Cloudinary sí aplica por request.
+   *
+   * NO existe un equivalente para el tamaño. Se intentó firmar `max_file_size`
+   * (H-267) y no funciona por partida doble: Cloudinary no lo incluye en su
+   * string-to-sign —así que la firma quedaba irreproducible y TODA subida moría
+   * con 401— ni lo aplica como límite, ni siquiera guardado en un upload
+   * preset. Verificado contra la API real. El tamaño se ataja del lado del
+   * servidor: el `/complete` mide el asset ya subido y no le cree al cliente.
    */
-  maxFileSize: number;
+  allowedFormats: string;
 }
