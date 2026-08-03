@@ -40,4 +40,19 @@ export interface UploadIntentFileSignature {
    * servidor: el `/complete` mide el asset ya subido y no le cree al cliente.
    */
   allowedFormats: string;
+  /**
+   * Transformación de INGRESO que el servidor firmó, o `null` cuando no
+   * corresponde aplicar ninguna (video y audio: el pipeline de video de
+   * Cloudinary falla con transformaciones sincrónicas en archivos grandes).
+   *
+   * Cuando viene, el cliente la reenvía tal cual como `transformation`; cuando
+   * viene `null` NO manda el parámetro. Las dos cosas son obligatorias: viaja
+   * dentro de la firma, así que mandarla de más o con otro valor la invalida y
+   * Cloudinary responde 401.
+   *
+   * Es lo que hace que el techo de dimensiones deje de depender de que el
+   * cliente recorte antes de subir. Recorta —los presets de imagen van a 1920—
+   * pero eso es una promesa de la app, no una garantía de la API.
+   */
+  transformation: string | null;
 }
