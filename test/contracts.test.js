@@ -29,10 +29,15 @@ const social = require('../dist/social/index.js');
 // los que ya son miembros en batch (invitar es idempotente, no tira 409) y el
 // archivo de la historia llega ya resuelto por el finalize del upload intent.
 // Ninguna de las dos podía llegarle al usuario. Se fueron con sus 3 copias.
-test('el catálogo consolidado expone 194 códigos de error únicos', () => {
+// 193 y no 194: se fue `ALBUM_ALREADY_SCANNED` con `POST /album/scan`, el
+// tercer camino de entrada al álbum que ningún QR de la app alcanzaba. Ningún
+// código del api puede emitirlo ya —el validator que lo tiraba se borró— y su
+// clave i18n quedaba huérfana en los tres idiomas, que es lo que destapó el
+// `audit:consumers`: un errorCode sin traducción es un cartel en blanco.
+test('el catálogo consolidado expone 193 códigos de error únicos', () => {
   const values = Object.values(errors.ErrorCode);
 
-  assert.equal(values.length, 194);
+  assert.equal(values.length, 193);
   assert.equal(new Set(values).size, values.length);
 });
 
