@@ -92,8 +92,10 @@
     "audit:endpoints": "node scripts/audit-endpoints.js",
     "audit:endpoints:verbose": "node scripts/audit-endpoints.js --verbose",
     "audit:response-fields:verbose": "node scripts/audit-response-fields.js --verbose",
-    "quality": "npm run audit:consumers && npm run audit:transport && npm run audit:response-fields && npm run audit:endpoints && npm test",
-    "test": "node --test"
+    "quality": "npm run audit:consumers && npm run audit:transport && npm run audit:response-fields && npm run audit:endpoints && npm test && npm run audit:installed-version",
+    "test": "node --test",
+    "audit:installed-version": "node scripts/audit-installed-version.js",
+    "audit:installed-version:verbose": "node scripts/audit-installed-version.js --verbose"
   },
   "devDependencies": {
     "typescript": "^5.9.2"
