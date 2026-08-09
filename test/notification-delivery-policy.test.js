@@ -171,11 +171,11 @@ test('las push-only silenciadas en foreground son exactamente las esperadas', ()
   ].sort());
 });
 
-test('los tipos que dejan fila en la campanita son 26 de 38', () => {
+test('los tipos que dejan fila en la campanita son 25 de 37', () => {
   const withBellRow = entries().filter(([, policy]) => policy.persistsBellRow);
 
-  assert.equal(entries().length, 38);
-  assert.equal(withBellRow.length, 26);
+  assert.equal(entries().length, 37);
+  assert.equal(withBellRow.length, 25);
 });
 
 test('getNotificationDeliveryPolicy devuelve null ante un tipo desconocido', () => {
@@ -236,26 +236,39 @@ test('los álbum-scoped resuelven el álbum por metadata antes que por el recurs
 });
 
 /**
- * `NEW_GUEST_POST` y `PROFESSIONAL_PHOTOS_UPLOADED` NO son contextuales todavía,
- * y el test lo fija a propósito: el feed del álbum no se refresca en vivo (la
- * sala tiene `POST_DELETED` pero no su simétrico de creado), así que con el
- * álbum abierto la push es el único aviso de contenido nuevo.
+ * Las fotos OFICIALES no son contextuales, y el test lo fija a propósito: el
+ * feed del álbum no se refresca en vivo (la sala tiene `POST_DELETED` pero no su
+ * simétrico de creado), así que con el álbum abierto la push es el único aviso.
  *
  * Es el límite de lo que `replacedBy` puede garantizar: el gate verifica que la
- * superficie esté nombrada, no que exista. Este test es el recordatorio de que
- * moverlos exige construir la superficie primero.
+ * superficie esté nombrada, no que exista. Moverla exige construir el refresco
+ * en vivo primero.
  */
-test('los avisos de contenido nuevo de otros no se suprimen sin feed en vivo', () => {
-  for (const type of [
-    NotificationType.NEW_GUEST_POST,
-    NotificationType.PROFESSIONAL_PHOTOS_UPLOADED,
-  ]) {
-    const policy = NOTIFICATION_DELIVERY_POLICY[type];
+test('las fotos oficiales no se suprimen sin feed en vivo', () => {
+  const policy =
+    NOTIFICATION_DELIVERY_POLICY[NotificationType.PROFESSIONAL_PHOTOS_UPLOADED];
 
-    assert.equal(policy.redundantWhenViewing, null, type);
-    assert.equal(policy.foregroundRedundancy, 'none', type);
-    assert.equal(policy.replacedBy, null, type);
-  }
+  assert.equal(policy.redundantWhenViewing, null);
+  assert.equal(policy.foregroundRedundancy, 'none');
+  assert.equal(policy.replacedBy, null);
+});
+
+/**
+ * `NEW_GUEST_POST` —una push al álbum ENTERO por cada foto de cada invitado—
+ * está ELIMINADO del enum, no suprimido. Escalaba con la cantidad de gente y no
+ * con la actividad relevante: en un álbum grande son cientos de avisos que el
+ * destinatario no puede accionar, y la única salida era apagar Memivo entero.
+ *
+ * El test existe para que no vuelva por descuido. Si alguien lo re-agrega al
+ * enum, el `Record` exhaustivo lo va a obligar a escribir una fila — y esto le
+ * va a recordar por qué se fue.
+ */
+test('el aviso de post nuevo al álbum entero no volvió al catálogo', () => {
+  assert.equal(NotificationType.NEW_GUEST_POST, undefined);
+  assert.equal(
+    Object.keys(NOTIFICATION_DELIVERY_POLICY).includes('NEW_GUEST_POST'),
+    false,
+  );
 });
 
 test('activeViewSuppressesNotification cruza política y contexto activo', () => {

@@ -7,7 +7,6 @@ var NotificationType;
     NotificationType["COMMENT_PHOTO"] = "COMMENT_PHOTO";
     NotificationType["REPLY_COMMENT"] = "REPLY_COMMENT";
     NotificationType["CHAT_INVITATION"] = "CHAT_INVITATION";
-    NotificationType["NEW_GUEST_POST"] = "NEW_GUEST_POST";
     NotificationType["NEW_CHAT_MESSAGE"] = "NEW_CHAT_MESSAGE";
     NotificationType["CHAT_MESSAGE_REPLY"] = "CHAT_MESSAGE_REPLY";
     NotificationType["PROFESSIONAL_PHOTOS_UPLOADED"] = "PROFESSIONAL_PHOTOS_UPLOADED";

@@ -33,7 +33,6 @@ export type NotificationMetadataByType = {
   [NotificationType.PROFESSIONAL_PHOTOS_UPLOADED]: CountedAlbumMetadata;
   [NotificationType.MEMIVO_MOMENTS]: CountedAlbumMetadata;
   [NotificationType.LIKE_PHOTO]: PhotoNotificationMetadata;
-  [NotificationType.NEW_GUEST_POST]: PhotoNotificationMetadata;
   [NotificationType.TAGGED_IN_PHOTO]: PhotoNotificationMetadata;
   [NotificationType.COMMENT_PHOTO]: CommentNotificationMetadata;
   [NotificationType.REPLY_COMMENT]: CommentNotificationMetadata;

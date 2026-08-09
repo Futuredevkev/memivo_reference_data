@@ -10,7 +10,7 @@ const enums_1 = require("../enums");
  * dos lados del cable. Antes estaban repartidas en seis catálogos y dos
  * implementaciones espejadas a mano —`CHAT/POST/STORY/REACTION_POST_SUPPRESSION_TYPES`,
  * `FOREGROUND_SUPPRESSED_NOTIFICATION_TYPES` y `PUSH_ONLY_NOTIFICATION_TYPES`—,
- * y agregar un tipo al enum no obligaba a nadie a decidir nada: 25 de los 38
+ * y agregar un tipo al enum no obligaba a nadie a decidir nada: 24 de los 37
  * entraron sin una sola línea escrita sobre qué debía pasar con ellos.
  *
  * Ahora el `Record` es EXHAUSTIVO: un tipo nuevo en `NotificationType` sin fila
@@ -47,10 +47,10 @@ const STORY_ID_SOURCES = [
     'resourceId',
 ];
 /**
- * Metadata primero y no al revés: en los tipos álbum-scoped que apuntan a un
- * post (`NEW_GUEST_POST`) el `resourceId` es el post, no el álbum. Todas las
- * metadatas extienden `AlbumNotificationMetadata`, así que `albumId` siempre
- * está.
+ * Metadata primero y no al revés: hay tipos álbum-scoped cuyo `resourceId` NO
+ * es el álbum, y leerlo primero compararía otro id contra el `albumId` activo.
+ * Todas las metadatas extienden `AlbumNotificationMetadata`, así que `albumId`
+ * siempre está y el respaldo por recurso casi nunca hace falta.
  */
 const ALBUM_ID_SOURCES = [
     'metadata.albumId',
@@ -294,25 +294,17 @@ exports.NOTIFICATION_DELIVERY_POLICY = {
     // Se entregan SIEMPRE, y cada una por su motivo escrito.
     // ───────────────────────────────────────────────────────────────────────
     /**
-     * Los dos que PARECEN álbum-scoped y no lo son todavía.
+     * Fotos oficiales: las sube UNA persona, el fotógrafo, y por tanda con su
+     * contador — no por foto. No escala con la cantidad de invitados, así que no
+     * es spam: es el momento que el álbum entero está esperando.
      *
-     * El feed de posts NO se actualiza en vivo: la sala del álbum tiene
-     * `POST_DELETED` pero no su simétrico de creado, y la query del feed corre
-     * con `refetchOnWindowFocus: false`. Con el álbum abierto, la push es hoy el
-     * ÚNICO aviso de que hay contenido nuevo — suprimirla sería cambiar ruido por
-     * silencio.
-     *
-     * Y es exactamente el agujero que `replacedBy` NO puede tapar solo: el gate
-     * verifica que la superficie esté NOMBRADA, no que exista de verdad. Poner
-     * `album-feed` acá haría pasar el test y romper al usuario. Cuando exista el
-     * evento de post creado, estas dos filas pasan al grupo de arriba y no hay
-     * que tocar nada más.
+     * No se suprime aunque tengas el álbum abierto, y el motivo es el mismo que
+     * mató a `NEW_GUEST_POST`: el feed NO se refresca solo (la sala tiene
+     * `POST_DELETED` pero no su simétrico de creado, y la query corre con
+     * `refetchOnWindowFocus: false`). Es el agujero que `replacedBy` no puede
+     * tapar solo — el gate verifica que la superficie esté NOMBRADA, no que
+     * exista. Poner `album-feed` acá pasaría el test y rompería al usuario.
      */
-    [enums_1.NotificationType.NEW_GUEST_POST]: policy({
-        foreground: 'none',
-        bellRow: true,
-        replacedBy: null,
-    }),
     [enums_1.NotificationType.PROFESSIONAL_PHOTOS_UPLOADED]: policy({
         foreground: 'none',
         bellRow: true,
