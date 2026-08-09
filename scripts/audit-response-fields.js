@@ -117,7 +117,25 @@ const AUDIT_EVIDENCE =
 // cliente, así que el matcher permisivo los da por vivos y una excusa para
 // ellos caducaría en cada corrida. Su motivo vive en el docblock del tipo, que
 // es donde se lee.
+/**
+ * El contador de fallas de una transferencia lo consume el SERVIDOR, no el
+ * cliente: es lo que decide cuál de los tres textos manda la push —«listo»,
+ * «parcial» o «falló»— en `notification/constants/templates/*.ts`. El cliente
+ * nunca lo leyó; hasta ahora el matcher permisivo lo daba por vivo porque el
+ * nombre colisionaba con un campo propio de sus upload tasks, y al borrarse los
+ * trays esa colisión desapareció y quedó a la vista.
+ *
+ * Borrarlo no es una opción: sin él la push de una descarga parcial diría
+ * «descarga lista» sobre un lote al que le faltan fotos.
+ */
+const PUSH_BODY_ONLY =
+  'lo lee el SERVIDOR para elegir el texto de la push (listo / parcial / falló) ' +
+  'en notification/constants/templates; el cliente no muestra el número y estas ' +
+  'filas ni siquiera dejan fila en la campanita';
+
 const INTENTIONAL_WITHOUT_READER = new Map([
+  ['DownloadReadyMetadata.failedCount', PUSH_BODY_ONLY],
+  ['PhotosBatchUploadMetadata.failedCount', PUSH_BODY_ONLY],
   ['AlbumActionDetail.folderNames', AUDIT_EVIDENCE],
   ['AlbumActionDetail.oldRole', AUDIT_EVIDENCE],
   ['AlbumActionDetail.newRole', AUDIT_EVIDENCE],
