@@ -190,46 +190,54 @@ exports.NOTIFICATION_DELIVERY_POLICY = {
     }),
     // ───────────────────────────────────────────────────────────────────────
     // Auto-confirmación. El destinatario ES quien hizo la acción y la app ya le
-    // está mostrando el resultado. No dependen de la pantalla: el tray es global.
+    // está mostrando el resultado, encima del propio contenido que subió o bajó.
+    //
+    // SÍ dependen de la pantalla, y ésa es la corrección: mientras el sustituto
+    // era un panel global se asumía que estaba siempre a la vista, y no lo estaba
+    // —quedaba debajo de cualquier ventana modal—. Como estas filas además son
+    // `bellRow: false`, un fallo suprimido ahí se perdía para siempre. Quien
+    // decide si la superficie se ve de verdad es el cliente, que es el único que
+    // sabe qué modal hay abierto.
     // ───────────────────────────────────────────────────────────────────────
     [enums_1.NotificationType.GUEST_POST_UPLOAD_READY]: policy({
         foreground: 'self-confirmed',
         bellRow: false,
-        replacedBy: 'upload-tray',
+        replacedBy: 'transfer-on-content',
     }),
     [enums_1.NotificationType.PROFESSIONAL_PHOTOS_UPLOAD_READY]: policy({
         foreground: 'self-confirmed',
         bellRow: false,
-        replacedBy: 'upload-tray',
+        replacedBy: 'transfer-on-content',
     }),
     [enums_1.NotificationType.STORY_UPLOAD_READY]: policy({
         foreground: 'self-confirmed',
         bellRow: false,
-        replacedBy: 'upload-tray',
+        replacedBy: 'transfer-on-content',
     }),
     [enums_1.NotificationType.DOWNLOAD_READY]: policy({
         foreground: 'self-confirmed',
         bellRow: false,
-        replacedBy: 'download-tray',
+        replacedBy: 'transfer-on-content',
     }),
     [enums_1.NotificationType.GUEST_POST_UPLOAD_FAILED]: policy({
         foreground: 'self-confirmed',
         bellRow: false,
-        replacedBy: 'upload-tray',
+        replacedBy: 'transfer-on-content',
     }),
     [enums_1.NotificationType.PROFESSIONAL_PHOTOS_UPLOAD_FAILED]: policy({
         foreground: 'self-confirmed',
         bellRow: false,
-        replacedBy: 'upload-tray',
+        replacedBy: 'transfer-on-content',
     }),
     [enums_1.NotificationType.STORY_UPLOAD_FAILED]: policy({
         foreground: 'self-confirmed',
         bellRow: false,
-        replacedBy: 'upload-tray',
+        replacedBy: 'transfer-on-content',
     }),
     [enums_1.NotificationType.CHAT_MEDIA_UPLOAD_FAILED]: policy({
-        // El tray global está apagado a propósito en `chat_media`: acá el sustituto
-        // es la burbuja optimista, que se pinta en error con su reintento.
+        // El sustituto es la burbuja optimista, que se pinta en error con su
+        // propio reintento — el mismo patrón que el resto, pero nombrando la
+        // superficie concreta del chat.
         foreground: 'self-confirmed',
         bellRow: false,
         replacedBy: 'chat-message-bubble',

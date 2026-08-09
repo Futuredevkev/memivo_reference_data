@@ -19,13 +19,23 @@ export type NotificationInAppSurface =
   | 'chat-message-bubble'
   /** La sala abierta: mensaje de sistema en el hilo, o toast + salida. */
   | 'chat-room'
-  /** `GlobalDownloadTray`, con su tick terminal y auto-cierre. */
-  | 'download-tray'
   /** Toast disparado por el socket global, visible en cualquier pantalla. */
   | 'global-toast'
   /** La pantalla de detalle del post (o el modal de comentarios). */
   | 'post-detail'
   /** El visor de historias abierto en esa historia. */
   | 'story-viewer'
-  /** `GlobalUploadTray`: progreso, tick de completada y banner de reintento. */
-  | 'upload-tray';
+  /**
+   * El estado de una transferencia PINTADO SOBRE EL PROPIO CONTENIDO: el
+   * porcentaje encima de la foto que se sube o se baja, del círculo de la
+   * historia, de la tarjeta de la carpeta, y el ícono de reintentar sobre lo
+   * que falló.
+   *
+   * Reemplaza a `upload-tray` y `download-tray`, que nombraban dos paneles
+   * flotantes en la raíz de la app. Los dos se borraron: un panel en la raíz es
+   * INVISIBLE bajo cualquier ventana modal —o sea bajo el visor de historias y
+   * el de fotos, que es justo donde el usuario está cuando sube algo—, así que
+   * la sustitución que prometían no se cumplía nunca ahí. El nombre nuevo
+   * describe dónde vive el estado hoy.
+   */
+  | 'transfer-on-content';
