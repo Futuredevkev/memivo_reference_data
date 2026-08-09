@@ -1,3 +1,4 @@
+export * from './active-view-key.type';
 export * from './active-view.interface';
 export * from './album-chat-access-revoked-payload.interface';
 export * from './album-deleted-payload.interface';

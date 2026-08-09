@@ -106,23 +106,35 @@ test('el catálogo de notificaciones de chat solo contiene los tipos de mensajer
   assert.equal(CHAT_NOTIFICATION_TYPES, contracts.CHAT_NOTIFICATION_TYPES);
 });
 
-test('los catálogos de supresión de push exponen tipos válidos de NotificationType', () => {
-  const { NotificationType } = notifications;
-  const allTypes = new Set(Object.values(NotificationType));
-  const catalogs = [
-    notifications.CHAT_SUPPRESSION_TYPES,
-    notifications.POST_SUPPRESSION_TYPES,
-    notifications.STORY_SUPPRESSION_TYPES,
-    notifications.REACTION_POST_SUPPRESSION_TYPES,
+/**
+ * Los cuatro catálogos de supresión los absorbió `NOTIFICATION_DELIVERY_POLICY`
+ * (ver `notification-delivery-policy.test.js`, que hereda sus invariantes:
+ * tipos válidos, y el caso especial de las reacciones —que era la razón de
+ * existir de `REACTION_POST_SUPPRESSION_TYPES`— convertido en la columna
+ * `contextIdSources`).
+ *
+ * Este test es lo contrario del que reemplaza: verifica que NO vuelvan. Una
+ * membresía paralela a la tabla es exactamente la extracción a medias que este
+ * bloque vino a cerrar — deja el defecto y agrega la ilusión de haberlo
+ * arreglado, porque el que agregue un tipo nuevo va a actualizar uno solo.
+ */
+test('los catálogos de supresión sueltos no volvieron: la tabla es el único lugar', () => {
+  const retired = [
+    'CHAT_SUPPRESSION_TYPES',
+    'POST_SUPPRESSION_TYPES',
+    'STORY_SUPPRESSION_TYPES',
+    'REACTION_POST_SUPPRESSION_TYPES',
+    'FOREGROUND_SUPPRESSED_NOTIFICATION_TYPES',
+    'PUSH_ONLY_NOTIFICATION_TYPES',
   ];
-  for (const catalog of catalogs) {
-    assert.ok(catalog.length > 0);
-    for (const type of catalog) assert.ok(allTypes.has(type), `${type} no es un NotificationType`);
-  }
-  // REACTION_POST es un subconjunto de POST (comparten el caso especial del id).
-  const postSet = new Set(notifications.POST_SUPPRESSION_TYPES);
-  for (const type of notifications.REACTION_POST_SUPPRESSION_TYPES) {
-    assert.ok(postSet.has(type), `${type} debería estar en POST_SUPPRESSION_TYPES`);
+
+  for (const name of retired) {
+    assert.equal(
+      notifications[name],
+      undefined,
+      `${name} volvió a existir: la membresía de supresión vive SÓLO en NOTIFICATION_DELIVERY_POLICY`,
+    );
+    assert.equal(contracts[name], undefined, `${name} se filtró por el barrel raíz`);
   }
 });
 
