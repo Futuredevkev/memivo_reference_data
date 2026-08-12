@@ -34,10 +34,15 @@ const social = require('../dist/social/index.js');
 // código del api puede emitirlo ya —el validator que lo tiraba se borró— y su
 // clave i18n quedaba huérfana en los tres idiomas, que es lo que destapó el
 // `audit:consumers`: un errorCode sin traducción es un cartel en blanco.
-test('el catálogo consolidado expone 193 códigos de error únicos', () => {
+// Ola B4b: +1. `ALBUM_QR_CODE_EXPIRED`. El `qrCode` del álbum dejó de ser
+// eterno, y sin código propio el único emisor posible del vencimiento era el
+// 404 de `ALBUM_NOT_FOUND` — o sea que el cliente tenía que decir «no existe»
+// sobre un álbum que existe y un código que fue válido. Va con sus tres
+// traducciones desde el día uno, por lo que enseñó `ALBUM_ALREADY_SCANNED`.
+test('el catálogo consolidado expone 194 códigos de error únicos', () => {
   const values = Object.values(errors.ErrorCode);
 
-  assert.equal(values.length, 193);
+  assert.equal(values.length, 194);
   assert.equal(new Set(values).size, values.length);
 });
 
