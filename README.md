@@ -23,6 +23,37 @@ privados de Cloudinary ni parámetros puramente visuales del cliente. El shape
 wire de un DTO sí pertenece: la clase del API implementa la interfaz compartida
 y el cliente consume esa misma interfaz.
 
+### La segunda clase de contenido: los gates cruzados
+
+Las cuatro reglas de arriba describen **contratos**, y siempre hubo acá una
+segunda clase que no encajaba en ellas y que nadie había escrito: los **gates
+que hacen cumplir una convención en los dos repos**. `scripts/audit-*.js` son
+eso desde el principio, y el motivo está escrito adentro de
+`audit-installed-version.js`: *el problema es del contrato, y duplicarlo en los
+dos repos sería mantener dos copias de la misma regla*.
+
+`eslint/` es la misma clase, con una diferencia de **cómo se consume** que
+importa:
+
+| qué | cómo lo consumen los repos | qué pasa si falta el checkout hermano |
+|---|---|---|
+| `scripts/audit-*.js` | `npm --prefix ../memivo-reference-data run audit:…`, desde el script `audit:ssot`, que está **fuera** de `npm run quality` | el auditor no corre; `quality` no se entera |
+| `eslint/` | `import '@memivo/contracts/eslint'` desde el `eslint.config.mjs` de cada repo | nada: viene con el paquete instalado |
+
+Un `eslint.config.mjs` que importara por ruta relativa se caería en cualquier
+máquina donde sólo esté clonado un repo —CI, EAS—, y **un gate que no puede
+correr no es un gate**. Por eso la regla compartida viaja en el paquete y los
+auditores no.
+
+Entra a `eslint/` la regla cuya convención está escrita en `ORDEN.md`, o sea la
+que vale para los dos repos. Las que dependen de la superficie de UNO —las
+cuatro `memivo/*` visuales del cliente, el join crudo a `user` del API— se
+quedan en su repo: no tienen segunda copia posible porque no tienen segundo
+consumidor.
+
+`eslint/` NO se compila: es CommonJS a mano, igual que `scripts/`. `npm run
+build` sólo toca `dist/`.
+
 ## Estructura
 
 Cada dominio mantiene sus categorías separadas y expone un barrel `index.ts`:
