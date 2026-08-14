@@ -34,7 +34,6 @@ __exportStar(require("./photo-delete-response.interface"), exports);
 __exportStar(require("./photo-tag.interface"), exports);
 __exportStar(require("./professional-photo-list-item.interface"), exports);
 __exportStar(require("./professional-photo-upload-result.interface"), exports);
-__exportStar(require("./reaction-batch-request.interface"), exports);
 __exportStar(require("./response-created-response.interface"), exports);
 __exportStar(require("./response-data.interface"), exports);
 __exportStar(require("./social-author.interface"), exports);
