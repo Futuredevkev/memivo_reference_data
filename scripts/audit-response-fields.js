@@ -265,9 +265,28 @@ for (const name of [...auditable].sort()) {
 }
 
 // --- Las excusas tienen que ganarse el lugar en cada corrida ---------------
-const staleExcuses = [...INTENTIONAL_WITHOUT_READER.keys()].filter(
-  (qualified) => clientReads(qualified.split('.')[1]),
-);
+/**
+ * Una excusa está rancia cuando el cliente EMPEZÓ a leer ese campo — entonces deja
+ * de ser «intencionalmente sin lector» y la entrada tapa cobertura real.
+ *
+ * EL DEFECTO QUE CIERRA. Antes preguntaba sólo por el NOMBRE del campo
+ * (`qualified.split('.')[1]`), y `clientReads` es un regex sobre el texto del
+ * cliente entero. Resultado: `DownloadReadyMetadata.failedCount` y
+ * `PhotosBatchUploadMetadata.failedCount` salían rancias porque el cliente lee un
+ * `failedCount` de OTRO tipo —el del flujo de compartir un post— mientras no
+ * menciona esos dos tipos en un solo archivo. Dos excusas legítimas marcadas como
+ * muertas, y el que las borrara habría sacado cobertura de verdad.
+ *
+ * Ahora exige las DOS mitades: que el cliente nombre el tipo Y el campo. Sigue
+ * siendo reconocimiento por nombre —el alcance está declarado acá y no se
+ * disimula—: no distingue dos tipos que compartan nombre de campo si el cliente
+ * usa los dos. Cierra la forma en que el falso positivo apareció, no la totalidad
+ * del espacio.
+ */
+const staleExcuses = [...INTENTIONAL_WITHOUT_READER.keys()].filter((qualified) => {
+  const [type, field] = qualified.split('.');
+  return clientReads(type) && clientReads(field);
+});
 
 const phantomExcuses = [...INTENTIONAL_WITHOUT_READER.keys()].filter(
   (qualified) => !auditedFields.has(qualified),
