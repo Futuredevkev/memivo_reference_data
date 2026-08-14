@@ -19,8 +19,6 @@ export * from './photo-tag.interface';
 export * from './professional-photo-list-item.interface';
 export * from './professional-photo-upload-result.interface';
 export * from './reaction-batch-request.interface';
-export * from './reaction-counts-batch-response.interface';
-export * from './reaction-status-batch-response.interface';
 export * from './response-created-response.interface';
 export * from './response-data.interface';
 export * from './social-author.interface';
