@@ -36,14 +36,10 @@ const intentionalBoundaries = new Map([
   ['class:Album', 'Server ORM entity and normalized client model are different layers.'],
   ['class:Folder', 'Server ORM entity and normalized client model are different layers.'],
   ['class:Notification', 'Server ORM entity and transport model have different timestamps and relations.'],
-  ['class:GuestPost', 'Server ORM entity and normalized client model are different layers.'],
   ['class:PhotoTag', 'Server ORM entity and normalized client model are different layers.'],
-  ['class:Photo', 'Server ORM entity and normalized client model are different layers.'],
-  ['const:SENTRY_IGNORED_HTTP_STATUS', 'Configuración operativa independiente por runtime.'],
   ['const:SENTRY_PROFILES_SAMPLE_RATE_DEFAULT', 'Configuración operativa independiente por runtime.'],
   ['const:SENTRY_TRACES_SAMPLE_RATE_DEFAULT', 'Configuración operativa independiente por runtime.'],
   ['type:CloudinaryTransformResourceType', 'Unión primitiva local; no representa el mismo contrato de dominio que los tipos visuales.'],
-  ['const:SENSITIVE_KEYS', 'Cada runtime redacta superficies y credenciales diferentes.'],
   ['class:MemivoMoment', 'Entidad ORM del ranking persistido; el ítem que viaja al cliente es la unión MemivoMoment.'],
   ['interface:AlbumGuest', 'Modelo de UI normalizado del cliente; el shape HTTP compartido lo valida el servicio.'],
   ['const:EMAIL_REGEX', 'Redacción de PII en Sentry (global, sin anclas) vs validación de un email completo.'],
@@ -618,6 +614,52 @@ function localeErrorKeys(locale) {
   return keys;
 }
 
+/**
+ * Los códigos que NO tienen frase propia en los locales A PROPÓSITO, porque el
+ * cliente los colapsa en una sola voz.
+ *
+ * EL DEFECTO QUE CIERRA. La ola F13 borró 22 claves de los tres locales: toda
+ * ausencia INESPERADA —borrado, moderado, perfil privado, cuenta desactivada y
+ * BLOQUEO— pasó a decir el mismo texto, porque un mensaje distinto según la causa
+ * DELATA el bloqueo. Es la misma clase que el backend ya había cerrado del otro
+ * lado (el 404 de `/user/search/:id` delataba por texto distinto). Este auditor no
+ * sabía nada de eso y contaba las 22 como cobertura faltante, así que el paquete
+ * no se podía publicar: el gate estaba en lo cierto —el cliente dejó de traducir
+ * códigos que el contrato declara— pero por el motivo equivocado.
+ *
+ * POR QUÉ NO ES UNA LISTA ACÁ. La verdad ya vive en el cliente, en
+ * `ABSENCE_VOICE_BY_ERROR_CODE`, que mapea cada código a `ONE_VOICE` o a
+ * `ownCopy(motivo)`. Copiar esos nombres acá crearía la segunda lista del mismo
+ * concepto y las dos divergirían — el defecto que este repo persigue en
+ * `crossRepoRisks`. Se sigue el PUNTERO: si mañana alguien colapsa un código más,
+ * el auditor se entera solo; si alguien lo saca del colapso, vuelve a exigirle
+ * traducción sin que nadie toque este archivo.
+ *
+ * Si la tabla del cliente no existe, esto devuelve el conjunto vacío y el gate se
+ * comporta como antes: exige traducción para los 194. Es el default seguro — de
+ * más el gate molesta, de menos deja pasar un hueco real.
+ */
+function collapsedErrorCodes() {
+  const file = resolve(roots.client, 'constants', 'absence-voice-by-error-code.constant.ts');
+  if (!existsSync(file)) return new Set();
+  const { source } = sourceFile(file);
+  const collapsed = new Set();
+  const visit = (node) => {
+    if (
+      ts.isPropertyAssignment(node) &&
+      ts.isIdentifier(node.initializer) &&
+      node.initializer.text === 'ONE_VOICE'
+    ) {
+      const key = node.name.getText(source).replace(/^['"]|['"]$/g, '');
+      if (/^[A-Z][A-Z0-9_]+$/.test(key)) collapsed.add(key);
+      return;
+    }
+    ts.forEachChild(node, visit);
+  };
+  visit(source);
+  return collapsed;
+}
+
 function rawRuntimeContractLiterals() {
   const contracts = require('../dist/index.js');
   const enumNames = [
@@ -779,12 +821,20 @@ const unusedSharedExports = [...sharedExports]
     !wildcardDomains.has(domain))
   .map(([symbol]) => symbol)
   .sort();
+const collapsed = collapsedErrorCodes();
 const localeCoverage = Object.fromEntries(
   ['en', 'es', 'pt'].map((locale) => {
     const keys = localeErrorKeys(locale);
     return [locale, {
       translated: errorCodes.filter((code) => keys.has(code)).length,
-      missing: errorCodes.filter((code) => !keys.has(code)),
+      // Un código colapsado NO es un hueco: el cliente lo resuelve por la voz única.
+      // Lo que sí es un hueco es cualquier otro sin clave, y ésos siguen tumbando el gate.
+      missing: errorCodes.filter((code) => !keys.has(code) && !collapsed.has(code)),
+      collapsed: errorCodes.filter((code) => !keys.has(code) && collapsed.has(code)),
+      // Una entrada del colapso que RECUPERÓ su frase propia es una excusa en blanco,
+      // igual que `resolvedBoundaries`: la tabla dice que habla con la voz única y el
+      // locale le devolvió el texto que delata. Tumba el gate a propósito.
+      staleCollapses: errorCodes.filter((code) => keys.has(code) && collapsed.has(code)),
     }];
   }),
 );
@@ -859,7 +909,10 @@ if (
   crossRepo.resolvedBoundaries.length ||
   unusedSharedExports.length ||
   unexpectedRawRuntimeLiterals.length ||
-  Object.values(localeCoverage).some((coverage) => coverage.missing.length)
+  Object.values(localeCoverage).some((coverage) => coverage.missing.length) ||
+  // Ver `collapsedErrorCodes`: un código marcado como voz única que volvió a tener
+  // frase propia reabre la fuga que F13 cerró, y el reporte lo publica por locale.
+  Object.values(localeCoverage).some((coverage) => coverage.staleCollapses.length)
 ) {
   process.exitCode = 1;
 }

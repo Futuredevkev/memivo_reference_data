@@ -17,6 +17,5 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./email-action-required.constant"), exports);
 __exportStar(require("./oauth-provider-name.type"), exports);
 __exportStar(require("./oauth-provider.enum"), exports);
-__exportStar(require("./session-platform-value.type"), exports);
 __exportStar(require("./session-platform.constant"), exports);
 __exportStar(require("./valid-roles.enum"), exports);
