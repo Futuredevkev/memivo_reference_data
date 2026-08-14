@@ -141,6 +141,7 @@ const INTENTIONAL_WITHOUT_READER = new Map([
   ['AlbumActionDetail.newRole', AUDIT_EVIDENCE],
   ['AlbumActionDetail.oldName', AUDIT_EVIDENCE],
   ['AlbumActionDetail.revokedInvites', AUDIT_EVIDENCE],
+  ['AlbumActionDetail.qrCodeExpiresAt', AUDIT_EVIDENCE],
 ]);
 
 const collectFiles = (directory, extensions) => {
