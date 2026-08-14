@@ -24,6 +24,17 @@ var AlbumActionType;
      * explicar después por qué un link dejó de funcionar.
      */
     AlbumActionType["ALBUM_ACCESS_RESET"] = "ALBUM_ACCESS_RESET";
+    /**
+     * El dueño le corrió el vencimiento al `qrCode` sin rotarlo: el mismo código
+     * sigue sirviendo, con más plazo.
+     *
+     * Queda en el registro por la misma razón que el reset, aunque sea benigna:
+     * es la única acción que ALARGA la vida de un código ya repartido, y sin
+     * rastro nadie puede explicar después por qué un link que debía haber muerto
+     * seguía abierto. El reset cierra puertas; ésta las mantiene abiertas más
+     * tiempo, y esa asimetría es justo lo que hay que poder auditar.
+     */
+    AlbumActionType["ALBUM_QR_CODE_EXTENDED"] = "ALBUM_QR_CODE_EXTENDED";
     /** The owner enabled, changed, or removed the album access password. */
     AlbumActionType["ALBUM_ACCESS_PASSWORD_CHANGED"] = "ALBUM_ACCESS_PASSWORD_CHANGED";
     AlbumActionType["ALBUM_COVER_CHANGED"] = "ALBUM_COVER_CHANGED";

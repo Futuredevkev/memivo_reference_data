@@ -50,6 +50,16 @@ export interface AlbumActionDetail {
    * auditoría — es una credencial.
    */
   revokedInvites?: number;
+  /**
+   * Hasta cuándo quedó vigente el `qrCode` después de extenderlo.
+   *
+   * A diferencia de su hermano de arriba, esto SÍ se guarda: una fecha no es una
+   * credencial. Y es el único dato que hace útil el registro de una extensión —
+   * sin él la entrada diría «alguien extendió» sin decir hasta cuándo, que es
+   * exactamente la pregunta que se le va a hacer al log el día que haya que
+   * explicar por qué un link seguía abierto.
+   */
+  qrCodeExpiresAt?: string;
   /** New protection state; the password itself is deliberately never logged. */
   hasAccessPassword?: boolean;
 }
