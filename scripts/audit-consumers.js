@@ -768,6 +768,19 @@ function rawRuntimeContractLiterals() {
               /httpMethod\s*:\s*['"]POST['"]/.test(context)
             ) {
               reason = 'HTTP method, not a moderated-content type.';
+            } else if (
+              owners.includes('ProfileReportReason') &&
+              !/(?:reason|report)/i.test(immediateContext)
+            ) {
+              // `ProfileReportReason.OTHER` vale 'other', que es además una palabra
+              // corriente: `CACHE_DOMAIN_OTHER` —el balde de lo no clasificado en la
+              // métrica de Redis— la usa sin tener nada que ver con un reporte. El
+              // discriminante es el mismo que usan las ramas de `Language` y
+              // `UploadContext`: si el contexto inmediato no nombra el concepto, el
+              // literal es un tocayo. Y sigue cortando lo que importa — un
+              // `reason: 'other'` escrito a mano en vez de importar el enum tiene
+              // `reason` en su contexto y no recibe excusa.
+              reason = 'Overlapping named constant or label; not a profile-report reason.';
             }
             occurrences.push({
               side,
