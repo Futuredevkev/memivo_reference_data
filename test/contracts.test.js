@@ -39,10 +39,30 @@ const social = require('../dist/social/index.js');
 // 404 de `ALBUM_NOT_FOUND` — o sea que el cliente tenía que decir «no existe»
 // sobre un álbum que existe y un código que fue válido. Va con sus tres
 // traducciones desde el día uno, por lo que enseñó `ALBUM_ALREADY_SCANNED`.
-test('el catálogo consolidado expone 194 códigos de error únicos', () => {
+// Ola P6: −7, y NINGUNO es de P6 — es la deuda que B10 y B11 declararon y que
+// nadie había podido pagar porque es CRUZADA. Los siete tenían cero emisores en
+// `memivo_api`, medido por grep, y `audit:consumers` los bloquea sin allowlist:
+// o sea que el paquete llevaba desde B11 sin poder publicarse, y el ledger de
+// B11 declaró lo contrario («ningún gate del paquete exige que un código tenga
+// emisor»). Lo destapó P6 al ser la primera ola que intentó publicar después.
+//   · `AUTH_PASSWORD_EMPTY`, `AUTH_PASSWORD_TOO_LONG` y
+//     `AUTH_PASSWORD_CONFIRMATION_REQUIRED`: los emitía la carpeta
+//     `password-rules/`, que B11 borró entera por ser la copia INALCANZABLE de
+//     la política —el `ValidationPipe` global corre antes del controller—.
+//   · `UPLOAD_URL_MISSING`: se fue con el upload por URL (B10).
+//   · `STORY_TAG_NOT_FOUND`, `STORY_TAG_FORBIDDEN` y
+//     `STORY_TAG_ALREADY_EXISTS`: eran de un API de gestión de etiquetas de
+//     historia que NO EXISTE. Las etiquetas se persisten al CREAR la historia y
+//     no hay endpoint que las quite. Borrarlos no borra ninguna funcionalidad:
+//     borra tres nombres que nadie tira. Lo que sí quedó ABIERTO y ruteado es
+//     más grande que ellos — `StoryUntaggedEvent` tiene DOS listeners y CERO
+//     emisores, así que el `STORY_TAG_REMOVED` que el cliente escucha no puede
+//     llegar nunca. Eso es una decisión de producto (¿se cablea o se borra?) y
+//     no se toma acá.
+test('el catálogo consolidado expone 187 códigos de error únicos', () => {
   const values = Object.values(errors.ErrorCode);
 
-  assert.equal(values.length, 194);
+  assert.equal(values.length, 187);
   assert.equal(new Set(values).size, values.length);
 });
 
