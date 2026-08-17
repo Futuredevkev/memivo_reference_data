@@ -32,7 +32,6 @@ export interface OrganizerAlbumListItemResponse<TTimestamp = string> extends Alb
      */
     qrCodeExpiresAt: TTimestamp;
     isVisible: boolean;
-    viewCount: number;
     coverPhoto: string | null;
     coverPhotoThumbnailUrl: string | null;
     creatorId: string;

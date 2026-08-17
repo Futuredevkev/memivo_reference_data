@@ -43,6 +43,15 @@ const intentionalBoundaries = new Map([
   ['class:MemivoMoment', 'Entidad ORM del ranking persistido; el ítem que viaja al cliente es la unión MemivoMoment.'],
   ['interface:AlbumGuest', 'Modelo de UI normalizado del cliente; el shape HTTP compartido lo valida el servicio.'],
   ['const:EMAIL_REGEX', 'Redacción de PII en Sentry (global, sin anclas) vs validación de un email completo.'],
+  // Los dos valen una hora en ms y ahí termina el parecido: uno es el TTL de un
+  // contador de generación en Redis y el otro la granularidad a la que el cliente
+  // ancla el borde de una ventana rodante. No hay contrato que compartir: si el
+  // techo de memoria de `state` pidiera bajar el TTL, la ventana del Baúl no tiene
+  // por qué moverse. Es el falso positivo que la heurística de VALOR IDÉNTICO
+  // produce por diseño —el propio comentario de `substantial` lo asume— y el
+  // reemplazo del día que sobren: comparar también el EJE (unidad + dominio del
+  // símbolo), no sólo el número.
+  ['const:CACHE_GENERATION_TTL_MS', 'Una hora en ms por coincidencia: TTL del contador de generación de caché vs. granularidad del borde de una ventana rodante en el cliente. Dominios sin relación.'],
 ]);
 
 /**

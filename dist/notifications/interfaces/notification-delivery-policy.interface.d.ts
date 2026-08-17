@@ -48,4 +48,20 @@ export interface NotificationDeliveryPolicy {
      * es `re-engagement` (donde no hay información que sustituir).
      */
     readonly replacedBy: NotificationInAppSurface | null;
+    /**
+     * Si la identidad de quien la disparó se le OCULTA al destinatario. Lo aplica
+     * sólo el servidor, borrando `actor` **y** `actorId` antes de serializar —los
+     * dos, porque con el UUID suelto el destinatario resuelve el perfil público
+     * del moderador y la anonimización queda anulada.
+     *
+     * Vive en esta tabla y no en un catálogo aparte por el motivo de siempre: era
+     * un `Set` con 10 de los 37 tipos, sin nada que obligara a clasificar al
+     * siguiente. El default de un `Set` es «no está», o sea EXPONER la identidad,
+     * y los tipos que se fueron sumando de a uno son justo los de moderación
+     * —expulsión, despromoción, borrado de contenido—, donde exponer al
+     * organizador convierte un evento neutral en una acusación personal dentro de
+     * una red privada en la que la gente se conoce. Acá el tipo nuevo no compila
+     * hasta que alguien lo decida.
+     */
+    readonly anonymousActor: boolean;
 }

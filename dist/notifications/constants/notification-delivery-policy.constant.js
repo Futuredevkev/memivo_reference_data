@@ -58,7 +58,8 @@ const ALBUM_ID_SOURCES = [
 ];
 /**
  * Constructor de fila. No tiene valores por defecto para las tres decisiones
- * —`foreground`, `bellRow` y `replacedBy` son obligatorias— justamente para que
+ * —`foreground`, `bellRow`, `replacedBy` y `anonymousActor` son obligatorias—
+ * justamente para que
  * agregar un tipo obligue a pensarlas. `viewing` sí es opcional: ausente
  * significa «no depende de ninguna pantalla».
  */
@@ -68,6 +69,7 @@ const policy = (row) => ({
     foregroundRedundancy: row.foreground,
     persistsBellRow: row.bellRow,
     replacedBy: row.replacedBy,
+    anonymousActor: row.anonymousActor,
 });
 exports.NOTIFICATION_DELIVERY_POLICY = {
     // ───────────────────────────────────────────────────────────────────────
@@ -78,36 +80,42 @@ exports.NOTIFICATION_DELIVERY_POLICY = {
         foreground: 'none',
         bellRow: true,
         replacedBy: 'post-detail',
+        anonymousActor: false,
     }),
     [enums_1.NotificationType.COMMENT_PHOTO]: policy({
         viewing: { key: 'postId', from: POST_ID_SOURCES },
         foreground: 'none',
         bellRow: true,
         replacedBy: 'post-detail',
+        anonymousActor: false,
     }),
     [enums_1.NotificationType.REPLY_COMMENT]: policy({
         viewing: { key: 'postId', from: POST_ID_SOURCES },
         foreground: 'none',
         bellRow: true,
         replacedBy: 'post-detail',
+        anonymousActor: false,
     }),
     [enums_1.NotificationType.TAGGED_IN_PHOTO]: policy({
         viewing: { key: 'postId', from: POST_ID_SOURCES },
         foreground: 'none',
         bellRow: true,
         replacedBy: 'post-detail',
+        anonymousActor: false,
     }),
     [enums_1.NotificationType.REACTION_COMMENT]: policy({
         viewing: { key: 'postId', from: REACTION_POST_ID_SOURCES },
         foreground: 'none',
         bellRow: true,
         replacedBy: 'post-detail',
+        anonymousActor: false,
     }),
     [enums_1.NotificationType.REACTION_RESPONSE]: policy({
         viewing: { key: 'postId', from: REACTION_POST_ID_SOURCES },
         foreground: 'none',
         bellRow: true,
         replacedBy: 'post-detail',
+        anonymousActor: false,
     }),
     // ───────────────────────────────────────────────────────────────────────
     // Chat. Redundantes con ESA sala abierta: el mensaje, la encuesta o la
@@ -118,18 +126,21 @@ exports.NOTIFICATION_DELIVERY_POLICY = {
         foreground: 'none',
         bellRow: true,
         replacedBy: 'chat-room',
+        anonymousActor: false,
     }),
     [enums_1.NotificationType.CHAT_MESSAGE_REPLY]: policy({
         viewing: { key: 'chatGroupId', from: CHAT_ID_SOURCES },
         foreground: 'none',
         bellRow: true,
         replacedBy: 'chat-room',
+        anonymousActor: false,
     }),
     [enums_1.NotificationType.POLL_CREATED]: policy({
         viewing: { key: 'chatGroupId', from: CHAT_ID_SOURCES },
         foreground: 'none',
         bellRow: true,
         replacedBy: 'chat-room',
+        anonymousActor: true,
     }),
     [enums_1.NotificationType.CHAT_MESSAGE_REACTION]: policy({
         viewing: { key: 'chatGroupId', from: CHAT_ID_SOURCES },
@@ -137,6 +148,7 @@ exports.NOTIFICATION_DELIVERY_POLICY = {
         // Push-only por diseño: la reacción se pinta en vivo sobre la burbuja.
         bellRow: false,
         replacedBy: 'chat-room',
+        anonymousActor: false,
     }),
     // ───────────────────────────────────────────────────────────────────────
     // Historias. Redundantes con ESA historia abierta en el visor.
@@ -146,12 +158,14 @@ exports.NOTIFICATION_DELIVERY_POLICY = {
         foreground: 'none',
         bellRow: true,
         replacedBy: 'story-viewer',
+        anonymousActor: false,
     }),
     [enums_1.NotificationType.STORY_COMMENT]: policy({
         viewing: { key: 'storyId', from: STORY_ID_SOURCES },
         foreground: 'none',
         bellRow: true,
         replacedBy: 'story-viewer',
+        anonymousActor: false,
     }),
     // ───────────────────────────────────────────────────────────────────────
     // Álbum-scoped. Redundantes con ESE álbum abierto — pero SÓLO valen para
@@ -166,6 +180,7 @@ exports.NOTIFICATION_DELIVERY_POLICY = {
         foreground: 'none',
         bellRow: false,
         replacedBy: 'album-moments-banner',
+        anonymousActor: false,
     }),
     // ───────────────────────────────────────────────────────────────────────
     // Re-enganche. Su único fin es traerte a la app; si ya estás adentro, el
@@ -176,6 +191,7 @@ exports.NOTIFICATION_DELIVERY_POLICY = {
         foreground: 're-engagement',
         bellRow: false,
         replacedBy: null,
+        anonymousActor: false,
     }),
     [enums_1.NotificationType.HIGHLIGHTS_REMINDER]: policy({
         // Los DOS ejes, y no es contradicción: como re-enganche se calla en
@@ -187,6 +203,7 @@ exports.NOTIFICATION_DELIVERY_POLICY = {
         foreground: 're-engagement',
         bellRow: false,
         replacedBy: 'album-feed',
+        anonymousActor: false,
     }),
     // ───────────────────────────────────────────────────────────────────────
     // Auto-confirmación. El destinatario ES quien hizo la acción y la app ya le
@@ -203,36 +220,43 @@ exports.NOTIFICATION_DELIVERY_POLICY = {
         foreground: 'self-confirmed',
         bellRow: false,
         replacedBy: 'transfer-on-content',
+        anonymousActor: false,
     }),
     [enums_1.NotificationType.PROFESSIONAL_PHOTOS_UPLOAD_READY]: policy({
         foreground: 'self-confirmed',
         bellRow: false,
         replacedBy: 'transfer-on-content',
+        anonymousActor: false,
     }),
     [enums_1.NotificationType.STORY_UPLOAD_READY]: policy({
         foreground: 'self-confirmed',
         bellRow: false,
         replacedBy: 'transfer-on-content',
+        anonymousActor: false,
     }),
     [enums_1.NotificationType.DOWNLOAD_READY]: policy({
         foreground: 'self-confirmed',
         bellRow: false,
         replacedBy: 'transfer-on-content',
+        anonymousActor: false,
     }),
     [enums_1.NotificationType.GUEST_POST_UPLOAD_FAILED]: policy({
         foreground: 'self-confirmed',
         bellRow: false,
         replacedBy: 'transfer-on-content',
+        anonymousActor: false,
     }),
     [enums_1.NotificationType.PROFESSIONAL_PHOTOS_UPLOAD_FAILED]: policy({
         foreground: 'self-confirmed',
         bellRow: false,
         replacedBy: 'transfer-on-content',
+        anonymousActor: false,
     }),
     [enums_1.NotificationType.STORY_UPLOAD_FAILED]: policy({
         foreground: 'self-confirmed',
         bellRow: false,
         replacedBy: 'transfer-on-content',
+        anonymousActor: false,
     }),
     [enums_1.NotificationType.CHAT_MEDIA_UPLOAD_FAILED]: policy({
         // El sustituto es la burbuja optimista, que se pinta en error con su
@@ -241,6 +265,7 @@ exports.NOTIFICATION_DELIVERY_POLICY = {
         foreground: 'self-confirmed',
         bellRow: false,
         replacedBy: 'chat-message-bubble',
+        anonymousActor: false,
     }),
     // ───────────────────────────────────────────────────────────────────────
     // Eco in-app. Eventos de otros donde el socket global ya muestra un toast
@@ -252,21 +277,25 @@ exports.NOTIFICATION_DELIVERY_POLICY = {
         foreground: 'echoed-in-app',
         bellRow: true,
         replacedBy: 'global-toast',
+        anonymousActor: true,
     }),
     [enums_1.NotificationType.MEMBER_KICKED]: policy({
         foreground: 'echoed-in-app',
         bellRow: true,
         replacedBy: 'global-toast',
+        anonymousActor: true,
     }),
     [enums_1.NotificationType.ALBUM_ORGANIZER_PROMOTED]: policy({
         foreground: 'echoed-in-app',
         bellRow: true,
         replacedBy: 'global-toast',
+        anonymousActor: false,
     }),
     [enums_1.NotificationType.ALBUM_ORGANIZER_REMOVED]: policy({
         foreground: 'echoed-in-app',
         bellRow: true,
         replacedBy: 'global-toast',
+        anonymousActor: true,
     }),
     // ───────────────────────────────────────────────────────────────────────
     // Gestión de chat. NO son eco incondicional: la explicación in-app existe
@@ -279,24 +308,28 @@ exports.NOTIFICATION_DELIVERY_POLICY = {
         foreground: 'none',
         bellRow: true,
         replacedBy: 'chat-room',
+        anonymousActor: true,
     }),
     [enums_1.NotificationType.CHAT_GROUP_DELETED]: policy({
         viewing: { key: 'chatGroupId', from: CHAT_ID_SOURCES },
         foreground: 'none',
         bellRow: true,
         replacedBy: 'chat-room',
+        anonymousActor: true,
     }),
     [enums_1.NotificationType.MEMBER_PROMOTED_ADMIN]: policy({
         viewing: { key: 'chatGroupId', from: CHAT_ID_SOURCES },
         foreground: 'none',
         bellRow: true,
         replacedBy: 'chat-room',
+        anonymousActor: false,
     }),
     [enums_1.NotificationType.MEMBER_DEMOTED_ADMIN]: policy({
         viewing: { key: 'chatGroupId', from: CHAT_ID_SOURCES },
         foreground: 'none',
         bellRow: true,
         replacedBy: 'chat-room',
+        anonymousActor: true,
     }),
     // ───────────────────────────────────────────────────────────────────────
     // Se entregan SIEMPRE, y cada una por su motivo escrito.
@@ -317,6 +350,7 @@ exports.NOTIFICATION_DELIVERY_POLICY = {
         foreground: 'none',
         bellRow: true,
         replacedBy: null,
+        anonymousActor: false,
     }),
     [enums_1.NotificationType.CHAT_INVITATION]: policy({
         // La fila de la campanita trae sus propios botones aceptar/rechazar, pero
@@ -324,16 +358,19 @@ exports.NOTIFICATION_DELIVERY_POLICY = {
         foreground: 'none',
         bellRow: true,
         replacedBy: null,
+        anonymousActor: false,
     }),
     [enums_1.NotificationType.ALBUM_OWNERSHIP_TRANSFERRED]: policy({
         foreground: 'none',
         bellRow: true,
         replacedBy: null,
+        anonymousActor: true,
     }),
     [enums_1.NotificationType.CHAT_GROUP_OWNERSHIP_TRANSFERRED]: policy({
         foreground: 'none',
         bellRow: true,
         replacedBy: null,
+        anonymousActor: true,
     }),
     [enums_1.NotificationType.ALBUM_MODERATION_ALERT]: policy({
         // El activity-log está detrás del panel de organizador y no tiene badge ni
@@ -341,6 +378,7 @@ exports.NOTIFICATION_DELIVERY_POLICY = {
         foreground: 'none',
         bellRow: true,
         replacedBy: null,
+        anonymousActor: false,
     }),
     [enums_1.NotificationType.CONTENT_REMOVED_BY_ORGANIZER]: policy({
         // El post desaparece del feed sin un solo cartel. La push es la ÚNICA
@@ -349,5 +387,6 @@ exports.NOTIFICATION_DELIVERY_POLICY = {
         foreground: 'none',
         bellRow: true,
         replacedBy: null,
+        anonymousActor: true,
     }),
 };

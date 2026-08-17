@@ -71,7 +71,8 @@ const ALBUM_ID_SOURCES: readonly NotificationContextIdSource[] = [
 
 /**
  * Constructor de fila. No tiene valores por defecto para las tres decisiones
- * —`foreground`, `bellRow` y `replacedBy` son obligatorias— justamente para que
+ * —`foreground`, `bellRow`, `replacedBy` y `anonymousActor` son obligatorias—
+ * justamente para que
  * agregar un tipo obligue a pensarlas. `viewing` sí es opcional: ausente
  * significa «no depende de ninguna pantalla».
  */
@@ -83,12 +84,14 @@ const policy = (row: {
   readonly foreground: NotificationForegroundRedundancy;
   readonly bellRow: boolean;
   readonly replacedBy: NotificationInAppSurface | null;
+  readonly anonymousActor: boolean;
 }): NotificationDeliveryPolicy => ({
   redundantWhenViewing: row.viewing?.key ?? null,
   contextIdSources: row.viewing?.from ?? [],
   foregroundRedundancy: row.foreground,
   persistsBellRow: row.bellRow,
   replacedBy: row.replacedBy,
+  anonymousActor: row.anonymousActor,
 });
 
 export const NOTIFICATION_DELIVERY_POLICY: Readonly<
@@ -102,36 +105,42 @@ export const NOTIFICATION_DELIVERY_POLICY: Readonly<
     foreground: 'none',
     bellRow: true,
     replacedBy: 'post-detail',
+    anonymousActor: false,
   }),
   [NotificationType.COMMENT_PHOTO]: policy({
     viewing: { key: 'postId', from: POST_ID_SOURCES },
     foreground: 'none',
     bellRow: true,
     replacedBy: 'post-detail',
+    anonymousActor: false,
   }),
   [NotificationType.REPLY_COMMENT]: policy({
     viewing: { key: 'postId', from: POST_ID_SOURCES },
     foreground: 'none',
     bellRow: true,
     replacedBy: 'post-detail',
+    anonymousActor: false,
   }),
   [NotificationType.TAGGED_IN_PHOTO]: policy({
     viewing: { key: 'postId', from: POST_ID_SOURCES },
     foreground: 'none',
     bellRow: true,
     replacedBy: 'post-detail',
+    anonymousActor: false,
   }),
   [NotificationType.REACTION_COMMENT]: policy({
     viewing: { key: 'postId', from: REACTION_POST_ID_SOURCES },
     foreground: 'none',
     bellRow: true,
     replacedBy: 'post-detail',
+    anonymousActor: false,
   }),
   [NotificationType.REACTION_RESPONSE]: policy({
     viewing: { key: 'postId', from: REACTION_POST_ID_SOURCES },
     foreground: 'none',
     bellRow: true,
     replacedBy: 'post-detail',
+    anonymousActor: false,
   }),
 
   // ───────────────────────────────────────────────────────────────────────
@@ -143,18 +152,21 @@ export const NOTIFICATION_DELIVERY_POLICY: Readonly<
     foreground: 'none',
     bellRow: true,
     replacedBy: 'chat-room',
+    anonymousActor: false,
   }),
   [NotificationType.CHAT_MESSAGE_REPLY]: policy({
     viewing: { key: 'chatGroupId', from: CHAT_ID_SOURCES },
     foreground: 'none',
     bellRow: true,
     replacedBy: 'chat-room',
+    anonymousActor: false,
   }),
   [NotificationType.POLL_CREATED]: policy({
     viewing: { key: 'chatGroupId', from: CHAT_ID_SOURCES },
     foreground: 'none',
     bellRow: true,
     replacedBy: 'chat-room',
+    anonymousActor: true,
   }),
   [NotificationType.CHAT_MESSAGE_REACTION]: policy({
     viewing: { key: 'chatGroupId', from: CHAT_ID_SOURCES },
@@ -162,6 +174,7 @@ export const NOTIFICATION_DELIVERY_POLICY: Readonly<
     // Push-only por diseño: la reacción se pinta en vivo sobre la burbuja.
     bellRow: false,
     replacedBy: 'chat-room',
+    anonymousActor: false,
   }),
 
   // ───────────────────────────────────────────────────────────────────────
@@ -172,12 +185,14 @@ export const NOTIFICATION_DELIVERY_POLICY: Readonly<
     foreground: 'none',
     bellRow: true,
     replacedBy: 'story-viewer',
+    anonymousActor: false,
   }),
   [NotificationType.STORY_COMMENT]: policy({
     viewing: { key: 'storyId', from: STORY_ID_SOURCES },
     foreground: 'none',
     bellRow: true,
     replacedBy: 'story-viewer',
+    anonymousActor: false,
   }),
 
   // ───────────────────────────────────────────────────────────────────────
@@ -193,6 +208,7 @@ export const NOTIFICATION_DELIVERY_POLICY: Readonly<
     foreground: 'none',
     bellRow: false,
     replacedBy: 'album-moments-banner',
+    anonymousActor: false,
   }),
 
   // ───────────────────────────────────────────────────────────────────────
@@ -204,6 +220,7 @@ export const NOTIFICATION_DELIVERY_POLICY: Readonly<
     foreground: 're-engagement',
     bellRow: false,
     replacedBy: null,
+    anonymousActor: false,
   }),
   [NotificationType.HIGHLIGHTS_REMINDER]: policy({
     // Los DOS ejes, y no es contradicción: como re-enganche se calla en
@@ -215,6 +232,7 @@ export const NOTIFICATION_DELIVERY_POLICY: Readonly<
     foreground: 're-engagement',
     bellRow: false,
     replacedBy: 'album-feed',
+    anonymousActor: false,
   }),
 
   // ───────────────────────────────────────────────────────────────────────
@@ -232,36 +250,43 @@ export const NOTIFICATION_DELIVERY_POLICY: Readonly<
     foreground: 'self-confirmed',
     bellRow: false,
     replacedBy: 'transfer-on-content',
+    anonymousActor: false,
   }),
   [NotificationType.PROFESSIONAL_PHOTOS_UPLOAD_READY]: policy({
     foreground: 'self-confirmed',
     bellRow: false,
     replacedBy: 'transfer-on-content',
+    anonymousActor: false,
   }),
   [NotificationType.STORY_UPLOAD_READY]: policy({
     foreground: 'self-confirmed',
     bellRow: false,
     replacedBy: 'transfer-on-content',
+    anonymousActor: false,
   }),
   [NotificationType.DOWNLOAD_READY]: policy({
     foreground: 'self-confirmed',
     bellRow: false,
     replacedBy: 'transfer-on-content',
+    anonymousActor: false,
   }),
   [NotificationType.GUEST_POST_UPLOAD_FAILED]: policy({
     foreground: 'self-confirmed',
     bellRow: false,
     replacedBy: 'transfer-on-content',
+    anonymousActor: false,
   }),
   [NotificationType.PROFESSIONAL_PHOTOS_UPLOAD_FAILED]: policy({
     foreground: 'self-confirmed',
     bellRow: false,
     replacedBy: 'transfer-on-content',
+    anonymousActor: false,
   }),
   [NotificationType.STORY_UPLOAD_FAILED]: policy({
     foreground: 'self-confirmed',
     bellRow: false,
     replacedBy: 'transfer-on-content',
+    anonymousActor: false,
   }),
   [NotificationType.CHAT_MEDIA_UPLOAD_FAILED]: policy({
     // El sustituto es la burbuja optimista, que se pinta en error con su
@@ -270,6 +295,7 @@ export const NOTIFICATION_DELIVERY_POLICY: Readonly<
     foreground: 'self-confirmed',
     bellRow: false,
     replacedBy: 'chat-message-bubble',
+    anonymousActor: false,
   }),
 
   // ───────────────────────────────────────────────────────────────────────
@@ -282,21 +308,25 @@ export const NOTIFICATION_DELIVERY_POLICY: Readonly<
     foreground: 'echoed-in-app',
     bellRow: true,
     replacedBy: 'global-toast',
+    anonymousActor: true,
   }),
   [NotificationType.MEMBER_KICKED]: policy({
     foreground: 'echoed-in-app',
     bellRow: true,
     replacedBy: 'global-toast',
+    anonymousActor: true,
   }),
   [NotificationType.ALBUM_ORGANIZER_PROMOTED]: policy({
     foreground: 'echoed-in-app',
     bellRow: true,
     replacedBy: 'global-toast',
+    anonymousActor: false,
   }),
   [NotificationType.ALBUM_ORGANIZER_REMOVED]: policy({
     foreground: 'echoed-in-app',
     bellRow: true,
     replacedBy: 'global-toast',
+    anonymousActor: true,
   }),
 
   // ───────────────────────────────────────────────────────────────────────
@@ -310,24 +340,28 @@ export const NOTIFICATION_DELIVERY_POLICY: Readonly<
     foreground: 'none',
     bellRow: true,
     replacedBy: 'chat-room',
+    anonymousActor: true,
   }),
   [NotificationType.CHAT_GROUP_DELETED]: policy({
     viewing: { key: 'chatGroupId', from: CHAT_ID_SOURCES },
     foreground: 'none',
     bellRow: true,
     replacedBy: 'chat-room',
+    anonymousActor: true,
   }),
   [NotificationType.MEMBER_PROMOTED_ADMIN]: policy({
     viewing: { key: 'chatGroupId', from: CHAT_ID_SOURCES },
     foreground: 'none',
     bellRow: true,
     replacedBy: 'chat-room',
+    anonymousActor: false,
   }),
   [NotificationType.MEMBER_DEMOTED_ADMIN]: policy({
     viewing: { key: 'chatGroupId', from: CHAT_ID_SOURCES },
     foreground: 'none',
     bellRow: true,
     replacedBy: 'chat-room',
+    anonymousActor: true,
   }),
 
   // ───────────────────────────────────────────────────────────────────────
@@ -349,6 +383,7 @@ export const NOTIFICATION_DELIVERY_POLICY: Readonly<
     foreground: 'none',
     bellRow: true,
     replacedBy: null,
+    anonymousActor: false,
   }),
   [NotificationType.CHAT_INVITATION]: policy({
     // La fila de la campanita trae sus propios botones aceptar/rechazar, pero
@@ -356,16 +391,19 @@ export const NOTIFICATION_DELIVERY_POLICY: Readonly<
     foreground: 'none',
     bellRow: true,
     replacedBy: null,
+    anonymousActor: false,
   }),
   [NotificationType.ALBUM_OWNERSHIP_TRANSFERRED]: policy({
     foreground: 'none',
     bellRow: true,
     replacedBy: null,
+    anonymousActor: true,
   }),
   [NotificationType.CHAT_GROUP_OWNERSHIP_TRANSFERRED]: policy({
     foreground: 'none',
     bellRow: true,
     replacedBy: null,
+    anonymousActor: true,
   }),
   [NotificationType.ALBUM_MODERATION_ALERT]: policy({
     // El activity-log está detrás del panel de organizador y no tiene badge ni
@@ -373,6 +411,7 @@ export const NOTIFICATION_DELIVERY_POLICY: Readonly<
     foreground: 'none',
     bellRow: true,
     replacedBy: null,
+    anonymousActor: false,
   }),
   [NotificationType.CONTENT_REMOVED_BY_ORGANIZER]: policy({
     // El post desaparece del feed sin un solo cartel. La push es la ÚNICA
@@ -381,5 +420,6 @@ export const NOTIFICATION_DELIVERY_POLICY: Readonly<
     foreground: 'none',
     bellRow: true,
     replacedBy: null,
+    anonymousActor: true,
   }),
 };
