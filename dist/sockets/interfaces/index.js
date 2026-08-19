@@ -60,7 +60,6 @@ __exportStar(require("./story-comment-created-payload.interface"), exports);
 __exportStar(require("./story-poll-closed-payload.interface"), exports);
 __exportStar(require("./story-poll-results-payload.interface"), exports);
 __exportStar(require("./story-room-payload.interface"), exports);
-__exportStar(require("./story-tag-removed-payload.interface"), exports);
 __exportStar(require("./story-view-count-updated-payload.interface"), exports);
 __exportStar(require("./tag-added-payload.interface"), exports);
 __exportStar(require("./tag-removed-payload.interface"), exports);

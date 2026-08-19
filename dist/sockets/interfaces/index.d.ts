@@ -44,7 +44,6 @@ export * from './story-comment-created-payload.interface';
 export * from './story-poll-closed-payload.interface';
 export * from './story-poll-results-payload.interface';
 export * from './story-room-payload.interface';
-export * from './story-tag-removed-payload.interface';
 export * from './story-view-count-updated-payload.interface';
 export * from './tag-added-payload.interface';
 export * from './tag-removed-payload.interface';

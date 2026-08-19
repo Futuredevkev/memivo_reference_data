@@ -15,6 +15,7 @@ var NotificationType;
     NotificationType["MEMBER_KICKED"] = "MEMBER_KICKED";
     NotificationType["CHAT_MEMBER_KICKED"] = "CHAT_MEMBER_KICKED";
     NotificationType["ALBUM_DELETED"] = "ALBUM_DELETED";
+    NotificationType["ALBUM_HIDDEN"] = "ALBUM_HIDDEN";
     NotificationType["CHAT_GROUP_DELETED"] = "CHAT_GROUP_DELETED";
     NotificationType["MEMBER_PROMOTED_ADMIN"] = "MEMBER_PROMOTED_ADMIN";
     NotificationType["MEMBER_DEMOTED_ADMIN"] = "MEMBER_DEMOTED_ADMIN";

@@ -19,6 +19,7 @@ import type { StoryNotificationMetadata } from './story-notification-metadata.in
 import type { StoryUploadNotificationMetadata } from './story-upload-notification-metadata.interface';
 export type NotificationMetadataByType = {
     [NotificationType.ALBUM_DELETED]: AlbumNotificationMetadata;
+    [NotificationType.ALBUM_HIDDEN]: AlbumNotificationMetadata;
     [NotificationType.MEMBER_KICKED]: AlbumNotificationMetadata;
     [NotificationType.ALBUM_ORGANIZER_PROMOTED]: AlbumNotificationMetadata;
     [NotificationType.ALBUM_ORGANIZER_REMOVED]: AlbumNotificationMetadata;

@@ -23,7 +23,5 @@ var PhotoErrorCode;
     PhotoErrorCode["UPLOAD_ALL_FAILED"] = "UPLOAD_ALL_FAILED";
     PhotoErrorCode["UPLOAD_ALBUM_MISMATCH"] = "UPLOAD_ALBUM_MISMATCH";
     // Media Types
-    PhotoErrorCode["VIDEO_NOT_FOUND"] = "VIDEO_NOT_FOUND";
     PhotoErrorCode["IMAGE_NOT_FOUND"] = "IMAGE_NOT_FOUND";
-    PhotoErrorCode["AUDIO_NOT_FOUND"] = "AUDIO_NOT_FOUND";
 })(PhotoErrorCode || (exports.PhotoErrorCode = PhotoErrorCode = {}));

@@ -285,6 +285,19 @@ exports.NOTIFICATION_DELIVERY_POLICY = {
         replacedBy: 'global-toast',
         anonymousActor: true,
     }),
+    // ───────────────────────────────────────────────────────────────────────
+    // El álbum pasó a privado y perdiste el acceso. NO es eco: el álbum
+    // desaparece de la lista sin un solo cartel, y el toast que antes lo
+    // decía se borró justamente porque esta fila lo reemplaza —dos avisos por
+    // el mismo hecho es lo que ORDEN §9 prohíbe—. O sea que acá la push es el
+    // único aviso, y por eso `foreground: 'none'` y `replacedBy: null`.
+    // ───────────────────────────────────────────────────────────────────────
+    [enums_1.NotificationType.ALBUM_HIDDEN]: policy({
+        foreground: 'none',
+        bellRow: true,
+        replacedBy: null,
+        anonymousActor: true,
+    }),
     [enums_1.NotificationType.ALBUM_ORGANIZER_PROMOTED]: policy({
         foreground: 'echoed-in-app',
         bellRow: true,

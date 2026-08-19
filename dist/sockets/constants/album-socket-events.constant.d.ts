@@ -16,7 +16,6 @@ export declare const ALBUM_SOCKET_EVENTS: {
         readonly TAG_ADDED: "tag-added";
         readonly TAGS_ADDED: "tags-added";
         readonly TAG_REMOVED: "tag-removed";
-        readonly STORY_TAG_REMOVED: "story.tag-removed";
         readonly PARTICIPANT_JOINED: "participant-joined";
         readonly HIGHLIGHTS_UPDATED: "highlights-updated";
         readonly MEMIVO_MOMENTS_UPDATED: "memivo.moments-updated";

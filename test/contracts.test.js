@@ -58,11 +58,26 @@ const social = require('../dist/social/index.js');
 //     más grande que ellos — `StoryUntaggedEvent` tiene DOS listeners y CERO
 //     emisores, así que el `STORY_TAG_REMOVED` que el cliente escucha no puede
 //     llegar nunca. Eso es una decisión de producto (¿se cablea o se borra?) y
-//     no se toma acá.
-test('el catálogo consolidado expone 187 códigos de error únicos', () => {
+//     no se toma acá. **Se decidió: SE BORRA**, y lo ejecutaron B29 (los dos
+//     repos) y la v8.0.0 (el evento y su payload en el paquete).
+// Ola B30: −3, y los tres son la misma clase que los siete de arriba, pagada
+// tres olas más tarde porque acá sacarlos es BREAKING y hasta la v8.0.0 no
+// había dónde. `audit:consumers` los venía acusando y su `EXIT=1` no lo miraba
+// nadie, porque este `quality` no lo corría ningún repo (N-198, N-365).
+//   · `ALBUM_PRIVATE`: B17 colapsó las tres causas de ausencia de álbum en una
+//     sola voz —«no existe» contra «existe pero no podés verlo» delataba el
+//     bloqueo— y desde entonces el api no lo emite. El cliente lo tenía en su
+//     tabla de voz de ausencia mapeado al texto único, o sea que ya no decía
+//     nada propio.
+//   · `VIDEO_NOT_FOUND` y `AUDIO_NOT_FOUND` (N-285): los emitían sólo
+//     `validateVideoFile` / `validateAudioFile`, las dos ramas de `uploadFile`
+//     que producción no puede alcanzar (por ahí sólo pasan imágenes; video y
+//     audio suben por el intent firmado). `IMAGE_NOT_FOUND`, su hermano, SÍ
+//     tiene emisor y se queda.
+test('el catálogo consolidado expone 184 códigos de error únicos', () => {
   const values = Object.values(errors.ErrorCode);
 
-  assert.equal(values.length, 187);
+  assert.equal(values.length, 184);
   assert.equal(new Set(values).size, values.length);
 });
 

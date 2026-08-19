@@ -154,9 +154,7 @@ export declare const ErrorCode: {
     readonly PHOTO_TAG_NOT_FOUND: PhotoErrorCode.PHOTO_TAG_NOT_FOUND;
     readonly UPLOAD_ALL_FAILED: PhotoErrorCode.UPLOAD_ALL_FAILED;
     readonly UPLOAD_ALBUM_MISMATCH: PhotoErrorCode.UPLOAD_ALBUM_MISMATCH;
-    readonly VIDEO_NOT_FOUND: PhotoErrorCode.VIDEO_NOT_FOUND;
     readonly IMAGE_NOT_FOUND: PhotoErrorCode.IMAGE_NOT_FOUND;
-    readonly AUDIO_NOT_FOUND: PhotoErrorCode.AUDIO_NOT_FOUND;
     readonly FOLDER_NOT_FOUND: FolderErrorCode.FOLDER_NOT_FOUND;
     readonly FOLDER_ORGANIZER_REQUIRED: FolderErrorCode.FOLDER_ORGANIZER_REQUIRED;
     readonly FOLDER_NAME_CONFLICT: FolderErrorCode.FOLDER_NAME_CONFLICT;
@@ -164,7 +162,6 @@ export declare const ErrorCode: {
     readonly FOLDER_ALBUM_MISMATCH: FolderErrorCode.FOLDER_ALBUM_MISMATCH;
     readonly FOLDER_COVER_PHOTO_INVALID: FolderErrorCode.FOLDER_COVER_PHOTO_INVALID;
     readonly ALBUM_NOT_FOUND: AlbumErrorCode.ALBUM_NOT_FOUND;
-    readonly ALBUM_PRIVATE: AlbumErrorCode.ALBUM_PRIVATE;
     readonly ALBUM_PERMISSION_DENIED: AlbumErrorCode.ALBUM_PERMISSION_DENIED;
     readonly ALBUM_OWNER_REQUIRED: AlbumErrorCode.ALBUM_OWNER_REQUIRED;
     readonly ALBUM_ORGANIZER_REQUIRED: AlbumErrorCode.ALBUM_ORGANIZER_REQUIRED;

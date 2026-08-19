@@ -7,7 +7,6 @@ exports.AlbumErrorCode = void 0;
 var AlbumErrorCode;
 (function (AlbumErrorCode) {
     AlbumErrorCode["ALBUM_NOT_FOUND"] = "ALBUM_NOT_FOUND";
-    AlbumErrorCode["ALBUM_PRIVATE"] = "ALBUM_PRIVATE";
     AlbumErrorCode["ALBUM_PERMISSION_DENIED"] = "ALBUM_PERMISSION_DENIED";
     AlbumErrorCode["ALBUM_OWNER_REQUIRED"] = "ALBUM_OWNER_REQUIRED";
     AlbumErrorCode["ALBUM_ORGANIZER_REQUIRED"] = "ALBUM_ORGANIZER_REQUIRED";
