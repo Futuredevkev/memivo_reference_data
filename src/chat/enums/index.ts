@@ -1,3 +1,6 @@
+export * from './chat-content-binding.enum';
+export * from './chat-content-origin.enum';
+export * from './chat-content-payload.enum';
 export * from './chat-member-role.enum';
 export * from './chat-member-status.enum';
 export * from './chat-message-type.enum';

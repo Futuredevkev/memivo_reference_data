@@ -74,10 +74,15 @@ const social = require('../dist/social/index.js');
 //     que producción no puede alcanzar (por ahí sólo pasan imágenes; video y
 //     audio suben por el intent firmado). `IMAGE_NOT_FOUND`, su hermano, SÍ
 //     tiene emisor y se queda.
-test('el catálogo consolidado expone 184 códigos de error únicos', () => {
+//   · `CHAT_MESSAGE_NOT_RELOCATABLE` (N1a): el que suma el reenvío. Lo tira el
+//     endpoint cuando el contenido no puede mudarse de chat —lo construyó la
+//     app, o un estado suyo lo ata a su sala—, y sólo es alcanzable con una
+//     request armada a mano: la app pregunta por la misma puerta antes de
+//     ofrecer el botón.
+test('el catálogo consolidado expone 185 códigos de error únicos', () => {
   const values = Object.values(errors.ErrorCode);
 
-  assert.equal(values.length, 184);
+  assert.equal(values.length, 185);
   assert.equal(new Set(values).size, values.length);
 });
 

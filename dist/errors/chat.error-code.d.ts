@@ -9,6 +9,14 @@ export declare enum ChatErrorCode {
     CHAT_MEDIA_MISMATCH = "CHAT_MEDIA_MISMATCH",
     CHAT_MESSAGE_EMPTY = "CHAT_MESSAGE_EMPTY",
     CHAT_MESSAGE_SEND_FAILED = "CHAT_MESSAGE_SEND_FAILED",
+    /**
+     * El mensaje no puede mudarse a otro chat: o lo construyó la app —un
+     * aviso de sistema, una encuesta— o está atado a su chat por un estado
+     * suyo, como el view-once. Quién cae de cada lado lo decide
+     * `CHAT_CONTENT_RELOCATION_BY_TYPE`, y la app pregunta ANTES de ofrecer
+     * el botón: llegar acá significa una request armada a mano.
+     */
+    CHAT_MESSAGE_NOT_RELOCATABLE = "CHAT_MESSAGE_NOT_RELOCATABLE",
     CHAT_VIDEO_TOO_LONG = "CHAT_VIDEO_TOO_LONG",
     CHAT_AUDIO_TOO_LONG = "CHAT_AUDIO_TOO_LONG",
     CHAT_MESSAGE_EDIT_FAILED = "CHAT_MESSAGE_EDIT_FAILED",

@@ -23,6 +23,20 @@ export interface ChatMessageResponse<TTimestamp = string> {
     content: string | null;
     type: ChatMessageType;
     isEdited: boolean;
+    /**
+     * El mensaje llegó a este chat REENVIADO desde otro.
+     *
+     * Requerido y no opcional: todo mensaje es o no es un reenvío, y un
+     * opcional deja la tercera opción —`undefined`— que ningún consumidor
+     * sabe pintar. Es el mismo criterio con el que `isEdited` viaja al lado.
+     *
+     * **No dice de dónde ni de quién, y eso es la decisión, no una carencia**:
+     * el rótulo avisa que lo que estás leyendo no lo escribió quien te lo
+     * mandó, que es lo que hace falta para no atribuirle palabras ajenas.
+     * Nombrar al autor original metería su identidad en una sala donde no
+     * está y donde podría haber alguien que lo bloqueó.
+     */
+    isForwarded: boolean;
     created_at: TTimestamp;
     sender?: ChatUserSummary | null;
     files?: ChatMessageFileResponse[];
