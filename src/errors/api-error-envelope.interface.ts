@@ -43,13 +43,16 @@ export interface ApiErrorEnvelope {
   expiresAt?: string | null;
   /**
    * Sólo presente cuando errorCode === AUTH_NOT_VERIFIED: es lo que el cliente
-   * canjea por un reenvío del código de verificación, y el 401 del login es su
-   * ÚNICO canal (`memivo_client/src/store/auth/authFlowSlice.ts`).
+   * canjea por un reenvío del código de verificación.
    *
-   * Se declara acá porque ya viajaba: la política del api lo autorizaba desde
-   * que existe la lista cerrada, y esta interfaz no lo decía. Mientras eso fue
-   * así, el api publicaba un campo que el sobre negaba tener y el cliente lo
-   * leía con una forma escrita a mano — el mismo hecho en tres lugares.
+   * ── VIAJA POR DOS CANALES Y SÓLO UNO ESTABA DECLARADO ───────────────────
+   * El REGISTRO lo devuelve en su respuesta de ÉXITO, y eso el contrato ya lo
+   * decía: {@link AuthResponse}. El LOGIN de una cuenta sin verificar lo
+   * devuelve en el body de un 401, y ése era el canal que nadie declaraba —el
+   * api lo autorizaba en su política de reenvío y esta interfaz lo negaba—, así
+   * que el cliente lo leía con una forma escrita a mano. Los dos caminos
+   * terminan en `memivo_client/src/store/auth/authFlowSlice.ts`. Declararlo acá
+   * empareja los dos canales bajo el mismo contrato.
    */
   registrationChallengeToken?: string;
 }
