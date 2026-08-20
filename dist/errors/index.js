@@ -63,3 +63,4 @@ __exportStar(require("./error-code.constant"), exports);
 __exportStar(require("./api-error-envelope.interface"), exports);
 __exportStar(require("./api-success-envelope.interface"), exports);
 __exportStar(require("./reserved-error-body-keys.constant"), exports);
+__exportStar(require("./forwardable-error-fields.type"), exports);

@@ -52,3 +52,4 @@ export * from './error-code.constant';
 export * from './api-error-envelope.interface';
 export * from './api-success-envelope.interface';
 export * from './reserved-error-body-keys.constant';
+export * from './forwardable-error-fields.type';
