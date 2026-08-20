@@ -406,9 +406,19 @@ exports.NOTIFICATION_DELIVERY_POLICY = {
         foreground: 'none',
         bellRow: true,
         replacedBy: null,
-        // No hay actor: lo emite un cron, no una persona. `false` acá significa
-        // «no se oculta a nadie», que es lo correcto cuando no hay nadie que ocultar.
-        anonymousActor: false,
+        // `true` PORQUE NO HAY ACTOR, y es el único caso de la tabla con ese
+        // motivo: lo emite un cron, no una persona. La columna `actorId` es NOT
+        // NULL, así que la fila tiene que nombrar a alguien y nombra al propio
+        // dueño; sin este `true` el servidor serializaría ese actor y la campanita
+        // dibujaría el nombre del dueño en negrita delante de un hecho que nadie
+        // hizo — «Ada Lovelace El código de Cumple vence pronto».
+        //
+        // El eje dice «la identidad de quien la disparó no le llega al
+        // destinatario», y acá se cumple por la vía más fuerte: no hay identidad
+        // que llegar. Se decide en la tabla y no en el cliente a propósito — que
+        // una superficie decida por su cuenta no dibujar el actor sería el segundo
+        // lugar que ORDEN §1 prohíbe.
+        anonymousActor: true,
     }),
     [enums_1.NotificationType.CONTENT_REMOVED_BY_ORGANIZER]: policy({
         // El post desaparece del feed sin un solo cartel. La push es la ÚNICA
