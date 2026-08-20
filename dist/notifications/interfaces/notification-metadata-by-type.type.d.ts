@@ -28,6 +28,7 @@ export type NotificationMetadataByType = {
     [NotificationType.PROFESSIONAL_PHOTOS_UPLOAD_FAILED]: AlbumNotificationMetadata;
     [NotificationType.STORY_UPLOAD_FAILED]: AlbumNotificationMetadata;
     [NotificationType.HIGHLIGHTS_REMINDER]: AlbumNotificationMetadata;
+    [NotificationType.ALBUM_QR_CODE_EXPIRING]: AlbumNotificationMetadata;
     [NotificationType.ALBUM_MODERATION_ALERT]: AlbumModerationAlertMetadata;
     [NotificationType.CONTENT_REMOVED_BY_ORGANIZER]: ContentRemovedByOrganizerMetadata;
     [NotificationType.PROFESSIONAL_PHOTOS_UPLOADED]: CountedAlbumMetadata;

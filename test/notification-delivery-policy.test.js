@@ -171,15 +171,15 @@ test('las push-only silenciadas en foreground son exactamente las esperadas', ()
   ].sort());
 });
 
-test('los tipos que dejan fila en la campanita son 26 de 38', () => {
+test('los tipos que dejan fila en la campanita son 27 de 39', () => {
   const withBellRow = entries().filter(([, policy]) => policy.persistsBellRow);
 
   // El número de la izquierda importa más que el de la derecha: un tipo nuevo
   // que NO deja fila es push-only, o sea que suprimirlo pierde el evento para
   // siempre. Que los dos suban juntos es lo esperable; que suba sólo el total
   // es una decisión que alguien tiene que haber tomado a conciencia.
-  assert.equal(entries().length, 38);
-  assert.equal(withBellRow.length, 26);
+  assert.equal(entries().length, 39);
+  assert.equal(withBellRow.length, 27);
 });
 
 test('getNotificationDeliveryPolicy devuelve null ante un tipo desconocido', () => {

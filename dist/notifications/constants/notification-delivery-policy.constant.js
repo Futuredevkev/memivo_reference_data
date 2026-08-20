@@ -393,6 +393,23 @@ exports.NOTIFICATION_DELIVERY_POLICY = {
         replacedBy: null,
         anonymousActor: false,
     }),
+    [enums_1.NotificationType.ALBUM_QR_CODE_EXPIRING]: policy({
+        // El único aviso que existe sobre un código por vencer. No hay superficie
+        // in-app que lo diga sola: el vencimiento se dibuja adentro del modal del
+        // QR, o sea a dos toques de distancia y sólo si el dueño entra a mirarlo
+        // sin motivo. Por eso NO se suprime por nada — ni por foreground ni por
+        // tener el álbum abierto, que es justo donde el dato no está.
+        //
+        // Y el eje de `viewing` no aplica aunque el tipo sea álbum-scoped: estar
+        // adentro del álbum no te muestra el vencimiento de su código. Declararlo
+        // redundante con esa pantalla sería nombrar un sustituto que no sustituye.
+        foreground: 'none',
+        bellRow: true,
+        replacedBy: null,
+        // No hay actor: lo emite un cron, no una persona. `false` acá significa
+        // «no se oculta a nadie», que es lo correcto cuando no hay nadie que ocultar.
+        anonymousActor: false,
+    }),
     [enums_1.NotificationType.CONTENT_REMOVED_BY_ORGANIZER]: policy({
         // El post desaparece del feed sin un solo cartel. La push es la ÚNICA
         // explicación de que fue moderación y no un bug. Suprimirla exige antes

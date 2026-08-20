@@ -41,4 +41,5 @@ var NotificationType;
     NotificationType["CHAT_MEDIA_UPLOAD_FAILED"] = "CHAT_MEDIA_UPLOAD_FAILED";
     NotificationType["ALBUM_MODERATION_ALERT"] = "ALBUM_MODERATION_ALERT";
     NotificationType["CONTENT_REMOVED_BY_ORGANIZER"] = "CONTENT_REMOVED_BY_ORGANIZER";
+    NotificationType["ALBUM_QR_CODE_EXPIRING"] = "ALBUM_QR_CODE_EXPIRING";
 })(NotificationType || (exports.NotificationType = NotificationType = {}));
