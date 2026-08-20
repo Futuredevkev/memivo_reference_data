@@ -25,7 +25,8 @@ import type { ChatContentRelocationRule } from '../interfaces';
  * *Se muda lo que la PERSONA mandó, no lo que la APP construyó.* Si el mensaje
  * lo armó la app a partir de un hecho de ESE chat, `APP` y se terminó. Si lo
  * escribió, grabó o eligió alguien, `PERSON` — y entonces hay que contestar qué
- * carga (para poder volver a autorizarla en el destino) y qué estados lo atan
- * igual a su chat.
+ * estados lo atan igual a su chat. **Qué CARGA lleva no se contesta acá**: eso
+ * lo dice `CHAT_MESSAGE_CONTENT_BY_TYPE`, que es la tabla que también gobierna
+ * el pipeline de subida, y la puerta lo lee de ahí para no declararlo dos veces.
  */
 export declare const CHAT_CONTENT_RELOCATION_BY_TYPE: Record<ChatMessageType, ChatContentRelocationRule>;

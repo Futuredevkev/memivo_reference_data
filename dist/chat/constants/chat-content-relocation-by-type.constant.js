@@ -27,32 +27,45 @@ const enums_1 = require("../enums");
  * *Se muda lo que la PERSONA mandó, no lo que la APP construyó.* Si el mensaje
  * lo armó la app a partir de un hecho de ESE chat, `APP` y se terminó. Si lo
  * escribió, grabó o eligió alguien, `PERSON` — y entonces hay que contestar qué
- * carga (para poder volver a autorizarla en el destino) y qué estados lo atan
- * igual a su chat.
+ * estados lo atan igual a su chat. **Qué CARGA lleva no se contesta acá**: eso
+ * lo dice `CHAT_MESSAGE_CONTENT_BY_TYPE`, que es la tabla que también gobierna
+ * el pipeline de subida, y la puerta lo lee de ahí para no declararlo dos veces.
  */
 exports.CHAT_CONTENT_RELOCATION_BY_TYPE = {
     // Texto propio: no hay nada más que autorizar en el destino.
     [enums_1.ChatMessageType.TEXT]: {
         origin: enums_1.ChatContentOrigin.PERSON,
-        carries: enums_1.ChatContentPayload.NONE,
         boundBy: [],
     },
     // Los tres de media comparten regla porque comparten el problema: llevan
     // archivos, y pueden venir marcados para verse una sola vez.
     [enums_1.ChatMessageType.IMAGE]: {
         origin: enums_1.ChatContentOrigin.PERSON,
-        carries: enums_1.ChatContentPayload.FILES,
         boundBy: [enums_1.ChatContentBinding.VIEW_ONCE],
     },
     [enums_1.ChatMessageType.VIDEO]: {
         origin: enums_1.ChatContentOrigin.PERSON,
-        carries: enums_1.ChatContentPayload.FILES,
         boundBy: [enums_1.ChatContentBinding.VIEW_ONCE],
     },
     [enums_1.ChatMessageType.AUDIO]: {
         origin: enums_1.ChatContentOrigin.PERSON,
-        carries: enums_1.ChatContentPayload.FILES,
         boundBy: [enums_1.ChatContentBinding.VIEW_ONCE],
+    },
+    /**
+     * El documento lo mandó una persona, así que se muda — la regla de ORIGEN no
+     * distingue entre una foto y un `.pdf`, y no tiene por qué: en los dos casos
+     * lo que llega al destino son archivos del mismo álbum, que ya se
+     * referencian sin volver a subirse.
+     *
+     * `boundBy` VACÍO, y no es un olvido: un documento **no puede ser
+     * view-once**. El servidor rechaza esa combinación en el alta, así que
+     * declarar `VIEW_ONCE` acá dejaría una rama que producción no puede alcanzar
+     * (ORDEN §7) — y el rechazo del alta y esta lista leen el mismo dato, así
+     * que no hay forma de que se contradigan.
+     */
+    [enums_1.ChatMessageType.DOCUMENT]: {
+        origin: enums_1.ChatContentOrigin.PERSON,
+        boundBy: [],
     },
     // El post lo eligió una persona, y en el destino se vuelve a resolver: a qué
     // álbum pertenece y si hay bloqueo con su autor. La vista previa ya se pinta
@@ -61,7 +74,6 @@ exports.CHAT_CONTENT_RELOCATION_BY_TYPE = {
     // podría abrir por su cuenta.
     [enums_1.ChatMessageType.SHARED_POST]: {
         origin: enums_1.ChatContentOrigin.PERSON,
-        carries: enums_1.ChatContentPayload.SHARED_POST,
         boundBy: [],
     },
     // Una encuesta ES de su chat: sus votos y su cierre viven ahí. Mudarla

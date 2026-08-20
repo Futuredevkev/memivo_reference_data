@@ -8,6 +8,7 @@ export * from './chat-invite-members-response.interface';
 export * from './chat-member-mutation-response.interface';
 export * from './chat-member-response.interface';
 export * from './chat-members-response.type';
+export * from './chat-message-content-rule.interface';
 export * from './chat-message-context-meta.interface';
 export * from './chat-message-context-response.interface';
 export * from './chat-message-response.interface';

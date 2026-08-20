@@ -18,5 +18,13 @@ import type { ChatRelocationVerdict } from '../types';
  *
  * Lee el mensaje entero y no sólo su `type` porque el tipo no alcanza: un
  * view-once es un `IMAGE` con una bandera puesta.
+ *
+ * LA CARGA SALE DEL CATÁLOGO Y NO DE LA REGLA. Son dos tablas y contestan
+ * preguntas distintas —`CHAT_CONTENT_RELOCATION_BY_TYPE` dice si se muda,
+ * `CHAT_MESSAGE_CONTENT_BY_TYPE` dice qué lleva adentro—, y la segunda existe
+ * porque el pipeline de subida necesita la misma respuesta. Antes la carga
+ * estaba declarada en las dos, que es la duplicación que §1 no permite; ahora
+ * se declara una vez y la puerta la devuelve adentro del veredicto para que el
+ * ejecutor de la mudanza no tenga que volver a mirar el `type`.
  */
 export declare const canRelocateChatContent: (message: RelocatableChatMessage) => ChatRelocationVerdict;

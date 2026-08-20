@@ -7,6 +7,7 @@ var ChatMessageType;
     ChatMessageType["IMAGE"] = "IMAGE";
     ChatMessageType["VIDEO"] = "VIDEO";
     ChatMessageType["AUDIO"] = "AUDIO";
+    ChatMessageType["DOCUMENT"] = "DOCUMENT";
     ChatMessageType["POLL"] = "POLL";
     ChatMessageType["SYSTEM"] = "SYSTEM";
     ChatMessageType["SHARED_POST"] = "SHARED_POST";

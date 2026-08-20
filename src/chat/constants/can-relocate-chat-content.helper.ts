@@ -1,5 +1,6 @@
 import { CHAT_CONTENT_BINDING_HOLDS } from './chat-content-binding-holds.constant';
 import { CHAT_CONTENT_RELOCATION_BY_TYPE } from './chat-content-relocation-by-type.constant';
+import { CHAT_MESSAGE_CONTENT_BY_TYPE } from './chat-message-content-by-type.constant';
 import { ChatContentOrigin } from '../enums';
 import type { RelocatableChatMessage } from '../interfaces';
 import type { ChatRelocationVerdict } from '../types';
@@ -22,6 +23,14 @@ import type { ChatRelocationVerdict } from '../types';
  *
  * Lee el mensaje entero y no sólo su `type` porque el tipo no alcanza: un
  * view-once es un `IMAGE` con una bandera puesta.
+ *
+ * LA CARGA SALE DEL CATÁLOGO Y NO DE LA REGLA. Son dos tablas y contestan
+ * preguntas distintas —`CHAT_CONTENT_RELOCATION_BY_TYPE` dice si se muda,
+ * `CHAT_MESSAGE_CONTENT_BY_TYPE` dice qué lleva adentro—, y la segunda existe
+ * porque el pipeline de subida necesita la misma respuesta. Antes la carga
+ * estaba declarada en las dos, que es la duplicación que §1 no permite; ahora
+ * se declara una vez y la puerta la devuelve adentro del veredicto para que el
+ * ejecutor de la mudanza no tenga que volver a mirar el `type`.
  */
 export const canRelocateChatContent = (
   message: RelocatableChatMessage,
@@ -34,5 +43,8 @@ export const canRelocateChatContent = (
   );
   if (isBound) return { allowed: false };
 
-  return { allowed: true, carries: rule.carries };
+  return {
+    allowed: true,
+    carries: CHAT_MESSAGE_CONTENT_BY_TYPE[message.type].payload,
+  };
 };

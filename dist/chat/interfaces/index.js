@@ -24,6 +24,7 @@ __exportStar(require("./chat-invite-members-response.interface"), exports);
 __exportStar(require("./chat-member-mutation-response.interface"), exports);
 __exportStar(require("./chat-member-response.interface"), exports);
 __exportStar(require("./chat-members-response.type"), exports);
+__exportStar(require("./chat-message-content-rule.interface"), exports);
 __exportStar(require("./chat-message-context-meta.interface"), exports);
 __exportStar(require("./chat-message-context-response.interface"), exports);
 __exportStar(require("./chat-message-response.interface"), exports);
