@@ -76,6 +76,28 @@ exports.CHAT_CONTENT_RELOCATION_BY_TYPE = {
         origin: enums_1.ChatContentOrigin.PERSON,
         boundBy: [],
     },
+    /**
+     * La ubicación la eligió una persona, así que por ORIGEN se muda — pero
+     * **sólo la fija**, y ahí está todo el filo de este tipo.
+     *
+     * ── «EN VIVO» NO ES UN TIPO, ES UN ESTADO ────────────────────────────────
+     * Una política que mirara sólo el `type` reenviaría las dos variantes, y la
+     * segunda no es un dato: es un CANAL abierto. Un punto fijo es la foto de un
+     * mapa —quien lo recibe ve dónde estuvo alguien en un momento— y un
+     * compartir en vivo reenviado **transmitiría la posición en tiempo real de
+     * una persona a gente que esa persona nunca eligió**. Decisión del dueño del
+     * 16 de agosto, y es la misma clase de trampa que el view-once: la diferencia
+     * no vive en el `type` sino en un estado de la fila, y por eso se declara con
+     * `ChatContentBinding` y no con un tipo aparte.
+     *
+     * Un `LOCATION_LIVE` como noveno miembro del enum habría sido la otra salida
+     * y es peor: duplicaría cada entrada de las seis tablas por tipo para
+     * expresar un estado que sólo importa en ESTA pregunta.
+     */
+    [enums_1.ChatMessageType.LOCATION]: {
+        origin: enums_1.ChatContentOrigin.PERSON,
+        boundBy: [enums_1.ChatContentBinding.LIVE],
+    },
     // Una encuesta ES de su chat: sus votos y su cierre viven ahí. Mudarla
     // partiría los votos entre dos salas o los filtraría de una a la otra.
     [enums_1.ChatMessageType.POLL]: { origin: enums_1.ChatContentOrigin.APP },

@@ -79,10 +79,17 @@ const social = require('../dist/social/index.js');
 //     app, o un estado suyo lo ata a su sala—, y sólo es alcanzable con una
 //     request armada a mano: la app pregunta por la misma puerta antes de
 //     ofrecer el botón.
-test('el catálogo consolidado expone 185 códigos de error únicos', () => {
+//   · `CHAT_LIVE_LOCATION_NOT_ACTIVE` y `CHAT_LIVE_LOCATION_FAILED` (N1c): los
+//     dos que suma la ubicación en vivo. El primero contesta a las TRES causas
+//     por las que un canal deja de estar abierto —se venció, lo cortaron, o
+//     nunca fue en vivo— con el mismo código a propósito: separarlas no le
+//     sirve a quien empuja una posición, que en los tres casos tiene que dejar
+//     de hacerlo, y la variante «hay un bloqueo» delataría el bloqueo. El
+//     segundo es el fallo genérico de las dos mutaciones del canal.
+test('el catálogo consolidado expone 187 códigos de error únicos', () => {
   const values = Object.values(errors.ErrorCode);
 
-  assert.equal(values.length, 185);
+  assert.equal(values.length, 187);
   assert.equal(new Set(values).size, values.length);
 });
 

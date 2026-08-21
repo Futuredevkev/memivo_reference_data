@@ -66,7 +66,15 @@ test('el root no acumula contratos sueltos', () => {
  * O sea los otros 52 ya cumplían: ampliar el gate no reordenó ni una línea, sólo
  * dejó de mirar para otro lado en 52 archivos que estaban bien y podían dejar de
  * estarlo en silencio. El riesgo que la regla de arriba describe (reordenar un
- * `export *`) NO se corrió: los 7 desordenados siguen intactos.
+ * `export *`) NO se corrió: los desordenados siguieron intactos.
+ *
+ * ⚠️ **Los números de arriba son la MEDICIÓN del día que la lista se amplió, no
+ * el estado de hoy.** El trinquete los mueve: N1c ordenó
+ * `sockets/interfaces/index.ts` al agregarle dos exports, y el caso de abajo
+ * hizo lo que tiene que hacer — exigir que se mudara a la lista congelada—.
+ * Hoy son **56 y 6**. Se anota en vez de reescribir la medición porque lo que
+ * explica la lista es de dónde salió, y el conteo vivo lo contestan los dos
+ * arrays.
  */
 const SORTED_BARRELS = [
   'album/enums/index.ts',
@@ -117,6 +125,7 @@ const SORTED_BARRELS = [
   'social/enums/index.ts',
   'sockets/constants/index.ts',
   'sockets/index.ts',
+  'sockets/interfaces/index.ts',
   'stories/enums/index.ts',
   'stories/index.ts',
   'stories/types/index.ts',
@@ -149,7 +158,6 @@ const UNSORTED_BARRELS = [
   'index.ts',
   'social/index.ts',
   'social/interfaces/index.ts',
-  'sockets/interfaces/index.ts',
   'stories/interfaces/index.ts',
 ];
 

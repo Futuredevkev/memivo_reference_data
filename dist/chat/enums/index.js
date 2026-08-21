@@ -17,6 +17,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./chat-content-binding.enum"), exports);
 __exportStar(require("./chat-content-origin.enum"), exports);
 __exportStar(require("./chat-content-payload.enum"), exports);
+__exportStar(require("./chat-live-location-duration.enum"), exports);
 __exportStar(require("./chat-member-role.enum"), exports);
 __exportStar(require("./chat-member-status.enum"), exports);
 __exportStar(require("./chat-message-type.enum"), exports);

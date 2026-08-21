@@ -31,4 +31,22 @@ export interface RelocatableChatMessage {
      * un botón que da 403, nunca mudando algo que no debía.
      */
     readonly viewOnce?: boolean;
+    /**
+     * La marca de `ChatContentBinding.LIVE`: hasta cuándo transmite —o transmitía—
+     * un compartir de ubicación en vivo. Ausente o `null` = punto fijo.
+     *
+     * ── POR QUÉ EL TIPO ES UNA UNIÓN Y NO UN `Date` NI UN `string` ────────────
+     * Porque las dos puntas preguntan con lo que ya tienen y ninguna convierte
+     * nada para preguntar: el api pasa la fila de Postgres, donde la columna es
+     * un `Date`, y el cliente pasa el mensaje normalizado, donde el mismo campo
+     * llegó por JSON y es un `string`. Es exactamente el motivo por el que esta
+     * interfaz no es un `Pick` de la respuesta.
+     *
+     * ── LA PUERTA SÓLO MIRA SI ESTÁ, NUNCA CUÁNTO FALTA ──────────────────────
+     * Y por eso el tipo del valor da igual. Comparar contra un reloj acá haría
+     * que la misma fila se clasificara distinto según quién pregunte y cuándo —el
+     * defecto de eje de ORDEN §5—. El vencimiento se hace cumplir en la EMISIÓN,
+     * del lado del servidor, que es el único lugar donde puede significar algo.
+     */
+    readonly liveLocationExpiresAt?: Date | string | null;
 }

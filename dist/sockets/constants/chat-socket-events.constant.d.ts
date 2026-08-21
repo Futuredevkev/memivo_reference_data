@@ -30,5 +30,7 @@ export declare const CHAT_SOCKET_EVENTS: {
         readonly REACTION_UPDATED: "reaction-updated";
         readonly VIEW_ONCE_OPENED: "view-once-opened";
         readonly VIEW_ONCE_EXPIRED: "view-once-expired";
+        readonly LIVE_LOCATION_UPDATED: "live-location-updated";
+        readonly LIVE_LOCATION_ENDED: "live-location-ended";
     };
 };

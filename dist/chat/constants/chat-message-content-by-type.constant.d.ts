@@ -67,6 +67,28 @@ export declare const CHAT_MESSAGE_CONTENT_BY_TYPE: {
         payload: ChatContentPayload.FILES;
         inMediaGallery: false;
     };
+    /**
+     * La ubicación no lleva NADA que subir y no entra a la galería.
+     *
+     * `payload: NONE` es lo que la separa del documento: un punto son dos
+     * números que viajan en la fila del mensaje, no un archivo — así que este
+     * tipo no toca el pipeline de subida, ni su allowlist de MIME, ni su tope de
+     * tamaño. Es la misma respuesta que da `TEXT`, y por el mismo motivo.
+     *
+     * `inMediaGallery: false` por construcción: la galería dibuja miniaturas y
+     * reproduce audio, y acá no hay ni un archivo del que sacar una. No es una
+     * decisión de alcance como la del documento —donde SÍ hay archivos y se
+     * eligió dejarlos afuera—: acá no hay nada que mostrar.
+     *
+     * ⚠️ Lo que este catálogo NO contesta es si se muda a otro chat, y en este
+     * tipo esa respuesta depende de un ESTADO y no del tipo: un punto fijo se
+     * reenvía y un compartir EN VIVO no. Eso lo decide
+     * `CHAT_CONTENT_RELOCATION_BY_TYPE` con `ChatContentBinding.LIVE`.
+     */
+    LOCATION: {
+        payload: ChatContentPayload.NONE;
+        inMediaGallery: false;
+    };
     POLL: {
         payload: ChatContentPayload.NONE;
         inMediaGallery: false;

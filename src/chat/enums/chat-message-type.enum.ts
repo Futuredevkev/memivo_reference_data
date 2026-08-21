@@ -4,6 +4,7 @@ export enum ChatMessageType {
   VIDEO = 'VIDEO',
   AUDIO = 'AUDIO',
   DOCUMENT = 'DOCUMENT',
+  LOCATION = 'LOCATION',
   POLL = 'POLL',
   SYSTEM = 'SYSTEM',
   SHARED_POST = 'SHARED_POST',

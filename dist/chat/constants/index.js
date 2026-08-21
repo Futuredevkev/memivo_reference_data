@@ -18,6 +18,7 @@ __exportStar(require("./can-relocate-chat-content.helper"), exports);
 __exportStar(require("./chat-content-binding-holds.constant"), exports);
 __exportStar(require("./chat-content-relocation-by-type.constant"), exports);
 __exportStar(require("./chat-file-bearing-message-types.constant"), exports);
+__exportStar(require("./chat-live-location-duration-minutes.constant"), exports);
 __exportStar(require("./chat-media-message-types.constant"), exports);
 __exportStar(require("./chat-message-content-by-type.constant"), exports);
 __exportStar(require("./empty-chat-reaction-counts.constant"), exports);

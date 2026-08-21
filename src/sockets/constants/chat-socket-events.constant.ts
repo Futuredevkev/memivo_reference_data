@@ -30,5 +30,7 @@ export const CHAT_SOCKET_EVENTS = {
     REACTION_UPDATED: 'reaction-updated',
     VIEW_ONCE_OPENED: 'view-once-opened',
     VIEW_ONCE_EXPIRED: 'view-once-expired',
+    LIVE_LOCATION_UPDATED: 'live-location-updated',
+    LIVE_LOCATION_ENDED: 'live-location-ended',
   },
 } as const;

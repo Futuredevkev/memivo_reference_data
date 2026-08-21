@@ -27,6 +27,19 @@ export declare enum ChatErrorCode {
     CHAT_VIEW_ONCE_ALREADY_VIEWED = "CHAT_VIEW_ONCE_ALREADY_VIEWED",
     CHAT_VIEW_ONCE_SENDER_FORBIDDEN = "CHAT_VIEW_ONCE_SENDER_FORBIDDEN",
     CHAT_VIEW_ONCE_DOWNLOAD_FORBIDDEN = "CHAT_VIEW_ONCE_DOWNLOAD_FORBIDDEN",
+    /**
+     * El compartir en vivo ya no está transmitiendo: se venció el plazo, quien
+     * comparte lo cortó, o el mensaje nunca fue un compartir en vivo.
+     *
+     * Las tres causas contestan lo MISMO a propósito. El plazo lo hace cumplir
+     * el servidor, así que un teléfono que siguió empujando posiciones después
+     * de la hora llega acá — y distinguir «se venció» de «lo cortaron» no le
+     * cambia nada a quien empuja, que en los dos casos tiene que dejar de
+     * hacerlo.
+     */
+    CHAT_LIVE_LOCATION_NOT_ACTIVE = "CHAT_LIVE_LOCATION_NOT_ACTIVE",
+    /** Fallo genérico de las dos mutaciones del canal: empujar y cortar. */
+    CHAT_LIVE_LOCATION_FAILED = "CHAT_LIVE_LOCATION_FAILED",
     CHAT_MEMBER_NOT_FOUND = "CHAT_MEMBER_NOT_FOUND",
     CHAT_MEMBER_INVALID_STATUS = "CHAT_MEMBER_INVALID_STATUS",
     CHAT_ADMIN_REQUIRED = "CHAT_ADMIN_REQUIRED",

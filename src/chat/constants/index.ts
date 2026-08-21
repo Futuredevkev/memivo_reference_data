@@ -2,6 +2,7 @@ export * from './can-relocate-chat-content.helper';
 export * from './chat-content-binding-holds.constant';
 export * from './chat-content-relocation-by-type.constant';
 export * from './chat-file-bearing-message-types.constant';
+export * from './chat-live-location-duration-minutes.constant';
 export * from './chat-media-message-types.constant';
 export * from './chat-message-content-by-type.constant';
 export * from './empty-chat-reaction-counts.constant';

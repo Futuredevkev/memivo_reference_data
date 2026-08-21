@@ -1,4 +1,5 @@
 import type { ChatMessageType, SystemMessageAction } from '../enums';
+import type { ChatLocationPoint } from './chat-location-point.interface';
 import type { ChatMessageFileResponse } from './internal/chat-message-file-response.interface';
 import type { ChatReplyMessageResponse } from './internal/chat-reply-message-response.interface';
 import type { ChatUserSummary } from './chat-user-summary.interface';
@@ -45,6 +46,30 @@ export interface ChatMessageResponse<TTimestamp = string> {
     systemAction?: SystemMessageAction | null;
     systemData?: SystemMessageData | null;
     sharedPostId?: string | null;
+    /**
+     * El PUNTO de un mensaje de ubicación FIJA. `null` en todo lo demás.
+     *
+     * Un compartir EN VIVO llega con esto en `null` y no es un olvido: su
+     * posición no se guarda en la fila —es alta escritura, efímera y sin
+     * historia, así que vive en Redis con vencimiento— y por eso un compartir
+     * terminado no deja atrás un punto viejo que alguien pueda dibujar como si
+     * fuera de ahora. Los dos campos se excluyen: quién es cuál lo dice
+     * `liveLocationExpiresAt`.
+     */
+    location?: ChatLocationPoint | null;
+    /**
+     * Hasta cuándo transmite —o transmitía— un compartir de ubicación EN VIVO.
+     * `null` = no es un compartir en vivo.
+     *
+     * Lo fija el SERVIDOR al abrirlo y no se mueve nunca: ni empujando
+     * posiciones, ni reabriendo la app. Cortar antes lo adelanta a ahora, que es
+     * la única escritura posterior que existe.
+     *
+     * El cliente lo usa para dibujar el estado de la burbuja sin preguntar nada
+     * más, y eso es lo que hace que un compartir vencido se lea igual en un
+     * teléfono que estuvo apagado que en uno que estaba mirando.
+     */
+    liveLocationExpiresAt?: TTimestamp | null;
     viewOnce?: boolean;
     viewOnceHasContent?: boolean;
     viewOnceViewedByMe?: boolean;
