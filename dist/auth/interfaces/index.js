@@ -42,6 +42,7 @@ __exportStar(require("./registration-payload.interface"), exports);
 __exportStar(require("./resend-login-code-request.interface"), exports);
 __exportStar(require("./resend-registration-code-request.interface"), exports);
 __exportStar(require("./reset-password-request.interface"), exports);
+__exportStar(require("./send-forgot-password-request.interface"), exports);
 __exportStar(require("./session-device.interface"), exports);
 __exportStar(require("./session-revoked-response.interface"), exports);
 __exportStar(require("./session-summary.interface"), exports);

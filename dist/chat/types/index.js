@@ -16,4 +16,5 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./chat-file-bearing-message-type.type"), exports);
 __exportStar(require("./chat-media-message-type.type"), exports);
+__exportStar(require("./chat-mutation-verdict.type"), exports);
 __exportStar(require("./chat-relocation-verdict.type"), exports);

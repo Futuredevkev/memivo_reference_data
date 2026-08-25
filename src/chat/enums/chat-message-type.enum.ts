@@ -8,4 +8,5 @@ export enum ChatMessageType {
   POLL = 'POLL',
   SYSTEM = 'SYSTEM',
   SHARED_POST = 'SHARED_POST',
+  STICKER = 'STICKER',
 }

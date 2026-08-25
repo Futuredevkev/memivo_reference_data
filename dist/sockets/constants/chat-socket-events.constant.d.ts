@@ -4,7 +4,6 @@ export declare const CHAT_SOCKET_EVENTS: {
         readonly LEAVE_GROUP: "leave-group";
     };
     readonly OUT: {
-        readonly JOIN_SUCCESS: "joined";
         readonly JOIN_ERROR: "join-error";
         readonly NEW_MESSAGE: "new-message";
         readonly MESSAGE_UPDATED: "message-updated";

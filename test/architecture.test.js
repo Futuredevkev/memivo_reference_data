@@ -122,10 +122,17 @@ const SORTED_BARRELS = [
   'reports/index.ts',
   'reports/interfaces/index.ts',
   'social/display-aspect-ratio/index.ts',
+  'social/constants/index.ts',
   'social/enums/index.ts',
+  'social/index.ts',
   'sockets/constants/index.ts',
   'sockets/index.ts',
   'sockets/interfaces/index.ts',
+  'stickers/constants/index.ts',
+  'stickers/enums/index.ts',
+  'stickers/helpers/index.ts',
+  'stickers/index.ts',
+  'stickers/interfaces/index.ts',
   'stories/enums/index.ts',
   'stories/index.ts',
   'stories/types/index.ts',
@@ -147,7 +154,6 @@ const SORTED_BARRELS = [
  *   album/interfaces   línea  1  `album-access-response-album` antes que `album-access-password-response`
  *   auth/interfaces    línea 24  `register-push-device-request` antes que `regenerate-backup-codes-response`
  *   index.ts           línea  1  `reference-data` primero, delante de `album`
- *   social/index.ts    línea  1  `display-aspect-ratio` antes que `comment-context-limits.constant`
  *   social/interfaces  línea  2  `comment-created-response` antes que `comment-context-meta`
  *   sockets/interfaces línea 26  `hidden-ids-changed-payload` antes que `group-created-payload`
  *   stories/interfaces línea  4  `story-overlay-position` antes que `story-author`
@@ -156,7 +162,6 @@ const UNSORTED_BARRELS = [
   'album/interfaces/index.ts',
   'auth/interfaces/index.ts',
   'index.ts',
-  'social/index.ts',
   'social/interfaces/index.ts',
   'stories/interfaces/index.ts',
 ];
@@ -246,4 +251,196 @@ test('ningún barrel de UNSORTED_BARRELS quedó ordenado sin mudarse de lista', 
     [],
     'este barrel ya está ordenado: movelo a SORTED_BARRELS para que quede congelado',
   );
+});
+
+/**
+ * EL SUFIJO DEL ARCHIVO DICE QUÉ KIND PUBLICA, Y LA RAÍZ DE UN DOMINIO NO
+ * ACUMULA CONTRATOS SUELTOS.
+ *
+ * ── LOS DOS DEFECTOS QUE CIERRAN, MEDIDOS ─────────────────────────────────
+ * 1. Cuatro archivos decían un kind y publicaban otro:
+ *    `chat/interfaces/chat-content-relocation-rule.interface.ts` y
+ *    `sockets/interfaces/chat-live-location-updated-payload.interface.ts`
+ *    declaraban un `type`; `social/interfaces/update-guest-post-request.type.ts`
+ *    declaraba una `interface`; y
+ *    `sockets/interfaces/stories-updated-payload.interface.ts` tenía las dos
+ *    cosas juntas, así que su nombre describía a UNA sola.
+ *
+ *    **No confundirlo con la carpeta.** `*.type.ts` dentro de `interfaces/` es
+ *    la forma dominante del paquete —36 archivos contra 9 en `types/`—, o sea
+ *    que la ubicación estaba bien y lo único mal era el NOMBRE. Por eso la
+ *    regla mira el sufijo contra el AST y no contra el directorio.
+ *
+ * 2. `social/comment-context-limits.constant.ts` era el único archivo suelto en
+ *    la raíz de un dominio que SÍ tiene subcarpetas. Recorridas las 17 raíces:
+ *    `errors/` tiene 25 y es una estructura plana deliberada —todo el dominio
+ *    es plano, no hay subcarpeta que contradecir—; `social/` tenía exactamente
+ *    uno, y lo que le faltaba era el `constants/` que los otros 16 dominios ya
+ *    usan. El test `el root no acumula contratos sueltos` sólo mira `src/`, así
+ *    que la raíz de cada dominio no la miraba nadie.
+ *
+ * ── POR QUÉ LAS DOS NACEN SIN LISTA DE OFENSORES ──────────────────────────
+ * Porque el censo es cero el mismo día que los cinco archivos se movieron. Un
+ * trinquete que nace en verde es el único que no arranca con deuda declarada, y
+ * esa ventana se cierra apenas aparezca el sexto caso. `errors` es la ÚNICA
+ * excepción y va con su motivo escrito, que es el molde que `SORTED_BARRELS` /
+ * `UNSORTED_BARRELS` ya usan en este mismo archivo.
+ *
+ * ── ALCANCE, ESCRITO (ORDEN §10) ──────────────────────────────────────────
+ * 1. La regla de kind cubre SÓLO `*.interface.ts` y `*.type.ts`. Los otros
+ *    sufijos quedan afuera A PROPÓSITO y no por olvido: los 141 `*.constant.ts`
+ *    incluyen el idioma `const X` + `type X` —el objeto-como-enum del paquete—,
+ *    donde el segundo símbolo es el tipo del primero y exigir un solo kind
+ *    partiría un concepto en dos archivos; y los 20 `*.error-code.ts` publican
+ *    un `enum`, o sea que su sufijo nombra el DOMINIO y no el kind. Meter
+ *    cualquiera de los dos exige antes decidir su forma, y eso es otra ola.
+ * 2. Mira sólo las declaraciones EXPORTADAS de primer nivel. Un `type` privado
+ *    que ayuda a construir la interface exportada no es lo que el nombre del
+ *    archivo le promete al consumidor.
+ * 3. El oráculo es el escáner de TypeScript y no un regex: este mismo docblock
+ *    escribe `interface` y `type` en prosa, y un detector por texto se acusaría
+ *    a sí mismo.
+ * 4. La regla de la raíz mira ARCHIVOS sueltos, no barrels: `index.ts` es la
+ *    puerta del dominio y tiene que estar ahí.
+ */
+const ts = require('typescript');
+
+/** Sufijo -> el kind de nodo que ese nombre promete. Ver el límite 1 del alcance. */
+const KIND_BY_SUFFIX = {
+  '.interface.ts': { kind: 'interface', is: (node) => ts.isInterfaceDeclaration(node) },
+  '.type.ts': { kind: 'type', is: (node) => ts.isTypeAliasDeclaration(node) },
+};
+
+/** Todos los `.ts` de `src/` que no son barrels, relativos a `src/`. */
+const allSourceLeaves = (dir = root, out = []) => {
+  for (const entry of readdirSync(dir)) {
+    const full = resolve(dir, entry);
+    if (statSync(full).isDirectory()) allSourceLeaves(full, out);
+    else if (entry.endsWith('.ts') && entry !== 'index.ts') {
+      out.push(relative(root, full).split(sep).join('/'));
+    }
+  }
+  return out;
+};
+
+/**
+ * Los símbolos exportados de primer nivel cuyo kind contradice al sufijo.
+ *
+ * Recibe el par (nombre, fuente) para que el detector se pueda ejercitar contra
+ * un caso sintético: con el árbol limpio, «cero ofensores» y «el reconocedor
+ * dejó de enganchar» se leen igual, y lo segundo es un gate apagado.
+ */
+const kindMismatches = (fileName, source) => {
+  const suffix = Object.keys(KIND_BY_SUFFIX).find((candidate) =>
+    fileName.endsWith(candidate),
+  );
+  if (suffix === undefined) return [];
+
+  const expected = KIND_BY_SUFFIX[suffix];
+  const ast = ts.createSourceFile(
+    fileName,
+    source,
+    ts.ScriptTarget.Latest,
+    true,
+    ts.ScriptKind.TS,
+  );
+
+  const wrong = [];
+  ts.forEachChild(ast, (node) => {
+    const modifiers = ts.canHaveModifiers(node) ? ts.getModifiers(node) || [] : [];
+    if (!modifiers.some((modifier) => modifier.kind === ts.SyntaxKind.ExportKeyword)) return;
+    if (expected.is(node)) return;
+    wrong.push(
+      fileName +
+        ' publica `' +
+        (node.name ? node.name.getText(ast) : '?') +
+        '`, que no es un ' +
+        expected.kind +
+        '. El nombre del archivo promete un ' +
+        expected.kind +
+        ': renombralo al sufijo del kind que declara y movele el renglón de su barrel, o ' +
+        'partí el archivo si publica los dos. NO agregues una excepción: esta regla nació ' +
+        'con cero ofensores.',
+    );
+  });
+  return wrong;
+};
+
+test('el gate mide algo: hay hojas con sufijo de kind y sabe reconocer una contradicción', () => {
+  const hojas = allSourceLeaves().filter((file) =>
+    Object.keys(KIND_BY_SUFFIX).some((suffix) => file.endsWith(suffix)),
+  );
+  // 355 el día que se midió (303 `.interface.ts` + 52 `.type.ts`). Sin este
+  // piso, un recorrido roto vacía el conjunto y la regla de abajo pasa por no
+  // mirar: verde APAGADO, no verde limpio.
+  assert.ok(
+    hojas.length > 250,
+    'sólo ' + hojas.length + ' hojas con sufijo de kind: el roto es el walker',
+  );
+
+  // EL CONTROL POSITIVO: las dos formas exactas que se acaban de arreglar, y
+  // las dos que la regla NO tiene que acusar.
+  assert.equal(kindMismatches('x.interface.ts', 'export type X = string;').length, 1);
+  assert.equal(kindMismatches('x.type.ts', 'export interface X { a: string }').length, 1);
+  assert.deepEqual(kindMismatches('x.interface.ts', 'export interface X { a: string }'), []);
+  assert.deepEqual(kindMismatches('x.constant.ts', 'export type X = string;'), []);
+});
+
+test('el sufijo del archivo dice qué kind publica', () => {
+  const { readFileSync } = require('node:fs');
+  const ofensores = allSourceLeaves()
+    .flatMap((relativePath) =>
+      kindMismatches(relativePath, readFileSync(resolve(root, relativePath), 'utf8')),
+    )
+    .sort();
+
+  assert.deepEqual(ofensores, []);
+});
+
+/**
+ * `errors/` es plano de punta a punta: 25 archivos en la raíz y CERO
+ * subcarpetas, así que no hay categoría que contradecir. La excepción es del
+ * dominio entero, no de un archivo, y por eso se puede escribir en una línea.
+ */
+const FLAT_DOMAINS = {
+  errors: 'dominio plano completo: 25 archivos en la raíz y ninguna subcarpeta.',
+};
+
+test('la raíz de un dominio no acumula contratos sueltos', () => {
+  const ofensores = expectedDomains
+    .filter((domain) => !(domain in FLAT_DOMAINS))
+    .flatMap((domain) =>
+      readdirSync(resolve(root, domain))
+        .filter((entry) => {
+          const full = resolve(root, domain, entry);
+          return statSync(full).isFile() && entry.endsWith('.ts') && entry !== 'index.ts';
+        })
+        .map(
+          (entry) =>
+            domain +
+            '/' +
+            entry +
+            ' — suelto en la raíz de un dominio que tiene subcarpetas. Metelo en `' +
+            domain +
+            '/constants/` (o la categoría que le toque) y re-exportalo desde su barrel y ' +
+            'desde el del dominio.',
+        ),
+    )
+    .sort();
+
+  assert.deepEqual(ofensores, []);
+});
+
+test('ningún dominio declarado plano tiene subcarpetas', () => {
+  // Sin esto, la excusa de `errors` sobrevive al día en que deje de ser verdad
+  // y el dominio queda exento con un motivo que ya no describe nada.
+  const contradicen = Object.keys(FLAT_DOMAINS)
+    .filter((domain) =>
+      readdirSync(resolve(root, domain)).some((entry) =>
+        statSync(resolve(root, domain, entry)).isDirectory(),
+      ),
+    )
+    .sort();
+
+  assert.deepEqual(contradicen, []);
 });

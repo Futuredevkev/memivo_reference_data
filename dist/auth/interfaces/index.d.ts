@@ -26,6 +26,7 @@ export * from './registration-payload.interface';
 export * from './resend-login-code-request.interface';
 export * from './resend-registration-code-request.interface';
 export * from './reset-password-request.interface';
+export * from './send-forgot-password-request.interface';
 export * from './session-device.interface';
 export * from './session-revoked-response.interface';
 export * from './session-summary.interface';

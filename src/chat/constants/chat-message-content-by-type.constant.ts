@@ -132,4 +132,30 @@ export const CHAT_MESSAGE_CONTENT_BY_TYPE = {
     payload: ChatContentPayload.SHARED_POST,
     inMediaGallery: false,
   },
+  /**
+   * El sticker lleva una REFERENCIA a un catálogo externo, y no entra a la
+   * galería.
+   *
+   * `payload: STICKER` y no `FILES`, y la diferencia decide tres cosas de una:
+   * el tipo NO entra al pipeline de subida, NO hereda su allowlist de MIME ni
+   * su tope de tamaño, y NO crea una fila de archivo por envío. Un sticker
+   * mandado diez mil veces son diez mil mensajes apuntando a UNA fila; por
+   * `FILES` habrían sido diez mil archivos sobre un asset que ni siquiera es
+   * nuestro.
+   *
+   * `inMediaGallery: false` a conciencia, y no por alcance: la pestaña de
+   * multimedia existe para volver a encontrar lo que se mandó al ÁLBUM —las
+   * fotos, los videos, los audios, los documentos— y un sticker no es un
+   * recuerdo, es un gesto. Mezclarlo con las fotos de un cumpleaños haría más
+   * difícil encontrar las fotos, que es justo lo contrario de para qué está esa
+   * pestaña.
+   *
+   * ⚠️ Y esta línea NO es gratis de cambiar: gobierna el `WHERE` de
+   * `IDX_chat_messages_group_media`. Pasarla a `true` pide una migración que
+   * recree el índice, y hay un gate que compara las dos cosas contra esta tabla.
+   */
+  [ChatMessageType.STICKER]: {
+    payload: ChatContentPayload.STICKER,
+    inMediaGallery: false,
+  },
 } satisfies Record<ChatMessageType, ChatMessageContentRule>;

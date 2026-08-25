@@ -104,4 +104,24 @@ exports.CHAT_CONTENT_RELOCATION_BY_TYPE = {
     // «Fulano se unió al grupo» fuera de su grupo no significa nada, y además no
     // tiene autor: es la app contando un hecho de ESA sala.
     [enums_1.ChatMessageType.SYSTEM]: { origin: enums_1.ChatContentOrigin.APP },
+    /**
+     * El sticker lo eligió una persona, así que se muda — y sin ningún estado que
+     * lo ate a su chat.
+     *
+     * `boundBy` VACÍO, y no es un olvido. Los dos estados que existen no lo
+     * pueden alcanzar: un sticker **no puede ser view-once** —esa marca vive
+     * sobre archivos subidos y un sticker no sube nada— y `LIVE` es de la
+     * ubicación. Declarar cualquiera de los dos acá dejaría una rama que
+     * producción no puede alcanzar (ORDEN §7).
+     *
+     * Y en el destino no hay nada que volver a autorizar: el catálogo es externo,
+     * público y el mismo para todos, así que mudar el mensaje no le muestra a
+     * nadie algo que no pudiera encontrar buscando por su cuenta. Es la
+     * diferencia con `SHARED_POST`, que sí se re-resuelve contra el álbum y el
+     * bloqueo de quien mira.
+     */
+    [enums_1.ChatMessageType.STICKER]: {
+        origin: enums_1.ChatContentOrigin.PERSON,
+        boundBy: [],
+    },
 };

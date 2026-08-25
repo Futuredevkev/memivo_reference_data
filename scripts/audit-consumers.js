@@ -505,14 +505,37 @@ function exportedSharedSymbols() {
  *
  * Queda como muerto de verdad sólo lo que ni el paquete ni los consumidores
  * tocan.
+ *
+ * ── ⚠️ Y EL MISMO DEFECTO VOLVIÓ POR OTRA PUERTA ─────────────────────────
+ * «Referenciado» contaba TODOS los identificadores del paquete, así que un
+ * nombre dentro de una cláusula de `import` valía como uso. Con eso, la ola que
+ * borró los dos campos que usaban `FinalizeUploadPayload` dejó el `import type`
+ * huérfano en `media/interfaces/create-upload-intent-request.interface.ts`, esa
+ * línea pasó a ser la ÚNICA mención del tipo en los tres repos, y
+ * `unusedSharedExports` siguió reportando 0 con un export público muerto
+ * adentro. Un `import` no es un uso: es un NOMBRE. Por eso se saltean los
+ * identificadores cuyo ancestro sea un `import`/`export`, y por eso el paquete
+ * encendió `noUnusedLocals` —que los dos consumidores ya tenían y él no—: sin
+ * esa segunda mitad, el import huérfano se puede volver a escribir mañana.
  */
 function symbolsReferencedInsidePackage() {
   const referenced = new Set();
+  /** ¿El identificador vive adentro de un `import ...` / `export ... from`? */
+  const insideModuleClause = (node) => {
+    for (let parent = node.parent; parent; parent = parent.parent) {
+      if (ts.isImportDeclaration(parent) || ts.isExportDeclaration(parent)) {
+        return true;
+      }
+      if (ts.isSourceFile(parent)) return false;
+    }
+    return false;
+  };
   for (const file of walk(packageSrc)) {
     const { source } = sourceFile(file);
     const visit = (node) => {
       // Sólo identificadores en posición de USO. La declaración propia no
-      // cuenta: si contara, todo símbolo se auto-justificaría.
+      // cuenta: si contara, todo símbolo se auto-justificaría. El nombre dentro
+      // de un `import`/`export` tampoco: nombrar no es usar.
       if (ts.isIdentifier(node)) {
         const parent = node.parent;
         const isOwnName =
@@ -525,7 +548,7 @@ function symbolsReferencedInsidePackage() {
             ts.isFunctionDeclaration(parent) ||
             ts.isClassDeclaration(parent) ||
             ts.isVariableDeclaration(parent));
-        if (!isOwnName) referenced.add(node.text);
+        if (!isOwnName && !insideModuleClause(node)) referenced.add(node.text);
       }
       ts.forEachChild(node, visit);
     };
@@ -534,9 +557,168 @@ function symbolsReferencedInsidePackage() {
   return referenced;
 }
 
+/**
+ * Un módulo local, en ruta absoluta y sin extensión, o `null` si no es local.
+ *
+ * `existing` es el censo de módulos que hay en disco, calculado UNA vez. La
+ * primera versión preguntaba con `existsSync` cuatro veces por cada import de
+ * cada archivo: unas 180.000 llamadas a `stat`, que en Windows llevaron al
+ * auditor de 13 segundos a más de dos minutos. Un gate lento se apaga solo.
+ */
+function resolveLocalModule(fromFile, specifier, sideRoot, existing) {
+  let resolved = null;
+  if (specifier.startsWith('.')) resolved = resolve(dirname(fromFile), specifier);
+  // El cliente importa por el alias de raíz además de por ruta relativa.
+  else if (specifier.startsWith('src/')) resolved = resolve(sideRoot, specifier.slice(4));
+  if (resolved === null) return null;
+  if (existing.has(resolved)) return resolved;
+  const asBarrel = join(resolved, 'index');
+  if (existing.has(asBarrel)) return asBarrel;
+  return resolved;
+}
+
+const withoutExtension = (file) => file.replace(/\.tsx?$/, '');
+
+/**
+ * QUÉ LÍNEAS DE RE-EXPORT ALCANZA ALGUIEN DE VERDAD.
+ *
+ * ── EL DEFECTO QUE CIERRA ──────────────────────────────────────────────────
+ * `importedSharedNames()` aceptaba las dos formas —`import { X } from
+ * '@memivo/contracts'` y `export { X } from '@memivo/contracts'`— sin
+ * distinguirlas, así que un shim que sólo REENVÍA marcaba a `X` como consumido
+ * aunque nadie importara el shim. Es la falsificación que el docblock de
+ * `symbolsReferencedInsidePackage` narra como cerrada: el api tenía 19 archivos
+ * que sólo hacían `export { XErrorCode } from …` sin lector, y de paso
+ * satisfacían esta cuenta. Se borraron esos 19; el MECANISMO quedó intacto, y
+ * hoy hay cientos de shims. Medido: de los símbolos del paquete que los
+ * consumidores nombran, casi un quinto NO aparece en un solo `import` — su
+ * única mención en los dos repos es la línea `export … from` de un shim.
+ * Para el gate, un shim vivo y uno huérfano eran la misma línea.
+ *
+ * ── QUÉ CUENTA COMO ALCANZADO ──────────────────────────────────────────────
+ * Un `export { E } from '@memivo/contracts/x'` en el archivo F sostiene a `E`
+ * sólo si algún OTRO archivo importa `E` por la puerta de F, o por la de un
+ * barrel que reenvíe la de F, en cadena. Es la misma pregunta que el gate de
+ * superficie muerta del cliente le hace a un shim, y tiene que contestarse
+ * igual en los dos lados: nombrar no es consumir, y reenviar tampoco.
+ *
+ * ── ALCANCE, ESCRITO ───────────────────────────────────────────────────────
+ *  · Sigue rutas relativas y el alias `src/…`. Un import por un alias de
+ *    bundler que no sea ésos no se ve, y su shim se daría por huérfano: es la
+ *    dirección INSEGURA de este detector, y por eso el reporte publica los
+ *    símbolos sostenidos sólo por re-export en vez de callarlos.
+ *  · `export * from './x'` reenvía el nombre sin nombrarlo, y se sigue igual.
+ *  · Un `import * as X from './shim'` da por alcanzada TODA la puerta del shim.
+ */
+function reachableReexportGates() {
+  // Todo indexado POR MÓDULO. La primera versión recorría los ~3.000 archivos
+  // adentro del BFS y volvía a recorrerlos para buscar lector, una vez por cada
+  // línea de re-export del paquete: el auditor pasó de segundos a no terminar.
+  // Un gate lento se apaga solo, que es el mismo modo de falla que un gate
+  // ciego.
+  /** `módulo` → quién lo importa y con qué nombres. */
+  const importersByGate = new Map();
+  /** `módulo` → quién lo importa entero con `import * as`. */
+  const namespaceImportersByModule = new Map();
+  /** `módulo de origen` → las líneas de re-export que lo reenvían. */
+  const reexportsByModule = new Map();
+  const addTo = (map, key, value) => {
+    const bucket = map.get(key);
+    if (bucket) bucket.add(value);
+    else map.set(key, new Set([value]));
+  };
+  // El censo de módulos que hay en disco, UNA sola vez: sin él, resolver un
+  // import pagaba cuatro `stat` por intento.
+  const existing = new Set();
+  const filesBySide = {};
+  for (const side of Object.keys(roots)) {
+    filesBySide[side] = walk(roots[side]);
+    for (const file of filesBySide[side]) existing.add(withoutExtension(file));
+  }
+  for (const side of Object.keys(roots)) {
+    for (const file of filesBySide[side]) {
+      const key = withoutExtension(file);
+      const { source } = sourceFile(file);
+      for (const statement of source.statements) {
+        const isImport = ts.isImportDeclaration(statement);
+        const isExport = ts.isExportDeclaration(statement) && Boolean(statement.moduleSpecifier);
+        if (!isImport && !isExport) continue;
+        const specifier = statement.moduleSpecifier;
+        if (!specifier || !ts.isStringLiteral(specifier)) continue;
+        const module = resolveLocalModule(file, specifier.text, roots[side], existing);
+        if (module === null) continue;
+        if (isImport) {
+          const bindings = statement.importClause?.namedBindings;
+          if (bindings && ts.isNamespaceImport(bindings)) {
+            addTo(namespaceImportersByModule, module, key);
+          } else if (bindings && ts.isNamedImports(bindings)) {
+            for (const element of bindings.elements) {
+              addTo(importersByGate, `${module}::${(element.propertyName ?? element.name).text}`, key);
+            }
+          }
+          continue;
+        }
+        const line = { file: key, module };
+        if (!statement.exportClause || !ts.isNamedExports(statement.exportClause)) {
+          addTo(reexportsByModule, module, { ...line, star: true, elements: [] });
+          continue;
+        }
+        addTo(reexportsByModule, module, {
+          ...line,
+          star: false,
+          elements: statement.exportClause.elements.map((element) => ({
+            exported: element.name.text,
+            source: (element.propertyName ?? element.name).text,
+          })),
+        });
+      }
+    }
+  }
+
+  /**
+   * ¿Alguien CRUZA la puerta que `origin` abre para `exported`? Se sigue la
+   * cadena de barrels que reenvían ese nombre, porque la puerta normal del repo
+   * es el barrel de la carpeta y sin seguirla todo shim así se daría por
+   * huérfano. El propio `origin` no cuenta como lector suyo.
+   */
+  return (originFile, exported) => {
+    const origin = withoutExtension(originFile);
+    const seen = new Set([`${origin}::${exported}`]);
+    const pending = [{ module: origin, name: exported }];
+    while (pending.length > 0) {
+      const current = pending.pop();
+      const gate = `${current.module}::${current.name}`;
+      for (const importer of importersByGate.get(gate) ?? []) {
+        if (importer !== origin) return true;
+      }
+      for (const importer of namespaceImportersByModule.get(current.module) ?? []) {
+        if (importer !== origin) return true;
+      }
+      for (const reexport of reexportsByModule.get(current.module) ?? []) {
+        const forwarded = reexport.star
+          ? [current.name]
+          : reexport.elements
+            .filter((element) => element.source === current.name)
+            .map((element) => element.exported);
+        for (const name of forwarded) {
+          const next = `${reexport.file}::${name}`;
+          if (seen.has(next)) continue;
+          seen.add(next);
+          pending.push({ module: reexport.file, name });
+        }
+      }
+    }
+    return false;
+  };
+}
+
 function importedSharedNames() {
   const names = new Set();
   const wildcardDomains = new Set();
+  // Un re-export sólo sostiene a su símbolo si alguien cruza esa puerta.
+  const reexportIsReached = reachableReexportGates();
+  /** Los símbolos que NADIE importa: viven de una línea de re-export viva. */
+  const onlyViaReexport = new Set();
   // Los agregados (`VALIDATION.MIN_AGE_YEARS`, `RESOURCE_UPLOAD_LIMITS[...]`) consumen
   // un símbolo sin importarlo por nombre, y casi siempre desde otro archivo que el
   // que hace el import. Se juntan todos los accesos y se resuelven al final contra
@@ -563,7 +745,15 @@ function importedSharedNames() {
         }
         if (ts.isNamedImports(bindings) || ts.isNamedExports(bindings)) {
           for (const element of bindings.elements) {
-            names.add((element.propertyName ?? element.name).text);
+            const shared = (element.propertyName ?? element.name).text;
+            // Un IMPORT consume sin condición. Un RE-EXPORT sólo si alguien
+            // cruza esa puerta: sin esta rama, un shim huérfano mantenía vivo
+            // a su símbolo y el gate no podía distinguirlo de uno consumido.
+            if (isImport) names.add(shared);
+            else if (reexportIsReached(file, element.name.text)) {
+              names.add(shared);
+              onlyViaReexport.add(shared);
+            }
             // El alias local también cuenta como puerta al agregado: el cliente
             // re-exporta varios contratos con otro nombre.
             sharedObjectNames.add(element.name.text);
@@ -584,7 +774,13 @@ function importedSharedNames() {
   for (const [object, property] of propertyAccesses) {
     if (names.has(object) || sharedObjectNames.has(object)) names.add(property);
   }
-  return { names, wildcardDomains };
+  // Un símbolo que NINGÚN import nombra y que sólo vive de un re-export
+  // alcanzado. No es un defecto —el shim tiene lector— pero es la clase entera
+  // que este gate no podía ver: se publica para que se pueda cuestionar.
+  for (const name of [...onlyViaReexport]) {
+    if (!names.has(name)) onlyViaReexport.delete(name);
+  }
+  return { names, wildcardDomains, onlyViaReexport };
 }
 
 function localeErrorKeys(locale) {
@@ -669,32 +865,111 @@ function collapsedErrorCodes() {
   return collapsed;
 }
 
-function rawRuntimeContractLiterals() {
+/**
+ * ¿Este export del paquete es un CATÁLOGO en runtime?
+ *
+ * La forma que el paquete usa para todos: objeto plano, no-array, con TODAS las
+ * claves en `SCREAMING_SNAKE` y TODOS los valores string. Cubre los `enum` de
+ * TypeScript (que compilan a eso) y los `as const` como `WS_JOIN_RESOURCE`.
+ */
+function esCatalogoDeRuntime(value) {
+  return (
+    value !== null &&
+    typeof value === 'object' &&
+    !Array.isArray(value) &&
+    Object.keys(value).length > 0 &&
+    Object.keys(value).every((key) => /^[A-Z][A-Z0-9_]*$/.test(key)) &&
+    Object.values(value).every((item) => typeof item === 'string')
+  );
+}
+
+/**
+ * Los catálogos que el censo de literales crudos NO mira, por SÍMBOLO y con el
+ * motivo escrito.
+ *
+ * ── POR QUÉ ES UN MAPA DE EXCLUSIONES Y NO UNA LISTA DE INCLUSIONES ───────
+ * El universo era una lista escrita a mano de 22 nombres. Medido contra
+ * `dist/index.js`: el paquete publica **63 catálogos** en runtime, así que el
+ * censo cubría 22 y **41 quedaban afuera sin que nada lo dijera** — o sea la
+ * regla cero de ORDEN al revés, adentro del gate: «una lista de excepciones no
+ * tiene gate: mañana aparece un miembro nuevo y entra en silencio al
+ * comportamiento viejo». Con la lista invertida, el catálogo 64 entra al censo
+ * solo, y si trae literales crudos hay que decidir en vez de no enterarse.
+ *
+ * ── LAS DOS DIRECCIONES EN QUE ESTA TABLA SE AUDITA ───────────────────────
+ * 1. una entrada que ya no nombra un catálogo del paquete cae (el enum se borró
+ *    o se renombró, y la exclusión quedó tapando un nombre futuro);
+ * 2. una entrada que, metida al censo, no produce NI UNA ocurrencia cruda,
+ *    sobra — el trabajo que la justificaba ya está hecho.
+ * Las dos tumban el auditor. Es el contrato de `resolvedBoundaries` de más
+ * arriba, y el de `laListaSeAuditaSola` del api.
+ */
+const catalogosFueraDelCenso = new Map([
+  [
+    'SortOrder',
+    "'ASC' y 'DESC' son el tipo PROPIO de TypeORM (`'ASC' | 'DESC'`) en " +
+      '`orderBy`/`addOrderBy` y en las find-options: el literal ya está tipado ' +
+      'por la librería que lo consume, no por el contrato. Adoptar el enum acá ' +
+      'sería reemplazar un tipo que compila por otro idéntico, y el contrato lo ' +
+      'publica para la API HTTP, que es otro borde.',
+  ],
+  [
+    'WS_JOIN_RESOURCE',
+    "Sus tres valores son 'album', 'story' y 'group': las tres palabras más " +
+      'comunes del dominio. Las 67 ocurrencias medidas son alias de TypeORM ' +
+      "(`createQueryBuilder('album')`), segmentos de ruta y claves de caché, y " +
+      'ninguna es un nombre de room. Un censo por VALOR no puede separarlas; el ' +
+      'que sí puede es el gate del api que fija el namespace de los rooms.',
+  ],
+  [
+    'MemivoMomentType',
+    "Sus dos valores son 'POST' y 'STORY'. 'POST' es además el método HTTP más " +
+      'usado del repo, y el censo por valor no distingue un `httpMethod` de un ' +
+      'tipo de momento. Es el mismo caso que la rama de `ModeratedContentType` ' +
+      'que el reconocedor ya trae escrita, un enum más allá.',
+  ],
+  [
+    'AlbumActionTargetType',
+    "Sus nueve valores son sustantivos del dominio ('PHOTO', 'ALBUM', " +
+      "'RESPONSE', 'COMMENT'…) que el repo también usa como preset de columnas, " +
+      'como tipo de dueño de encuesta y como etiqueta de UI. El censo por valor ' +
+      'no puede separar el registro de auditoría del sustantivo suelto.',
+  ],
+]);
+
+/**
+ * Los catálogos de códigos de error tienen su PROPIO chequeo.
+ *
+ * `literalErrorCodes` los mira con su tabla de excusas
+ * (`intentionalLocalErrorCodes`) y su propio criterio de fallo. Contarlos otra
+ * vez acá reportaría cada sitio dos veces con dos motivos distintos, que es la
+ * divergencia que un dueño único existe para impedir. Se reconocen por FORMA
+ * —el sufijo del nombre— y no por una lista de los 21 que hoy existen: el
+ * `FolderErrorCode` número 22 tiene que entrar por la misma puerta.
+ */
+const ES_CATALOGO_DE_ERRORES = /^(?:[A-Z][A-Za-z0-9]*)?ErrorCode$/;
+
+/** Los catálogos que el censo SÍ mira: todo lo publicado menos lo declarado. */
+function catalogosDelCenso(contracts) {
+  return Object.keys(contracts).filter(
+    (name) =>
+      esCatalogoDeRuntime(contracts[name]) &&
+      !ES_CATALOGO_DE_ERRORES.test(name) &&
+      !catalogosFueraDelCenso.has(name),
+  );
+}
+
+/** Las entradas de la tabla que ya no nombran un catálogo publicado. */
+function exclusionesSinCatalogo() {
   const contracts = require('../dist/index.js');
-  const enumNames = [
-    'AlbumMemberRole',
-    'ModeratedContentType',
-    'OAuthProvider',
-    'SessionPlatform',
-    'ValidRoles',
-    'ChatMemberRole',
-    'ChatMemberStatus',
-    'ChatMessageType',
-    'SystemMessageAction',
-    'ChatReactionAction',
-    'ChatReactionType',
-    'ChatRoleBadge',
-    'PollStatus',
-    'ReactionAction',
-    'ReactionType',
-    'ProfileReportReason',
-    'NotificationType',
-    'DownloadContext',
-    'Language',
-    'EmailActionRequired',
-    'ResourceType',
-    'UploadContext',
-  ];
+  return [...catalogosFueraDelCenso.keys()].filter(
+    (name) => !esCatalogoDeRuntime(contracts[name]),
+  );
+}
+
+function rawRuntimeContractLiterals(enumNamesOverride) {
+  const contracts = require('../dist/index.js');
+  const enumNames = enumNamesOverride ?? catalogosDelCenso(contracts);
   const ownersByValue = new Map();
   for (const enumName of enumNames) {
     for (const value of Object.values(contracts[enumName])) {
@@ -833,7 +1108,11 @@ for (const side of Object.keys(roots)) {
 }
 
 const sharedExports = exportedSharedSymbols();
-const { names: importedSymbols, wildcardDomains } = importedSharedNames();
+const {
+  names: importedSymbols,
+  wildcardDomains,
+  onlyViaReexport: sharedExportsHeldOnlyByAReexport,
+} = importedSharedNames();
 const packageInternalReferences = symbolsReferencedInsidePackage();
 const unusedSharedExports = [...sharedExports]
   .filter(([symbol, domain]) =>
@@ -861,6 +1140,12 @@ const localeCoverage = Object.fromEntries(
   }),
 );
 const rawRuntimeLiterals = rawRuntimeContractLiterals();
+// La auditoría de la tabla de exclusiones, en sus DOS direcciones. Ver el
+// docblock de `catalogosFueraDelCenso`.
+const exclusionesHuerfanas = exclusionesSinCatalogo();
+const exclusionesInnecesarias = [...catalogosFueraDelCenso.keys()]
+  .filter((name) => !exclusionesHuerfanas.includes(name))
+  .filter((name) => rawRuntimeContractLiterals([name]).length === 0);
 const unexpectedRawRuntimeLiterals = rawRuntimeLiterals.filter((item) => !item.reason);
 const intentionalRawRuntimeLiterals = rawRuntimeLiterals.filter((item) => item.reason);
 
@@ -877,11 +1162,18 @@ const report = {
     resolvedConsumerAdoption: crossRepo.resolved.length,
     resolvedBoundaries: crossRepo.resolvedBoundaries.length,
     unusedSharedExports: unusedSharedExports.length,
+    // Vivos, pero de una sola línea de re-export: si ese shim se queda sin
+    // lector, el símbolo cae. Se publica para que la cifra se pueda cuestionar
+    // en vez de descubrirse cuando el shim desaparece.
+    sharedExportsHeldOnlyByAReexport: sharedExportsHeldOnlyByAReexport.size,
     localeCoverage: Object.fromEntries(
       Object.entries(localeCoverage).map(([locale, coverage]) => [locale, coverage.translated]),
     ),
     rawRuntimeLiterals: unexpectedRawRuntimeLiterals.length,
     intentionalRawRuntimeLiterals: intentionalRawRuntimeLiterals.length,
+    catalogosDelCenso: catalogosDelCenso(require('../dist/index.js')).length,
+    exclusionesHuerfanas: exclusionesHuerfanas.length,
+    exclusionesInnecesarias: exclusionesInnecesarias.length,
   },
   errorCodes: {
     unknownApiErrorReferences,
@@ -905,6 +1197,11 @@ const report = {
   unusedSharedExports,
   localeCoverage,
   rawRuntimeLiterals: unexpectedRawRuntimeLiterals,
+  // Se imprimen SIEMPRE, por el mismo motivo que `resolvedBoundaries`: son las
+  // entradas que hay que borrar de `catalogosFueraDelCenso`, y un contador sin
+  // los nombres deja el fallo sin nada de dónde agarrarse.
+  exclusionesHuerfanas,
+  exclusionesInnecesarias,
   ...(verbose ? { intentionalRawRuntimeLiterals } : {}),
 };
 
@@ -931,6 +1228,11 @@ if (
   crossRepo.resolvedBoundaries.length ||
   unusedSharedExports.length ||
   unexpectedRawRuntimeLiterals.length ||
+  // Ver `catalogosFueraDelCenso`: una exclusion que ya no nombra un catalogo
+  // publicado tapa cualquier simbolo futuro con ese nombre, y una que dejo de
+  // producir ocurrencias es una excusa en blanco. Las dos son el trinquete.
+  exclusionesHuerfanas.length ||
+  exclusionesInnecesarias.length ||
   Object.values(localeCoverage).some((coverage) => coverage.missing.length) ||
   // Ver `collapsedErrorCodes`: un código marcado como voz única que volvió a tener
   // frase propia reabre la fuga que F13 cerró, y el reporte lo publica por locale.

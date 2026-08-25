@@ -18,6 +18,7 @@ import { UploadErrorCode } from './upload.error-code';
 import { DownloadErrorCode } from './download.error-code';
 import { LikeErrorCode } from './like.error-code';
 import { OAuthErrorCode } from './oauth.error-code';
+import { StickerErrorCode } from './sticker.error-code';
 /**
  * Enum consolidado para retrocompatibilidad
  * Combina todos los códigos de error en un solo objeto
@@ -36,6 +37,10 @@ import { OAuthErrorCode } from './oauth.error-code';
  * tampoco.
  */
 export declare const ErrorCode: {
+    readonly STICKER_CATALOG_UNAVAILABLE: StickerErrorCode.STICKER_CATALOG_UNAVAILABLE;
+    readonly STICKER_CATALOG_QUOTA_EXCEEDED: StickerErrorCode.STICKER_CATALOG_QUOTA_EXCEEDED;
+    readonly STICKER_NOT_FOUND: StickerErrorCode.STICKER_NOT_FOUND;
+    readonly STICKER_CONTENT_NOT_EDITABLE: StickerErrorCode.STICKER_CONTENT_NOT_EDITABLE;
     readonly OAUTH_TOKEN_INVALID: OAuthErrorCode.OAUTH_TOKEN_INVALID;
     readonly OAUTH_PROVIDER_UNAVAILABLE: OAuthErrorCode.OAUTH_PROVIDER_UNAVAILABLE;
     readonly OAUTH_VERIFICATION_FAILED: OAuthErrorCode.OAUTH_VERIFICATION_FAILED;

@@ -9,7 +9,6 @@ exports.ALBUM_SOCKET_EVENTS = {
         LEAVE_STORY: 'leave-story',
     },
     OUT: {
-        JOIN_SUCCESS: 'joined',
         JOIN_ERROR: 'join-error',
         ALBUM_DELETED: 'album-deleted',
         PARTICIPANT_KICKED: 'participant-kicked',

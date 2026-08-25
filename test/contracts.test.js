@@ -86,10 +86,18 @@ const social = require('../dist/social/index.js');
 //     sirve a quien empuja una posición, que en los tres casos tiene que dejar
 //     de hacerlo, y la variante «hay un bloqueo» delataría el bloqueo. El
 //     segundo es el fallo genérico de las dos mutaciones del canal.
-test('el catálogo consolidado expone 187 códigos de error únicos', () => {
+//
+// v14.0.0: +1. `STICKER_CONTENT_NOT_EDITABLE` entró junto con sus TRES emisores
+// —el endpoint de edición del comentario, el de la respuesta y el del
+// comentario de historia— y con el gate de la app que decide si dibuja el
+// botón. Es su propio código y no el `..._FORBIDDEN` de cada superficie porque
+// el motivo no es de permisos: el autor tampoco puede editar un sticker, y
+// contestarlo con el código de permiso haría que la app explique «no es tuyo»
+// sobre algo que sí lo es.
+test('el catálogo consolidado expone 191 códigos de error únicos', () => {
   const values = Object.values(errors.ErrorCode);
 
-  assert.equal(values.length, 187);
+  assert.equal(values.length, 191);
   assert.equal(new Set(values).size, values.length);
 });
 

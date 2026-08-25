@@ -7,7 +7,6 @@ import type { ChatReactionNotificationMetadata } from './chat-reaction-notificat
 import type { CommentNotificationMetadata } from './comment-notification-metadata.interface';
 import type { ContentRemovedByOrganizerMetadata } from './internal/content-removed-by-organizer-metadata.interface';
 import type { CountedAlbumMetadata } from './counted-album-metadata.interface';
-import type { DailyMotivationalMetadata } from './internal/daily-motivational-metadata.interface';
 import type { DownloadReadyMetadata } from './download-ready-metadata.interface';
 import type { PhotoNotificationMetadata } from './photo-notification-metadata.interface';
 import type { PhotoUploadNotificationMetadata } from './photo-upload-notification-metadata.interface';
@@ -56,5 +55,11 @@ export type NotificationMetadataByType = {
     [NotificationType.STORY_UPLOAD_READY]: StoryUploadNotificationMetadata;
     [NotificationType.PROFESSIONAL_PHOTOS_UPLOAD_READY]: PhotosBatchUploadMetadata;
     [NotificationType.DOWNLOAD_READY]: DownloadReadyMetadata;
-    [NotificationType.DAILY_MOTIVATIONAL]: DailyMotivationalMetadata;
+    /**
+     * No hay metadata de transporte para esta push-only. El índice con el que el
+     * servidor elige el copy es un input privado del renderer y se descarta antes
+     * de serializar; modelarlo acá lo filtraba a `NotificationResponse` y a
+     * `NotificationMetadataView` como si viajara al cliente.
+     */
+    [NotificationType.DAILY_MOTIVATIONAL]: never;
 };

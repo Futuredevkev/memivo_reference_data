@@ -7,5 +7,6 @@ export declare enum ChatMessageType {
     LOCATION = "LOCATION",
     POLL = "POLL",
     SYSTEM = "SYSTEM",
-    SHARED_POST = "SHARED_POST"
+    SHARED_POST = "SHARED_POST",
+    STICKER = "STICKER"
 }

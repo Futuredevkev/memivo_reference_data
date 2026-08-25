@@ -12,4 +12,5 @@ var ChatMessageType;
     ChatMessageType["POLL"] = "POLL";
     ChatMessageType["SYSTEM"] = "SYSTEM";
     ChatMessageType["SHARED_POST"] = "SHARED_POST";
+    ChatMessageType["STICKER"] = "STICKER";
 })(ChatMessageType || (exports.ChatMessageType = ChatMessageType = {}));

@@ -1,3 +1,4 @@
+import type { StickerReference } from '../../stickers';
 import type { ChatMessageType, SystemMessageAction } from '../enums';
 import type { ChatLocationPoint } from './chat-location-point.interface';
 import type { ChatMessageFileResponse } from './internal/chat-message-file-response.interface';
@@ -47,6 +48,22 @@ export interface ChatMessageResponse<TTimestamp = string> {
   systemAction?: SystemMessageAction | null;
   systemData?: SystemMessageData | null;
   sharedPostId?: string | null;
+  /**
+   * El sticker del mensaje, ya resuelto. `null` en todo lo que no es un sticker.
+   *
+   * ── POR QUÉ VIAJA RESUELTO Y NO COMO ID, AL REVÉS QUE `sharedPostId` ──────
+   * El post viaja como id porque su contenido depende de QUIÉN mira: cada
+   * cliente lo vuelve a pedir con su propia sesión y el servidor le aplica su
+   * bloqueo. Un sticker no depende de quién mira —el catálogo es externo,
+   * público y el mismo para todos— así que mandarlo como id sólo compraría un
+   * round-trip por burbuja para llegar a la misma respuesta.
+   *
+   * Y viene de un `leftJoin` 1:1 en la consulta que ya trae los mensajes: no
+   * multiplica filas —a diferencia de los archivos, que son 1:N y por eso se
+   * hidratan aparte— así que cincuenta mensajes con sticker siguen siendo UNA
+   * consulta.
+   */
+  sticker?: StickerReference | null;
   /**
    * El PUNTO de un mensaje de ubicación FIJA. `null` en todo lo demás.
    *
