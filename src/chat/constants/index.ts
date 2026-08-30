@@ -8,6 +8,7 @@ export * from './chat-live-location-duration-minutes.constant';
 export * from './chat-media-message-types.constant';
 export * from './chat-message-content-by-type.constant';
 export * from './chat-message-mutation-by-type.constant';
+export * from './chat-view-once-expiry-hours.constant';
 export * from './empty-chat-reaction-counts.constant';
 export * from './message-context-default-limit.constant';
 export * from './message-context-max-limit.constant';

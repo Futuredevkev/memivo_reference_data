@@ -3,6 +3,7 @@ export { ALBUM_PASSWORD_TOO_SHORT_CODE } from './album-password-too-short-code.c
 export { ALBUM_PASSWORD_TYPE_INVALID_CODE } from './album-password-type-invalid-code.constant';
 export * from './album-link-paths.constant';
 export * from './album-link-patterns.constant';
+export * from './album-qr-code-ttl-days.constant';
 export * from './build-album-link-path.helper';
 export {
   FOLDER_NAME_FORBIDDEN_CHARACTERS,

@@ -52,6 +52,23 @@ const intentionalBoundaries = new Map([
   // reemplazo del día que sobren: comparar también el EJE (unidad + dominio del
   // símbolo), no sólo el número.
   ['const:CACHE_GENERATION_TTL_MS', 'Una hora en ms por coincidencia: TTL del contador de generación de caché vs. granularidad del borde de una ventana rodante en el cliente. Dominios sin relación.'],
+  // CONVERSIÓN FÍSICA, no contrato. Los dos lados dicen que una hora tiene
+  // sesenta minutos, y eso no puede desincronizarse: no hay versión del paquete
+  // que cambie cuánto dura una hora. Publicarlo haría que CADA expresión
+  // aritmética de los dos repos —128 usos de `MS_PER_MINUTE` sólo en el
+  // servidor— dependiera de un pin para un hecho que el pin no gobierna.
+  //
+  // Lo que SÍ es contrato son los PLAZOS medidos en esas unidades —cuánto vive
+  // un QR, cuánto dura un view-once, cuánto puede durar un video— y ésos ya
+  // salen de acá: `ALBUM_QR_CODE_TTL_DAYS`, `CHAT_VIEW_ONCE_EXPIRY_HOURS`,
+  // `CHAT_VIDEO_MAX_DURATION_MS`. La línea es ésa: el paquete publica lo que el
+  // producto DECIDE, no la aritmética con la que se escribe.
+  //
+  // El par lo forma sólo `MINUTES_PER_HOUR` porque es el único literal pelado a
+  // los dos lados: en el servidor `MS_PER_MINUTE` y `MS_PER_DAY` se derivan de
+  // sus hermanos, así que la firma no coincide y la heurística no los aparea. La
+  // misma decisión vale para toda la familia.
+  ['const:MINUTES_PER_HOUR', 'Conversión física compartida por definición, no contrato de producto: una hora tiene 60 minutos en los dos repos y ninguna versión del paquete puede cambiarlo. Lo que sí publica contracts son los PLAZOS medidos en esas unidades.'],
 ]);
 
 /**
