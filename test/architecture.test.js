@@ -79,6 +79,7 @@ test('el root no acumula contratos sueltos', () => {
 const SORTED_BARRELS = [
   'album/enums/index.ts',
   'album/index.ts',
+  'album/rules/index.ts',
   'auth/constants/index.ts',
   'auth/enums/index.ts',
   'auth/index.ts',
@@ -139,6 +140,7 @@ const SORTED_BARRELS = [
   'validation/common-passwords/index.ts',
   'validation/index.ts',
   'validation/limits/index.ts',
+  'validation/rules/index.ts',
   'validation/patterns/index.ts',
 ];
 

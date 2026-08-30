@@ -1,3 +1,4 @@
+import type { AlbumAccessPasswordChangeKind } from '../enums/album-access-password-change-kind.type';
 /**
  * Payload por acción del audit-log del álbum.
  *
@@ -60,6 +61,21 @@ export interface AlbumActionDetail {
    * explicar por qué un link seguía abierto.
    */
   qrCodeExpiresAt?: string;
-  /** New protection state; the password itself is deliberately never logged. */
+  /**
+   * El estado NUEVO de la protección; la contraseña en sí no se registra nunca.
+   *
+   * Se conserva porque los registros anteriores a [AlbumAccessPasswordChangeKind]
+   * sólo tienen esto: borrarlo dejaría al lector sin nada que decir sobre ellos.
+   * Para las entradas nuevas, lo que manda es `accessPasswordKind`.
+   */
   hasAccessPassword?: boolean;
+  /**
+   * QUÉ LE PASÓ a la contraseña de acceso: se activó, se cambió, o se quitó.
+   *
+   * EL DEFECTO QUE CIERRA: con sólo el booleano de arriba no se puede
+   * distinguir «la activó» de «la cambió» —vale `true` en los dos casos— y el
+   * registro afirmaba lo primero en los dos. Es el servidor el único que puede
+   * contestarlo, porque es el único que ve el estado anterior dentro del lock.
+   */
+  accessPasswordKind?: AlbumAccessPasswordChangeKind;
 }

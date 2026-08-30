@@ -1,3 +1,5 @@
+export * from './album-access-password-change-kind.type';
+export * from './album-access-password-change-kinds.constant';
 export * from './album-action-target-type.enum';
 export * from './album-action-type.enum';
 export * from './album-actor-role.enum';

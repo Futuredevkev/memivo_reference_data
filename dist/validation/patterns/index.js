@@ -16,6 +16,8 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./client-temp-id-pattern.constant"), exports);
 __exportStar(require("./email-regex.constant"), exports);
+__exportStar(require("./fqdn-host-regex.constant"), exports);
+__exportStar(require("./http-scheme-regex.constant"), exports);
 __exportStar(require("./instagram-handle-regex.constant"), exports);
 __exportStar(require("./international-phone-regex.constant"), exports);
 __exportStar(require("./password-digit-regex.constant"), exports);
