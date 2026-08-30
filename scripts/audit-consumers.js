@@ -69,6 +69,8 @@ const intentionalBoundaries = new Map([
   // sus hermanos, así que la firma no coincide y la heurística no los aparea. La
   // misma decisión vale para toda la familia.
   ['const:MINUTES_PER_HOUR', 'Conversión física compartida por definición, no contrato de producto: una hora tiene 60 minutos en los dos repos y ninguna versión del paquete puede cambiarlo. Lo que sí publica contracts son los PLAZOS medidos en esas unidades.'],
+  ['const:MS_PER_SECOND', 'Idem: mil milisegundos en un segundo. Misma familia, misma decisión.'],
+  ['const:SECONDS_PER_MINUTE', 'Idem: sesenta segundos en un minuto. Misma familia, misma decisión.'],
 ]);
 
 /**
