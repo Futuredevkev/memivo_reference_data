@@ -18,6 +18,7 @@ import { UploadErrorCode } from './upload.error-code';
 import { DownloadErrorCode } from './download.error-code';
 import { LikeErrorCode } from './like.error-code';
 import { OAuthErrorCode } from './oauth.error-code';
+import { StickerErrorCode } from './sticker.error-code';
 /**
  * Enum consolidado para retrocompatibilidad
  * Combina todos los códigos de error en un solo objeto
@@ -36,6 +37,10 @@ import { OAuthErrorCode } from './oauth.error-code';
  * tampoco.
  */
 export declare const ErrorCode: {
+    readonly STICKER_CATALOG_UNAVAILABLE: StickerErrorCode.STICKER_CATALOG_UNAVAILABLE;
+    readonly STICKER_CATALOG_QUOTA_EXCEEDED: StickerErrorCode.STICKER_CATALOG_QUOTA_EXCEEDED;
+    readonly STICKER_NOT_FOUND: StickerErrorCode.STICKER_NOT_FOUND;
+    readonly STICKER_CONTENT_NOT_EDITABLE: StickerErrorCode.STICKER_CONTENT_NOT_EDITABLE;
     readonly OAUTH_TOKEN_INVALID: OAuthErrorCode.OAUTH_TOKEN_INVALID;
     readonly OAUTH_PROVIDER_UNAVAILABLE: OAuthErrorCode.OAUTH_PROVIDER_UNAVAILABLE;
     readonly OAUTH_VERIFICATION_FAILED: OAuthErrorCode.OAUTH_VERIFICATION_FAILED;
@@ -95,9 +100,6 @@ export declare const ErrorCode: {
     readonly STORY_VIDEO_TOO_LONG: StoryErrorCode.STORY_VIDEO_TOO_LONG;
     readonly STORY_DELETE_FAILED: StoryErrorCode.STORY_DELETE_FAILED;
     readonly STORY_VIEW_FAILED: StoryErrorCode.STORY_VIEW_FAILED;
-    readonly STORY_TAG_NOT_FOUND: StoryErrorCode.STORY_TAG_NOT_FOUND;
-    readonly STORY_TAG_FORBIDDEN: StoryErrorCode.STORY_TAG_FORBIDDEN;
-    readonly STORY_TAG_ALREADY_EXISTS: StoryErrorCode.STORY_TAG_ALREADY_EXISTS;
     readonly REACTION_TOGGLE_FAILED: ReactionErrorCode.REACTION_TOGGLE_FAILED;
     readonly REACTION_TARGET_FORBIDDEN: ReactionErrorCode.REACTION_TARGET_FORBIDDEN;
     readonly MAIL_SEND_FAILED: MailErrorCode.MAIL_SEND_FAILED;
@@ -122,6 +124,7 @@ export declare const ErrorCode: {
     readonly CHAT_MEDIA_MISMATCH: ChatErrorCode.CHAT_MEDIA_MISMATCH;
     readonly CHAT_MESSAGE_EMPTY: ChatErrorCode.CHAT_MESSAGE_EMPTY;
     readonly CHAT_MESSAGE_SEND_FAILED: ChatErrorCode.CHAT_MESSAGE_SEND_FAILED;
+    readonly CHAT_MESSAGE_NOT_RELOCATABLE: ChatErrorCode.CHAT_MESSAGE_NOT_RELOCATABLE;
     readonly CHAT_VIDEO_TOO_LONG: ChatErrorCode.CHAT_VIDEO_TOO_LONG;
     readonly CHAT_AUDIO_TOO_LONG: ChatErrorCode.CHAT_AUDIO_TOO_LONG;
     readonly CHAT_MESSAGE_EDIT_FAILED: ChatErrorCode.CHAT_MESSAGE_EDIT_FAILED;
@@ -132,6 +135,8 @@ export declare const ErrorCode: {
     readonly CHAT_VIEW_ONCE_ALREADY_VIEWED: ChatErrorCode.CHAT_VIEW_ONCE_ALREADY_VIEWED;
     readonly CHAT_VIEW_ONCE_SENDER_FORBIDDEN: ChatErrorCode.CHAT_VIEW_ONCE_SENDER_FORBIDDEN;
     readonly CHAT_VIEW_ONCE_DOWNLOAD_FORBIDDEN: ChatErrorCode.CHAT_VIEW_ONCE_DOWNLOAD_FORBIDDEN;
+    readonly CHAT_LIVE_LOCATION_NOT_ACTIVE: ChatErrorCode.CHAT_LIVE_LOCATION_NOT_ACTIVE;
+    readonly CHAT_LIVE_LOCATION_FAILED: ChatErrorCode.CHAT_LIVE_LOCATION_FAILED;
     readonly CHAT_MEMBER_NOT_FOUND: ChatErrorCode.CHAT_MEMBER_NOT_FOUND;
     readonly CHAT_MEMBER_INVALID_STATUS: ChatErrorCode.CHAT_MEMBER_INVALID_STATUS;
     readonly CHAT_ADMIN_REQUIRED: ChatErrorCode.CHAT_ADMIN_REQUIRED;
@@ -157,9 +162,7 @@ export declare const ErrorCode: {
     readonly PHOTO_TAG_NOT_FOUND: PhotoErrorCode.PHOTO_TAG_NOT_FOUND;
     readonly UPLOAD_ALL_FAILED: PhotoErrorCode.UPLOAD_ALL_FAILED;
     readonly UPLOAD_ALBUM_MISMATCH: PhotoErrorCode.UPLOAD_ALBUM_MISMATCH;
-    readonly VIDEO_NOT_FOUND: PhotoErrorCode.VIDEO_NOT_FOUND;
     readonly IMAGE_NOT_FOUND: PhotoErrorCode.IMAGE_NOT_FOUND;
-    readonly AUDIO_NOT_FOUND: PhotoErrorCode.AUDIO_NOT_FOUND;
     readonly FOLDER_NOT_FOUND: FolderErrorCode.FOLDER_NOT_FOUND;
     readonly FOLDER_ORGANIZER_REQUIRED: FolderErrorCode.FOLDER_ORGANIZER_REQUIRED;
     readonly FOLDER_NAME_CONFLICT: FolderErrorCode.FOLDER_NAME_CONFLICT;
@@ -167,12 +170,12 @@ export declare const ErrorCode: {
     readonly FOLDER_ALBUM_MISMATCH: FolderErrorCode.FOLDER_ALBUM_MISMATCH;
     readonly FOLDER_COVER_PHOTO_INVALID: FolderErrorCode.FOLDER_COVER_PHOTO_INVALID;
     readonly ALBUM_NOT_FOUND: AlbumErrorCode.ALBUM_NOT_FOUND;
-    readonly ALBUM_PRIVATE: AlbumErrorCode.ALBUM_PRIVATE;
     readonly ALBUM_PERMISSION_DENIED: AlbumErrorCode.ALBUM_PERMISSION_DENIED;
     readonly ALBUM_OWNER_REQUIRED: AlbumErrorCode.ALBUM_OWNER_REQUIRED;
     readonly ALBUM_ORGANIZER_REQUIRED: AlbumErrorCode.ALBUM_ORGANIZER_REQUIRED;
     readonly ALBUM_INVITE_INVALID: AlbumErrorCode.ALBUM_INVITE_INVALID;
     readonly ALBUM_INVITE_EXPIRED: AlbumErrorCode.ALBUM_INVITE_EXPIRED;
+    readonly ALBUM_QR_CODE_EXPIRED: AlbumErrorCode.ALBUM_QR_CODE_EXPIRED;
     readonly ALBUM_OWNER_SCAN_FORBIDDEN: AlbumErrorCode.ALBUM_OWNER_SCAN_FORBIDDEN;
     readonly ALBUM_PASSWORD_REQUIRED: AlbumErrorCode.ALBUM_PASSWORD_REQUIRED;
     readonly ALBUM_PASSWORD_INVALID: AlbumErrorCode.ALBUM_PASSWORD_INVALID;
@@ -206,9 +209,6 @@ export declare const ErrorCode: {
     readonly AUTH_2FA_NOT_ENABLED: AuthErrorCode.AUTH_2FA_NOT_ENABLED;
     readonly AUTH_2FA_ALREADY_ENABLED: AuthErrorCode.AUTH_2FA_ALREADY_ENABLED;
     readonly AUTH_2FA_SETUP_EXPIRED: AuthErrorCode.AUTH_2FA_SETUP_EXPIRED;
-    readonly AUTH_PASSWORD_EMPTY: AuthErrorCode.AUTH_PASSWORD_EMPTY;
-    readonly AUTH_PASSWORD_CONFIRMATION_REQUIRED: AuthErrorCode.AUTH_PASSWORD_CONFIRMATION_REQUIRED;
-    readonly AUTH_PASSWORD_TOO_LONG: AuthErrorCode.AUTH_PASSWORD_TOO_LONG;
     readonly AUTH_TOKEN_INVALID: AuthErrorCode.AUTH_TOKEN_INVALID;
     readonly AUTH_TOKEN_MALFORMED: AuthErrorCode.AUTH_TOKEN_MALFORMED;
     readonly AUTH_ACCESS_DENIED: AuthErrorCode.AUTH_ACCESS_DENIED;
@@ -226,7 +226,6 @@ export declare const ErrorCode: {
     readonly FILES_UNSUPPORTED_FORMAT: CommonErrorCode.FILES_UNSUPPORTED_FORMAT;
     readonly TOO_MANY_REQUESTS: CommonErrorCode.TOO_MANY_REQUESTS;
     readonly UPLOAD_FAILED: CommonErrorCode.UPLOAD_FAILED;
-    readonly UPLOAD_URL_MISSING: CommonErrorCode.UPLOAD_URL_MISSING;
     readonly UPLOAD_FILE_MISSING: CommonErrorCode.UPLOAD_FILE_MISSING;
     readonly UPLOAD_PUBLIC_ID_MISSING: CommonErrorCode.UPLOAD_PUBLIC_ID_MISSING;
 };

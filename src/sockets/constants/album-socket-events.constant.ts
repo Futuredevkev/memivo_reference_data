@@ -6,7 +6,6 @@ export const ALBUM_SOCKET_EVENTS = {
     LEAVE_STORY: 'leave-story',
   },
   OUT: {
-    JOIN_SUCCESS: 'joined',
     JOIN_ERROR: 'join-error',
     ALBUM_DELETED: 'album-deleted',
     PARTICIPANT_KICKED: 'participant-kicked',
@@ -16,7 +15,6 @@ export const ALBUM_SOCKET_EVENTS = {
     TAG_ADDED: 'tag-added',
     TAGS_ADDED: 'tags-added',
     TAG_REMOVED: 'tag-removed',
-    STORY_TAG_REMOVED: 'story.tag-removed',
     PARTICIPANT_JOINED: 'participant-joined',
     HIGHLIGHTS_UPDATED: 'highlights-updated',
     MEMIVO_MOMENTS_UPDATED: 'memivo.moments-updated',

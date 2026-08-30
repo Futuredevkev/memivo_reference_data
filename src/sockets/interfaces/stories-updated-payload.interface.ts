@@ -1,22 +1,14 @@
-import type { StoryResponse } from '../../stories';
+import type { StoryBroadcastEntry } from './story-broadcast-entry.type';
 
 /**
- * Historia tal como viaja en un broadcast de álbum.
+ * El frame de `stories.updated`: la lista completa de historias de un álbum,
+ * con el sello que dice cuál es más nueva.
  *
- * `viewCount` y `viewedByMe` NO están, y esa ausencia es deliberada: son datos
- * PER-VIEWER y el broadcast es album-wide, así que el emisor no los puede
- * calcular. Antes viajaban con `0` y `false` fijos y el cliente los tapaba con
- * un merge contra su cache — lo que sólo funciona para historias que ya tenía:
- * una historia que llegaba por socket sin estar cacheada se pintaba con cero
- * vistas, y el contador es visible para cualquiera. El tipo mentía y el runtime
- * pagaba. Ahora el merge del cliente es el único dueño de esos dos campos, y el
- * compilador lo obliga.
+ * La entrada de la lista vive en su propio archivo porque es otro símbolo y
+ * otro kind: acá estaban las dos —un `type` y una `interface` en un archivo
+ * `*.interface.ts`—, así que el nombre del archivo describía a una sola y el
+ * grep del `type` caía en un archivo que dice `interface`.
  */
-export type StoryBroadcastEntry<TTimestamp = string> = Omit<
-  StoryResponse<TTimestamp>,
-  'viewCount' | 'viewedByMe'
->;
-
 export interface StoriesUpdatedPayload<TTimestamp = string> {
   albumId: string;
   stories: StoryBroadcastEntry<TTimestamp>[];

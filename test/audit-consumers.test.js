@@ -3,7 +3,7 @@ const assert = require('node:assert/strict');
 const { execFileSync } = require('node:child_process');
 const { mkdtempSync, mkdirSync, writeFileSync, rmSync } = require('node:fs');
 const { tmpdir } = require('node:os');
-const { resolve, join } = require('node:path');
+const { dirname, resolve, join } = require('node:path');
 
 /**
  * Tests del AUDITOR, no del contrato.
@@ -16,7 +16,7 @@ const { resolve, join } = require('node:path');
  */
 const auditor = resolve(__dirname, '..', 'scripts', 'audit-consumers.js');
 
-function runAudit({ api = '', client = '' }) {
+function runAudit({ api = '', client = '', apiFiles = {}, clientFiles = {} }) {
   const workspace = mkdtempSync(join(tmpdir(), 'memivo-audit-'));
   const apiSrc = join(workspace, 'api');
   const clientSrc = join(workspace, 'client');
@@ -24,6 +24,15 @@ function runAudit({ api = '', client = '' }) {
   mkdirSync(clientSrc, { recursive: true });
   if (api) writeFileSync(join(apiSrc, 'fixture.ts'), api, 'utf8');
   if (client) writeFileSync(join(clientSrc, 'fixture.ts'), client, 'utf8');
+  // Varios archivos por lado: un shim y su consumidor no caben en un fixture solo,
+  // y la cadena archivo → barrel → shim es justamente lo que hay que poder armar.
+  for (const [root, files] of [[apiSrc, apiFiles], [clientSrc, clientFiles]]) {
+    for (const [name, contents] of Object.entries(files)) {
+      const target = join(root, name);
+      mkdirSync(dirname(target), { recursive: true });
+      writeFileSync(target, contents, 'utf8');
+    }
+  }
 
   // El auditor mide la cobertura de traducciones de los 192 códigos de error contra
   // los 3 locales del cliente, así que un cliente sintético tiene que parecer un
@@ -180,5 +189,69 @@ test('el tipo ErrorCode del paquete entra al corpus del auditor', () => {
   assert.ok(
     copied.crossRepo.risks.some((risk) => risk.right.name === 'ErrorCode'),
     'redeclarar el tipo ErrorCode tiene que dar riesgo ahora que no vive en el barrel',
+  );
+});
+
+/**
+ * UN RE-EXPORT NO ES UN CONSUMIDOR.
+ *
+ * `importedSharedNames()` aceptaba `import { X } from '@memivo/contracts'` y
+ * `export { X } from '@memivo/contracts'` sin distinguirlos, así que un shim que
+ * sólo reenvía marcaba a `X` como consumido aunque nadie importara el shim. Es
+ * la misma falsificación que ya se había cerrado A MANO borrando 19 archivos del
+ * api: el mecanismo quedó intacto y hoy hay cientos de shims. Estos dos casos
+ * son la diferencia que el gate no podía ver.
+ */
+test('un shim de re-export SIN lector deja de sostener a su símbolo', () => {
+  const report = runAudit({
+    apiFiles: {
+      'shim.ts': "export { ALBUM_SOCKET_NAMESPACE } from '@memivo/contracts/sockets';\n",
+    },
+  });
+
+  assert.ok(
+    report.unusedSharedExports.includes('ALBUM_SOCKET_NAMESPACE'),
+    'el símbolo que sólo sostiene un shim huérfano tiene que reportarse sin consumidor',
+  );
+});
+
+test('el MISMO shim con un lector sí sostiene a su símbolo', () => {
+  const report = runAudit({
+    apiFiles: {
+      'shim.ts': "export { ALBUM_SOCKET_NAMESPACE } from '@memivo/contracts/sockets';\n",
+      'reader.ts': [
+        "import { ALBUM_SOCKET_NAMESPACE } from './shim';",
+        'export const cap = ALBUM_SOCKET_NAMESPACE;',
+        '',
+      ].join('\n'),
+    },
+  });
+
+  assert.equal(
+    report.unusedSharedExports.includes('ALBUM_SOCKET_NAMESPACE'),
+    false,
+    'con un lector del shim el símbolo está vivo',
+  );
+});
+
+test('la cadena consumidor → barrel → shim también lo sostiene', () => {
+  // La puerta normal del repo es el barrel, y sin seguir la cadena el arreglo
+  // habría reportado como huérfano a todo shim consumido por su carpeta.
+  const report = runAudit({
+    apiFiles: {
+      'sockets/shim.ts': "export { ALBUM_SOCKET_NAMESPACE } from '@memivo/contracts/sockets';\n",
+      'sockets/index.ts': "export { ALBUM_SOCKET_NAMESPACE } from './shim';\n",
+      'reader.ts': [
+        "import { ALBUM_SOCKET_NAMESPACE } from './sockets';",
+        'export const cap = ALBUM_SOCKET_NAMESPACE;',
+        '',
+      ].join('\n'),
+    },
+  });
+
+  assert.equal(
+    report.unusedSharedExports.includes('ALBUM_SOCKET_NAMESPACE'),
+    false,
+    'el consumo por el barrel de la carpeta tiene que alcanzar al shim',
   );
 });

@@ -6,5 +6,5 @@ export interface PhotoTag {
   photoId: string;
   x: number;
   y: number;
-  user: Omit<SocialAuthor, 'albumRole' | 'roles'>;
+  user: Omit<SocialAuthor, 'albumRole'>;
 }

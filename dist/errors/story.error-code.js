@@ -8,7 +8,4 @@ var StoryErrorCode;
     StoryErrorCode["STORY_VIDEO_TOO_LONG"] = "STORY_VIDEO_TOO_LONG";
     StoryErrorCode["STORY_DELETE_FAILED"] = "STORY_DELETE_FAILED";
     StoryErrorCode["STORY_VIEW_FAILED"] = "STORY_VIEW_FAILED";
-    StoryErrorCode["STORY_TAG_NOT_FOUND"] = "STORY_TAG_NOT_FOUND";
-    StoryErrorCode["STORY_TAG_FORBIDDEN"] = "STORY_TAG_FORBIDDEN";
-    StoryErrorCode["STORY_TAG_ALREADY_EXISTS"] = "STORY_TAG_ALREADY_EXISTS";
 })(StoryErrorCode || (exports.StoryErrorCode = StoryErrorCode = {}));

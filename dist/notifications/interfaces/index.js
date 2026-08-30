@@ -14,6 +14,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+__exportStar(require("./active-view-suppresses-notification.function"), exports);
 __exportStar(require("./album-notification-metadata.interface"), exports);
 __exportStar(require("./chat-group-notification-metadata.interface"), exports);
 __exportStar(require("./chat-message-notification-metadata.interface"), exports);
@@ -21,7 +22,12 @@ __exportStar(require("./chat-reaction-notification-metadata.interface"), exports
 __exportStar(require("./comment-notification-metadata.interface"), exports);
 __exportStar(require("./counted-album-metadata.interface"), exports);
 __exportStar(require("./download-ready-metadata.interface"), exports);
+__exportStar(require("./get-notification-delivery-policy.function"), exports);
 __exportStar(require("./is-notification-response.function"), exports);
+__exportStar(require("./notification-context-id-source.type"), exports);
+__exportStar(require("./notification-delivery-policy.interface"), exports);
+__exportStar(require("./notification-foreground-redundancy.type"), exports);
+__exportStar(require("./notification-in-app-surface.type"), exports);
 __exportStar(require("./notification-metadata-by-type.type"), exports);
 __exportStar(require("./notification-metadata-view.type"), exports);
 __exportStar(require("./notification-metadata.type"), exports);
@@ -34,6 +40,7 @@ __exportStar(require("./photo-upload-notification-metadata.interface"), exports)
 __exportStar(require("./photos-batch-upload-metadata.interface"), exports);
 __exportStar(require("./poll-notification-metadata.interface"), exports);
 __exportStar(require("./reaction-on-photo-metadata.interface"), exports);
+__exportStar(require("./resolve-notification-context-id.function"), exports);
 __exportStar(require("./story-comment-notification-metadata.interface"), exports);
 __exportStar(require("./story-notification-metadata.interface"), exports);
 __exportStar(require("./story-upload-notification-metadata.interface"), exports);

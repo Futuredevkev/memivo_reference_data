@@ -14,6 +14,14 @@ var ChatErrorCode;
     ChatErrorCode["CHAT_MEDIA_MISMATCH"] = "CHAT_MEDIA_MISMATCH";
     ChatErrorCode["CHAT_MESSAGE_EMPTY"] = "CHAT_MESSAGE_EMPTY";
     ChatErrorCode["CHAT_MESSAGE_SEND_FAILED"] = "CHAT_MESSAGE_SEND_FAILED";
+    /**
+     * El mensaje no puede mudarse a otro chat: o lo construyó la app —un
+     * aviso de sistema, una encuesta— o está atado a su chat por un estado
+     * suyo, como el view-once. Quién cae de cada lado lo decide
+     * `CHAT_CONTENT_RELOCATION_BY_TYPE`, y la app pregunta ANTES de ofrecer
+     * el botón: llegar acá significa una request armada a mano.
+     */
+    ChatErrorCode["CHAT_MESSAGE_NOT_RELOCATABLE"] = "CHAT_MESSAGE_NOT_RELOCATABLE";
     ChatErrorCode["CHAT_VIDEO_TOO_LONG"] = "CHAT_VIDEO_TOO_LONG";
     ChatErrorCode["CHAT_AUDIO_TOO_LONG"] = "CHAT_AUDIO_TOO_LONG";
     ChatErrorCode["CHAT_MESSAGE_EDIT_FAILED"] = "CHAT_MESSAGE_EDIT_FAILED";
@@ -25,6 +33,20 @@ var ChatErrorCode;
     ChatErrorCode["CHAT_VIEW_ONCE_ALREADY_VIEWED"] = "CHAT_VIEW_ONCE_ALREADY_VIEWED";
     ChatErrorCode["CHAT_VIEW_ONCE_SENDER_FORBIDDEN"] = "CHAT_VIEW_ONCE_SENDER_FORBIDDEN";
     ChatErrorCode["CHAT_VIEW_ONCE_DOWNLOAD_FORBIDDEN"] = "CHAT_VIEW_ONCE_DOWNLOAD_FORBIDDEN";
+    // Ubicación en vivo
+    /**
+     * El compartir en vivo ya no está transmitiendo: se venció el plazo, quien
+     * comparte lo cortó, o el mensaje nunca fue un compartir en vivo.
+     *
+     * Las tres causas contestan lo MISMO a propósito. El plazo lo hace cumplir
+     * el servidor, así que un teléfono que siguió empujando posiciones después
+     * de la hora llega acá — y distinguir «se venció» de «lo cortaron» no le
+     * cambia nada a quien empuja, que en los dos casos tiene que dejar de
+     * hacerlo.
+     */
+    ChatErrorCode["CHAT_LIVE_LOCATION_NOT_ACTIVE"] = "CHAT_LIVE_LOCATION_NOT_ACTIVE";
+    /** Fallo genérico de las dos mutaciones del canal: empujar y cortar. */
+    ChatErrorCode["CHAT_LIVE_LOCATION_FAILED"] = "CHAT_LIVE_LOCATION_FAILED";
     // Members & Groups
     ChatErrorCode["CHAT_MEMBER_NOT_FOUND"] = "CHAT_MEMBER_NOT_FOUND";
     ChatErrorCode["CHAT_MEMBER_INVALID_STATUS"] = "CHAT_MEMBER_INVALID_STATUS";

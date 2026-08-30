@@ -29,5 +29,6 @@ __exportStar(require("./reactions"), exports);
 __exportStar(require("./reports"), exports);
 __exportStar(require("./sockets"), exports);
 __exportStar(require("./social"), exports);
+__exportStar(require("./stickers"), exports);
 __exportStar(require("./stories"), exports);
 __exportStar(require("./validation"), exports);

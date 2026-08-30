@@ -4,7 +4,6 @@ export const CHAT_SOCKET_EVENTS = {
     LEAVE_GROUP: 'leave-group',
   },
   OUT: {
-    JOIN_SUCCESS: 'joined',
     JOIN_ERROR: 'join-error',
     NEW_MESSAGE: 'new-message',
     MESSAGE_UPDATED: 'message-updated',
@@ -30,5 +29,7 @@ export const CHAT_SOCKET_EVENTS = {
     REACTION_UPDATED: 'reaction-updated',
     VIEW_ONCE_OPENED: 'view-once-opened',
     VIEW_ONCE_EXPIRED: 'view-once-expired',
+    LIVE_LOCATION_UPDATED: 'live-location-updated',
+    LIVE_LOCATION_ENDED: 'live-location-ended',
   },
 } as const;

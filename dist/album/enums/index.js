@@ -14,6 +14,8 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+__exportStar(require("./album-access-password-change-kind.type"), exports);
+__exportStar(require("./album-access-password-change-kinds.constant"), exports);
 __exportStar(require("./album-action-target-type.enum"), exports);
 __exportStar(require("./album-action-type.enum"), exports);
 __exportStar(require("./album-actor-role.enum"), exports);

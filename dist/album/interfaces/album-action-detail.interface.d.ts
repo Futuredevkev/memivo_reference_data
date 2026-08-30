@@ -1,3 +1,4 @@
+import type { AlbumAccessPasswordChangeKind } from '../enums/album-access-password-change-kind.type';
 /**
  * Payload por acción del audit-log del álbum.
  *
@@ -50,6 +51,31 @@ export interface AlbumActionDetail {
      * auditoría — es una credencial.
      */
     revokedInvites?: number;
-    /** New protection state; the password itself is deliberately never logged. */
+    /**
+     * Hasta cuándo quedó vigente el `qrCode` después de extenderlo.
+     *
+     * A diferencia de su hermano de arriba, esto SÍ se guarda: una fecha no es una
+     * credencial. Y es el único dato que hace útil el registro de una extensión —
+     * sin él la entrada diría «alguien extendió» sin decir hasta cuándo, que es
+     * exactamente la pregunta que se le va a hacer al log el día que haya que
+     * explicar por qué un link seguía abierto.
+     */
+    qrCodeExpiresAt?: string;
+    /**
+     * El estado NUEVO de la protección; la contraseña en sí no se registra nunca.
+     *
+     * Se conserva porque los registros anteriores a [AlbumAccessPasswordChangeKind]
+     * sólo tienen esto: borrarlo dejaría al lector sin nada que decir sobre ellos.
+     * Para las entradas nuevas, lo que manda es `accessPasswordKind`.
+     */
     hasAccessPassword?: boolean;
+    /**
+     * QUÉ LE PASÓ a la contraseña de acceso: se activó, se cambió, o se quitó.
+     *
+     * EL DEFECTO QUE CIERRA: con sólo el booleano de arriba no se puede
+     * distinguir «la activó» de «la cambió» —vale `true` en los dos casos— y el
+     * registro afirmaba lo primero en los dos. Es el servidor el único que puede
+     * contestarlo, porque es el único que ve el estado anterior dentro del lock.
+     */
+    accessPasswordKind?: AlbumAccessPasswordChangeKind;
 }

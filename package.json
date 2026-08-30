@@ -1,6 +1,6 @@
 {
   "name": "@memivo/contracts",
-  "version": "4.31.1",
+  "version": "14.2.0",
   "description": "Contratos, catálogos y reglas públicas compartidas por memivo_client y memivo_api.",
   "license": "UNLICENSED",
   "main": "dist/index.js",
@@ -10,6 +10,7 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
+    "./eslint": "./eslint/index.js",
     "./album": {
       "types": "./dist/album/index.d.ts",
       "default": "./dist/album/index.js"
@@ -70,6 +71,10 @@
       "types": "./dist/social/index.d.ts",
       "default": "./dist/social/index.js"
     },
+    "./stickers": {
+      "types": "./dist/stickers/index.d.ts",
+      "default": "./dist/stickers/index.js"
+    },
     "./stories": {
       "types": "./dist/stories/index.d.ts",
       "default": "./dist/stories/index.js"
@@ -80,7 +85,8 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "eslint"
   ],
   "scripts": {
     "clean": "node scripts/clean-dist.js",
@@ -90,14 +96,19 @@
     "audit:transport": "node scripts/audit-transport-surfaces.js",
     "audit:response-fields": "node scripts/audit-response-fields.js",
     "audit:endpoints": "node scripts/audit-endpoints.js",
+    "audit:route-parity": "node scripts/audit-route-parity.js",
+    "audit:route-parity:verbose": "node scripts/audit-route-parity.js --verbose",
     "audit:endpoints:verbose": "node scripts/audit-endpoints.js --verbose",
     "audit:response-fields:verbose": "node scripts/audit-response-fields.js --verbose",
-    "quality": "npm run audit:consumers && npm run audit:transport && npm run audit:response-fields && npm run audit:endpoints && npm test && npm run audit:installed-version",
+    "quality": "npm run lint && npm run audit:consumers && npm run audit:transport && npm run audit:response-fields && npm run audit:endpoints && npm run audit:route-parity && npm test && npm run audit:installed-version",
     "test": "node --test",
     "audit:installed-version": "node scripts/audit-installed-version.js",
-    "audit:installed-version:verbose": "node scripts/audit-installed-version.js --verbose"
+    "audit:installed-version:verbose": "node scripts/audit-installed-version.js --verbose",
+    "lint": "eslint src"
   },
   "devDependencies": {
-    "typescript": "^5.9.2"
+    "eslint": "^9.39.5",
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.67.0"
   }
 }

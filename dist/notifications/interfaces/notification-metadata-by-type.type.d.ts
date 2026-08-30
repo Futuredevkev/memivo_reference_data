@@ -7,7 +7,6 @@ import type { ChatReactionNotificationMetadata } from './chat-reaction-notificat
 import type { CommentNotificationMetadata } from './comment-notification-metadata.interface';
 import type { ContentRemovedByOrganizerMetadata } from './internal/content-removed-by-organizer-metadata.interface';
 import type { CountedAlbumMetadata } from './counted-album-metadata.interface';
-import type { DailyMotivationalMetadata } from './internal/daily-motivational-metadata.interface';
 import type { DownloadReadyMetadata } from './download-ready-metadata.interface';
 import type { PhotoNotificationMetadata } from './photo-notification-metadata.interface';
 import type { PhotoUploadNotificationMetadata } from './photo-upload-notification-metadata.interface';
@@ -19,6 +18,7 @@ import type { StoryNotificationMetadata } from './story-notification-metadata.in
 import type { StoryUploadNotificationMetadata } from './story-upload-notification-metadata.interface';
 export type NotificationMetadataByType = {
     [NotificationType.ALBUM_DELETED]: AlbumNotificationMetadata;
+    [NotificationType.ALBUM_HIDDEN]: AlbumNotificationMetadata;
     [NotificationType.MEMBER_KICKED]: AlbumNotificationMetadata;
     [NotificationType.ALBUM_ORGANIZER_PROMOTED]: AlbumNotificationMetadata;
     [NotificationType.ALBUM_ORGANIZER_REMOVED]: AlbumNotificationMetadata;
@@ -27,12 +27,12 @@ export type NotificationMetadataByType = {
     [NotificationType.PROFESSIONAL_PHOTOS_UPLOAD_FAILED]: AlbumNotificationMetadata;
     [NotificationType.STORY_UPLOAD_FAILED]: AlbumNotificationMetadata;
     [NotificationType.HIGHLIGHTS_REMINDER]: AlbumNotificationMetadata;
+    [NotificationType.ALBUM_QR_CODE_EXPIRING]: AlbumNotificationMetadata;
     [NotificationType.ALBUM_MODERATION_ALERT]: AlbumModerationAlertMetadata;
     [NotificationType.CONTENT_REMOVED_BY_ORGANIZER]: ContentRemovedByOrganizerMetadata;
     [NotificationType.PROFESSIONAL_PHOTOS_UPLOADED]: CountedAlbumMetadata;
     [NotificationType.MEMIVO_MOMENTS]: CountedAlbumMetadata;
     [NotificationType.LIKE_PHOTO]: PhotoNotificationMetadata;
-    [NotificationType.NEW_GUEST_POST]: PhotoNotificationMetadata;
     [NotificationType.TAGGED_IN_PHOTO]: PhotoNotificationMetadata;
     [NotificationType.COMMENT_PHOTO]: CommentNotificationMetadata;
     [NotificationType.REPLY_COMMENT]: CommentNotificationMetadata;
@@ -55,5 +55,11 @@ export type NotificationMetadataByType = {
     [NotificationType.STORY_UPLOAD_READY]: StoryUploadNotificationMetadata;
     [NotificationType.PROFESSIONAL_PHOTOS_UPLOAD_READY]: PhotosBatchUploadMetadata;
     [NotificationType.DOWNLOAD_READY]: DownloadReadyMetadata;
-    [NotificationType.DAILY_MOTIVATIONAL]: DailyMotivationalMetadata;
+    /**
+     * No hay metadata de transporte para esta push-only. El índice con el que el
+     * servidor elige el copy es un input privado del renderer y se descarta antes
+     * de serializar; modelarlo acá lo filtraba a `NotificationResponse` y a
+     * `NotificationMetadataView` como si viajara al cliente.
+     */
+    [NotificationType.DAILY_MOTIVATIONAL]: never;
 };

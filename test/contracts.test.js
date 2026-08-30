@@ -34,10 +34,70 @@ const social = require('../dist/social/index.js');
 // código del api puede emitirlo ya —el validator que lo tiraba se borró— y su
 // clave i18n quedaba huérfana en los tres idiomas, que es lo que destapó el
 // `audit:consumers`: un errorCode sin traducción es un cartel en blanco.
-test('el catálogo consolidado expone 193 códigos de error únicos', () => {
+// Ola B4b: +1. `ALBUM_QR_CODE_EXPIRED`. El `qrCode` del álbum dejó de ser
+// eterno, y sin código propio el único emisor posible del vencimiento era el
+// 404 de `ALBUM_NOT_FOUND` — o sea que el cliente tenía que decir «no existe»
+// sobre un álbum que existe y un código que fue válido. Va con sus tres
+// traducciones desde el día uno, por lo que enseñó `ALBUM_ALREADY_SCANNED`.
+// Ola P6: −7, y NINGUNO es de P6 — es la deuda que B10 y B11 declararon y que
+// nadie había podido pagar porque es CRUZADA. Los siete tenían cero emisores en
+// `memivo_api`, medido por grep, y `audit:consumers` los bloquea sin allowlist:
+// o sea que el paquete llevaba desde B11 sin poder publicarse, y el ledger de
+// B11 declaró lo contrario («ningún gate del paquete exige que un código tenga
+// emisor»). Lo destapó P6 al ser la primera ola que intentó publicar después.
+//   · `AUTH_PASSWORD_EMPTY`, `AUTH_PASSWORD_TOO_LONG` y
+//     `AUTH_PASSWORD_CONFIRMATION_REQUIRED`: los emitía la carpeta
+//     `password-rules/`, que B11 borró entera por ser la copia INALCANZABLE de
+//     la política —el `ValidationPipe` global corre antes del controller—.
+//   · `UPLOAD_URL_MISSING`: se fue con el upload por URL (B10).
+//   · `STORY_TAG_NOT_FOUND`, `STORY_TAG_FORBIDDEN` y
+//     `STORY_TAG_ALREADY_EXISTS`: eran de un API de gestión de etiquetas de
+//     historia que NO EXISTE. Las etiquetas se persisten al CREAR la historia y
+//     no hay endpoint que las quite. Borrarlos no borra ninguna funcionalidad:
+//     borra tres nombres que nadie tira. Lo que sí quedó ABIERTO y ruteado es
+//     más grande que ellos — `StoryUntaggedEvent` tiene DOS listeners y CERO
+//     emisores, así que el `STORY_TAG_REMOVED` que el cliente escucha no puede
+//     llegar nunca. Eso es una decisión de producto (¿se cablea o se borra?) y
+//     no se toma acá. **Se decidió: SE BORRA**, y lo ejecutaron B29 (los dos
+//     repos) y la v8.0.0 (el evento y su payload en el paquete).
+// Ola B30: −3, y los tres son la misma clase que los siete de arriba, pagada
+// tres olas más tarde porque acá sacarlos es BREAKING y hasta la v8.0.0 no
+// había dónde. `audit:consumers` los venía acusando y su `EXIT=1` no lo miraba
+// nadie, porque este `quality` no lo corría ningún repo (N-198, N-365).
+//   · `ALBUM_PRIVATE`: B17 colapsó las tres causas de ausencia de álbum en una
+//     sola voz —«no existe» contra «existe pero no podés verlo» delataba el
+//     bloqueo— y desde entonces el api no lo emite. El cliente lo tenía en su
+//     tabla de voz de ausencia mapeado al texto único, o sea que ya no decía
+//     nada propio.
+//   · `VIDEO_NOT_FOUND` y `AUDIO_NOT_FOUND` (N-285): los emitían sólo
+//     `validateVideoFile` / `validateAudioFile`, las dos ramas de `uploadFile`
+//     que producción no puede alcanzar (por ahí sólo pasan imágenes; video y
+//     audio suben por el intent firmado). `IMAGE_NOT_FOUND`, su hermano, SÍ
+//     tiene emisor y se queda.
+//   · `CHAT_MESSAGE_NOT_RELOCATABLE` (N1a): el que suma el reenvío. Lo tira el
+//     endpoint cuando el contenido no puede mudarse de chat —lo construyó la
+//     app, o un estado suyo lo ata a su sala—, y sólo es alcanzable con una
+//     request armada a mano: la app pregunta por la misma puerta antes de
+//     ofrecer el botón.
+//   · `CHAT_LIVE_LOCATION_NOT_ACTIVE` y `CHAT_LIVE_LOCATION_FAILED` (N1c): los
+//     dos que suma la ubicación en vivo. El primero contesta a las TRES causas
+//     por las que un canal deja de estar abierto —se venció, lo cortaron, o
+//     nunca fue en vivo— con el mismo código a propósito: separarlas no le
+//     sirve a quien empuja una posición, que en los tres casos tiene que dejar
+//     de hacerlo, y la variante «hay un bloqueo» delataría el bloqueo. El
+//     segundo es el fallo genérico de las dos mutaciones del canal.
+//
+// v14.0.0: +1. `STICKER_CONTENT_NOT_EDITABLE` entró junto con sus TRES emisores
+// —el endpoint de edición del comentario, el de la respuesta y el del
+// comentario de historia— y con el gate de la app que decide si dibuja el
+// botón. Es su propio código y no el `..._FORBIDDEN` de cada superficie porque
+// el motivo no es de permisos: el autor tampoco puede editar un sticker, y
+// contestarlo con el código de permiso haría que la app explique «no es tuyo»
+// sobre algo que sí lo es.
+test('el catálogo consolidado expone 191 códigos de error únicos', () => {
   const values = Object.values(errors.ErrorCode);
 
-  assert.equal(values.length, 193);
+  assert.equal(values.length, 191);
   assert.equal(new Set(values).size, values.length);
 });
 
@@ -106,23 +166,35 @@ test('el catálogo de notificaciones de chat solo contiene los tipos de mensajer
   assert.equal(CHAT_NOTIFICATION_TYPES, contracts.CHAT_NOTIFICATION_TYPES);
 });
 
-test('los catálogos de supresión de push exponen tipos válidos de NotificationType', () => {
-  const { NotificationType } = notifications;
-  const allTypes = new Set(Object.values(NotificationType));
-  const catalogs = [
-    notifications.CHAT_SUPPRESSION_TYPES,
-    notifications.POST_SUPPRESSION_TYPES,
-    notifications.STORY_SUPPRESSION_TYPES,
-    notifications.REACTION_POST_SUPPRESSION_TYPES,
+/**
+ * Los cuatro catálogos de supresión los absorbió `NOTIFICATION_DELIVERY_POLICY`
+ * (ver `notification-delivery-policy.test.js`, que hereda sus invariantes:
+ * tipos válidos, y el caso especial de las reacciones —que era la razón de
+ * existir de `REACTION_POST_SUPPRESSION_TYPES`— convertido en la columna
+ * `contextIdSources`).
+ *
+ * Este test es lo contrario del que reemplaza: verifica que NO vuelvan. Una
+ * membresía paralela a la tabla es exactamente la extracción a medias que este
+ * bloque vino a cerrar — deja el defecto y agrega la ilusión de haberlo
+ * arreglado, porque el que agregue un tipo nuevo va a actualizar uno solo.
+ */
+test('los catálogos de supresión sueltos no volvieron: la tabla es el único lugar', () => {
+  const retired = [
+    'CHAT_SUPPRESSION_TYPES',
+    'POST_SUPPRESSION_TYPES',
+    'STORY_SUPPRESSION_TYPES',
+    'REACTION_POST_SUPPRESSION_TYPES',
+    'FOREGROUND_SUPPRESSED_NOTIFICATION_TYPES',
+    'PUSH_ONLY_NOTIFICATION_TYPES',
   ];
-  for (const catalog of catalogs) {
-    assert.ok(catalog.length > 0);
-    for (const type of catalog) assert.ok(allTypes.has(type), `${type} no es un NotificationType`);
-  }
-  // REACTION_POST es un subconjunto de POST (comparten el caso especial del id).
-  const postSet = new Set(notifications.POST_SUPPRESSION_TYPES);
-  for (const type of notifications.REACTION_POST_SUPPRESSION_TYPES) {
-    assert.ok(postSet.has(type), `${type} debería estar en POST_SUPPRESSION_TYPES`);
+
+  for (const name of retired) {
+    assert.equal(
+      notifications[name],
+      undefined,
+      `${name} volvió a existir: la membresía de supresión vive SÓLO en NOTIFICATION_DELIVERY_POLICY`,
+    );
+    assert.equal(contracts[name], undefined, `${name} se filtró por el barrel raíz`);
   }
 });
 

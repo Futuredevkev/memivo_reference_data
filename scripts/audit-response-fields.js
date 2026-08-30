@@ -16,13 +16,22 @@
  *
  * ── QUÉ SE AUDITA ──────────────────────────────────────────────────────────
  *
- * El universo NO son los tipos con sufijo de respuesta: son ésos **más todo lo
- * que se alcanza desde ellos**. La primera versión miraba sólo el sufijo y eso
- * la dejaba ciega en su propio terreno — medido: 182 tipos con sufijo y **83
- * más alcanzables sin sufijo**, entre ellos `AlbumGuest` (donde vivían los
- * roles de plataforma de H-011), `UploadIntentFileSignature` (los seis campos
- * muertos de H-058) y `PhotoTag`. Un campo no es menos muerto por viajar
- * anidado, y la forma anidada es justamente donde más se acumula.
+ * El universo se siembra por CONDUCTA —lo que un handler HTTP o un
+ * `@SubscribeMessage` declara devolver— **más** la red secundaria de sufijos,
+ * y desde ahí todo lo que se alcance transitivamente. Un campo no es menos
+ * muerto por viajar anidado, y la forma anidada es justamente donde más se
+ * acumula: la primera versión miraba sólo el sufijo SIN cierre y eso la dejaba
+ * ciega sobre 83 tipos alcanzables, entre ellos `AlbumGuest` (los roles de
+ * plataforma de H-011), `UploadIntentFileSignature` (los seis campos muertos de
+ * H-058) y `PhotoTag`.
+ *
+ * La semilla por conducta llegó después, y por la mitad que faltaba: el sufijo
+ * es una convención de BAUTISMO, no una propiedad de la cosa. Medido, dos
+ * respuestas reales quedaban afuera del cierre por sufijo —
+ * `NotificationUnreadCount` y `OAuthMethods`, las dos devueltas por un
+ * controller— y a sus campos no se les exigía lector. Verificado rompiéndolo:
+ * un campo sin lector agregado a `NotificationUnreadCount` sale rojo con la
+ * semilla por conducta y pasa INVISIBLE con la de sufijos.
  *
  * Los `*Request` quedan fuera aunque se los alcance: sus campos los lee el API,
  * no la app, y exigirles un lector en el cliente sería pedir lo contrario de lo
@@ -55,8 +64,8 @@
  *
  * ── OTRO LÍMITE, EL DE LOS 4 AUDITORES DEL PAQUETE ──────────────────────────
  *
- * Este auditor arma su universo por SUFIJO de nombre de tipo (`Response`,
- * `Payload`, `Result`, …) más el cierre transitivo desde ahí — nunca abre un
+ * Este auditor arma su universo con la anotación de retorno de los handlers
+ * más la red de sufijos, y el cierre transitivo desde ahí — nunca abre un
  * `.entity.ts` ni compara contra la fila que Postgres devuelve. Lo mismo vale
  * para `audit-consumers.js` (compara símbolos declarados, incluida su forma,
  * pero sólo entre api/cliente/paquete) y para `audit-transport-surfaces.js`
@@ -64,10 +73,10 @@
  * que un service arma A MANO en un objeto literal, cuyo controller NO anota
  * el tipo de retorno (`Promise<XResponse>` explícito), puede driftear sin que
  * ninguno de los 4 lo vea: la protección estructural para ese caso la da
- * `tsc` del api contra la anotación, no este paquete. Documentado acá, no
- * arreglado (severidad baja, hallazgo de la lente `contratos-consistencia`):
- * evaluar si vale la pena que `audit-endpoints.js` exija tipo de retorno
- * anotado en todo handler es tarea de otro bloque.
+ * `tsc` del api contra la anotación, no este paquete. Que la anotación EXISTA
+ * en todo handler ya lo exige `audit-transport-surfaces.js`, y es lo que
+ * permite sembrar por conducta; lo que sigue sin cubrirse es que la anotación
+ * sea VERDAD contra el objeto que el service arma.
  *
  * Uso: node scripts/audit-response-fields.js [--verbose]
  */
@@ -83,12 +92,19 @@ const clientSrc = process.env.MEMIVO_AUDIT_CLIENT_SRC
   ? resolve(process.env.MEMIVO_AUDIT_CLIENT_SRC)
   : resolve(workspaceRoot, 'memivo_client', 'src');
 
+const apiSrc = resolve(workspaceRoot, 'memivo_api', 'src');
+
 const verbose = process.argv.includes('--verbose');
 
 /**
- * Los sufijos que marcan un tipo que VIAJA de vuelta al cliente. Son las
- * SEMILLAS del recorrido, no el universo: todo lo que se alcanza desde ellas se
- * audita igual.
+ * La RED SECUNDARIA del recorrido: los sufijos con los que este árbol nombra
+ * un tipo que viaja de vuelta.
+ *
+ * Fueron la semilla ÚNICA hasta que se midió lo que dejaban afuera. Hoy la
+ * semilla primaria es la CONDUCTA —lo que un handler declara devolver, ver
+ * `tiposQueLosHandlersDevuelven`— y esto queda como red de atrás: cubre los
+ * tipos que todavía no llegaron a un handler (una respuesta recién escrita, un
+ * tipo que el cliente arma) y no cuesta nada dejarlo puesto.
  */
 const RESPONSE_SUFFIXES = [
   'Response',
@@ -117,12 +133,42 @@ const AUDIT_EVIDENCE =
 // cliente, así que el matcher permisivo los da por vivos y una excusa para
 // ellos caducaría en cada corrida. Su motivo vive en el docblock del tipo, que
 // es donde se lee.
+/**
+ * El contador de fallas de una transferencia lo consume el SERVIDOR, no el
+ * cliente: es lo que decide cuál de los tres textos manda la push —«listo»,
+ * «parcial» o «falló»— en `notification/constants/templates/*.ts`. El cliente
+ * nunca lo leyó; hasta ahora el matcher permisivo lo daba por vivo porque el
+ * nombre colisionaba con un campo propio de sus upload tasks, y al borrarse los
+ * trays esa colisión desapareció y quedó a la vista.
+ *
+ * Borrarlo no es una opción: sin él la push de una descarga parcial diría
+ * «descarga lista» sobre un lote al que le faltan fotos.
+ */
+const PUSH_BODY_ONLY =
+  'lo lee el SERVIDOR para elegir el texto de la push (listo / parcial / falló) ' +
+  'en notification/constants/templates; el cliente no muestra el número y estas ' +
+  'filas ni siquiera dejan fila en la campanita';
+
+/**
+ * La animación es metadata del asset que el servidor persiste. La app recibe la
+ * rendition quieta ya resuelta y decide por la presencia de `stillUrl`, así que
+ * obligarla a leer la bandera duplicaría esa decisión sólo para satisfacer el
+ * auditor.
+ */
+const STICKER_ASSET_ONLY =
+  'lo lee el SERVIDOR para persistir la propiedad del asset; la app recibe ' +
+  '`stillUrl` ya resuelta y no necesita conocer la regla del catálogo';
+
 const INTENTIONAL_WITHOUT_READER = new Map([
+  ['DownloadReadyMetadata.failedCount', PUSH_BODY_ONLY],
+  ['PhotosBatchUploadMetadata.failedCount', PUSH_BODY_ONLY],
   ['AlbumActionDetail.folderNames', AUDIT_EVIDENCE],
   ['AlbumActionDetail.oldRole', AUDIT_EVIDENCE],
   ['AlbumActionDetail.newRole', AUDIT_EVIDENCE],
   ['AlbumActionDetail.oldName', AUDIT_EVIDENCE],
   ['AlbumActionDetail.revokedInvites', AUDIT_EVIDENCE],
+  ['AlbumActionDetail.qrCodeExpiresAt', AUDIT_EVIDENCE],
+  ['StickerReference.isAnimated', STICKER_ASSET_ONLY],
 ]);
 
 const collectFiles = (directory, extensions) => {
@@ -193,15 +239,90 @@ const referencedTypeNames = ({ node, source }) => {
   return names;
 };
 
+/**
+ * Los tipos que los handlers del api DECLARAN devolver: la semilla por
+ * conducta.
+ *
+ * ── EL DEFECTO QUE CIERRA ──────────────────────────────────────────────────
+ * El universo se sembraba por SUFIJO de nombre, y un sufijo es una convención
+ * de bautismo, no una propiedad de la cosa. Medido sobre el árbol de hoy: el
+ * cierre por sufijo alcanza 250 de las 367 declaraciones del paquete, y **dos
+ * respuestas REALES quedaban afuera** —`NotificationUnreadCount`, que devuelve
+ * `notification.controller.ts`, y `OAuthMethods`, que devuelve
+ * `oauth.controller.ts`—. Los campos de esas dos no se le exigían a nadie: el
+ * auditor de campos muertos no los miraba porque no se llamaban como él
+ * esperaba.
+ *
+ * La conducta, en cambio, está GARANTIZADA por otro gate del mismo paquete:
+ * `audit-transport-surfaces.js` exige que todo handler HTTP y todo
+ * `@SubscribeMessage` anote su tipo de retorno, y hoy da cero en sus cuatro
+ * categorías. O sea que la anotación existe siempre, y sembrar de ahí no
+ * depende de que nadie se olvide.
+ *
+ * ── LO QUE ESTA SEMILLA TAMPOCO VE, MEDIDO ────────────────────────────────
+ * Los payloads de socket que se EMITEN sin pasar por un `@SubscribeMessage`
+ * —un `server.to(room).emit(...)`—: ahí no hay firma que anotar y el tipo viaja
+ * como argumento. Hoy la red de sufijos los cubre a casi todos porque se llaman
+ * `…Payload`, pero eso es la convención sosteniéndolos, no una garantía. Es la
+ * misma frontera que el resto del archivo ya declara: lo que no tiene una
+ * anotación de la que colgarse, este paquete no lo puede ver.
+ */
+const HTTP_METHOD_DECORATORS = new Set(['Get', 'Post', 'Put', 'Patch', 'Delete']);
+
+const tiposQueLosHandlersDevuelven = () => {
+  const nombres = new Set();
+  if (!existsSync(apiSrc)) return nombres;
+
+  for (const file of collectFiles(apiSrc, ['.ts'])) {
+    const source = ts.createSourceFile(
+      file,
+      readFileSync(file, 'utf8'),
+      ts.ScriptTarget.Latest,
+      true,
+    );
+
+    const visit = (node) => {
+      if (ts.isMethodDeclaration(node) && node.type && ts.canHaveDecorators(node)) {
+        const decorators = ts.getDecorators(node) || [];
+        const esHandler = decorators.some(
+          (decorator) =>
+            ts.isCallExpression(decorator.expression) &&
+            ts.isIdentifier(decorator.expression.expression) &&
+            (HTTP_METHOD_DECORATORS.has(decorator.expression.expression.text) ||
+              decorator.expression.expression.text === 'SubscribeMessage'),
+        );
+        if (esHandler) {
+          const walk = (current) => {
+            if (ts.isTypeReferenceNode(current)) {
+              // El alias local con el que el api importa el contrato
+              // (`export type { X as IX }`) resuelve al mismo nombre, porque lo
+              // que se compara es el nombre DECLARADO en el paquete.
+              nombres.add(current.typeName.getText(source).split('.')[0]);
+            }
+            ts.forEachChild(current, walk);
+          };
+          walk(node.type);
+        }
+      }
+      ts.forEachChild(node, visit);
+    };
+
+    visit(source);
+  }
+  return nombres;
+};
+
 const isRequestShape = (name) => name.endsWith('Request');
 
 // Semillas + cierre transitivo. Un `*Request` alcanzado desde una respuesta
 // sigue sirviendo de puente (puede contener formas que sí viajan), así que se
 // recorre; lo que no se hace es exigirle lector a SUS campos.
+const semillaPorConducta = tiposQueLosHandlersDevuelven();
 const auditable = new Set(
   [...declarations.keys()].filter(
     (name) =>
-      RESPONSE_SUFFIXES.some((suffix) => name.endsWith(suffix)) &&
+      (semillaPorConducta.has(name) ||
+        RESPONSE_SUFFIXES.some((suffix) => name.endsWith(suffix))) &&
       !isRequestShape(name),
   ),
 );
@@ -247,9 +368,28 @@ for (const name of [...auditable].sort()) {
 }
 
 // --- Las excusas tienen que ganarse el lugar en cada corrida ---------------
-const staleExcuses = [...INTENTIONAL_WITHOUT_READER.keys()].filter(
-  (qualified) => clientReads(qualified.split('.')[1]),
-);
+/**
+ * Una excusa está rancia cuando el cliente EMPEZÓ a leer ese campo — entonces deja
+ * de ser «intencionalmente sin lector» y la entrada tapa cobertura real.
+ *
+ * EL DEFECTO QUE CIERRA. Antes preguntaba sólo por el NOMBRE del campo
+ * (`qualified.split('.')[1]`), y `clientReads` es un regex sobre el texto del
+ * cliente entero. Resultado: `DownloadReadyMetadata.failedCount` y
+ * `PhotosBatchUploadMetadata.failedCount` salían rancias porque el cliente lee un
+ * `failedCount` de OTRO tipo —el del flujo de compartir un post— mientras no
+ * menciona esos dos tipos en un solo archivo. Dos excusas legítimas marcadas como
+ * muertas, y el que las borrara habría sacado cobertura de verdad.
+ *
+ * Ahora exige las DOS mitades: que el cliente nombre el tipo Y el campo. Sigue
+ * siendo reconocimiento por nombre —el alcance está declarado acá y no se
+ * disimula—: no distingue dos tipos que compartan nombre de campo si el cliente
+ * usa los dos. Cierra la forma en que el falso positivo apareció, no la totalidad
+ * del espacio.
+ */
+const staleExcuses = [...INTENTIONAL_WITHOUT_READER.keys()].filter((qualified) => {
+  const [type, field] = qualified.split('.');
+  return clientReads(type) && clientReads(field);
+});
 
 const phantomExcuses = [...INTENTIONAL_WITHOUT_READER.keys()].filter(
   (qualified) => !auditedFields.has(qualified),

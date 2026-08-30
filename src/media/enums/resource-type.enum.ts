@@ -8,6 +8,7 @@ export enum ResourceType {
   CHAT_IMAGE = 'chat_image',
   CHAT_VIDEO = 'chat_video',
   CHAT_AUDIO = 'chat_audio',
+  CHAT_DOCUMENT = 'chat_document',
   IMAGE_STORY = 'image_story',
   VIDEO_STORY = 'video_story',
   PROFILE_REPORT_SCREENSHOT = 'profile_report_screenshot',

@@ -12,6 +12,7 @@ var ResourceType;
     ResourceType["CHAT_IMAGE"] = "chat_image";
     ResourceType["CHAT_VIDEO"] = "chat_video";
     ResourceType["CHAT_AUDIO"] = "chat_audio";
+    ResourceType["CHAT_DOCUMENT"] = "chat_document";
     ResourceType["IMAGE_STORY"] = "image_story";
     ResourceType["VIDEO_STORY"] = "video_story";
     ResourceType["PROFILE_REPORT_SCREENSHOT"] = "profile_report_screenshot";

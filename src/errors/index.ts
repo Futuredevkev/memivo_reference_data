@@ -23,6 +23,7 @@ import { UploadErrorCode } from './upload.error-code';
 import { DownloadErrorCode } from './download.error-code';
 import { LikeErrorCode } from './like.error-code';
 import { OAuthErrorCode } from './oauth.error-code';
+import { StickerErrorCode } from './sticker.error-code';
 
 // Re-export individual enums
 export {
@@ -46,9 +47,11 @@ export {
   DownloadErrorCode,
   LikeErrorCode,
   OAuthErrorCode,
+  StickerErrorCode,
 };
 
 export * from './error-code.constant';
 export * from './api-error-envelope.interface';
 export * from './api-success-envelope.interface';
 export * from './reserved-error-body-keys.constant';
+export * from './forwardable-error-fields.type';

@@ -4,7 +4,6 @@ export declare const CHAT_SOCKET_EVENTS: {
         readonly LEAVE_GROUP: "leave-group";
     };
     readonly OUT: {
-        readonly JOIN_SUCCESS: "joined";
         readonly JOIN_ERROR: "join-error";
         readonly NEW_MESSAGE: "new-message";
         readonly MESSAGE_UPDATED: "message-updated";
@@ -30,5 +29,7 @@ export declare const CHAT_SOCKET_EVENTS: {
         readonly REACTION_UPDATED: "reaction-updated";
         readonly VIEW_ONCE_OPENED: "view-once-opened";
         readonly VIEW_ONCE_EXPIRED: "view-once-expired";
+        readonly LIVE_LOCATION_UPDATED: "live-location-updated";
+        readonly LIVE_LOCATION_ENDED: "live-location-ended";
     };
 };

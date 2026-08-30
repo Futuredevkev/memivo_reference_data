@@ -11,7 +11,6 @@ export * from './finalize-professional-photo-upload-input.interface';
 export * from './finalize-professional-photo-upload-payload.interface';
 export * from './finalize-story-upload-input.interface';
 export * from './finalize-story-upload-payload.interface';
-export * from './finalize-upload-payload.type';
 export * from './guest-post-media-composition.interface';
 export * from './guest-post-tag-item.interface';
 export * from './media-composition.interface';

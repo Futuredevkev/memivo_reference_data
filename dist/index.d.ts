@@ -13,5 +13,6 @@ export * from './reactions';
 export * from './reports';
 export * from './sockets';
 export * from './social';
+export * from './stickers';
 export * from './stories';
 export * from './validation';

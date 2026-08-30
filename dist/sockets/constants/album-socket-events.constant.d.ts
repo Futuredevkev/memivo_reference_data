@@ -6,7 +6,6 @@ export declare const ALBUM_SOCKET_EVENTS: {
         readonly LEAVE_STORY: "leave-story";
     };
     readonly OUT: {
-        readonly JOIN_SUCCESS: "joined";
         readonly JOIN_ERROR: "join-error";
         readonly ALBUM_DELETED: "album-deleted";
         readonly PARTICIPANT_KICKED: "participant-kicked";
@@ -16,7 +15,6 @@ export declare const ALBUM_SOCKET_EVENTS: {
         readonly TAG_ADDED: "tag-added";
         readonly TAGS_ADDED: "tags-added";
         readonly TAG_REMOVED: "tag-removed";
-        readonly STORY_TAG_REMOVED: "story.tag-removed";
         readonly PARTICIPANT_JOINED: "participant-joined";
         readonly HIGHLIGHTS_UPDATED: "highlights-updated";
         readonly MEMIVO_MOMENTS_UPDATED: "memivo.moments-updated";

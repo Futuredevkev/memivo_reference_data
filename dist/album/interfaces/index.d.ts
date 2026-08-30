@@ -6,6 +6,7 @@ export * from './album-activity-entry.interface';
 export * from './album-activity-query-request.interface';
 export * from './album-guest.interface';
 export * from './album-access-reset-response.interface';
+export * from './album-qr-code-extension-response.interface';
 export * from './album-access-password-response.interface';
 export * from './album-invite-album-preview-response.interface';
 export * from './album-invite-post-preview-response.interface';

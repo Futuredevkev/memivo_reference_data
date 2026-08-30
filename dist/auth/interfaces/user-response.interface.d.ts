@@ -23,7 +23,20 @@ export interface UserResponse<TTimestamp = string> {
      */
     phone?: string | null;
     isPhonePublic?: boolean;
-    birthDate?: TTimestamp;
+    /**
+     * FECHA SIN HORA, Y POR ESO NO ENTRA EN `TTimestamp`.
+     *
+     * Estaba declarada con el genérico por copia de `created_at`, y los dos no
+     * son la misma cosa: `created_at` sale de una columna `timestamp` que el
+     * ORM del servidor SÍ hidrata a `Date`, y por eso el genérico existe. Ésta
+     * sale de una columna `date`, que ningún lado hidrata: viaja y se lee como
+     * `YYYY-MM-DD` en los dos repos. El genérico le daba permiso al servidor
+     * para declararla `Date`, y lo usó: sus dos DTOs de respuesta dicen `Date`
+     * sobre un valor que en runtime es `string`. El mapa de timestamps de wire
+     * (`transport-timestamp-from-wire-key-map`) nunca la nombró, que es la otra
+     * mitad de la prueba de que no es un timestamp de transporte.
+     */
+    birthDate?: string;
     language?: LanguageCode;
     country?: IsoCountryCode;
     emailActionRequired?: EmailActionRequired | null;

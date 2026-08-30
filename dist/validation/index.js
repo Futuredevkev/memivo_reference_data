@@ -17,3 +17,4 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./common-passwords"), exports);
 __exportStar(require("./limits"), exports);
 __exportStar(require("./patterns"), exports);
+__exportStar(require("./rules"), exports);

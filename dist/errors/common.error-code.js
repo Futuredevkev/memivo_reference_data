@@ -20,7 +20,6 @@ var CommonErrorCode;
     CommonErrorCode["TOO_MANY_REQUESTS"] = "TOO_MANY_REQUESTS";
     // Upload errors
     CommonErrorCode["UPLOAD_FAILED"] = "UPLOAD_FAILED";
-    CommonErrorCode["UPLOAD_URL_MISSING"] = "UPLOAD_URL_MISSING";
     CommonErrorCode["UPLOAD_FILE_MISSING"] = "UPLOAD_FILE_MISSING";
     CommonErrorCode["UPLOAD_PUBLIC_ID_MISSING"] = "UPLOAD_PUBLIC_ID_MISSING";
 })(CommonErrorCode || (exports.CommonErrorCode = CommonErrorCode = {}));
