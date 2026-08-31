@@ -168,6 +168,7 @@ const INTENTIONAL_WITHOUT_READER = new Map([
   ['AlbumActionDetail.oldName', AUDIT_EVIDENCE],
   ['AlbumActionDetail.revokedInvites', AUDIT_EVIDENCE],
   ['AlbumActionDetail.qrCodeExpiresAt', AUDIT_EVIDENCE],
+  ['AlbumActionDetail.moderationReason', AUDIT_EVIDENCE],
   ['StickerReference.isAnimated', STICKER_ASSET_ONLY],
 ]);
 

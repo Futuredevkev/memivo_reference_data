@@ -91,6 +91,16 @@ const INTENTIONAL_WITHOUT_CLIENT = {
     'superficie de OPERADOR (@RoleProtected ADMIN): la ejerce el admin desde Postman, documentada en moderation/README.md. Pasaba por el fallback de prefijo —el `POST /reports/profile` con que la app CREA la denuncia la avalaba— y por eso el titular decía «todos con consumidor» sobre una ruta que ninguna pantalla llama.',
   'POST /reports/profile/:reportId/status':
     'idem: @RoleProtected ADMIN para cerrar el reporte sin banear, misma clase que sus hermanas de /moderation/*.',
+  'POST /moderation/album/suspend':
+    'superficie de OPERADOR (@Auth ADMIN): apaga un álbum entero sin borrarlo. Entrada manual desde Postman, igual que su hermana de remoción de contenido — el volumen real de Memivo hoy no justifica una pantalla, y el expediente que abre ya está construido para que una pantalla se apoye en él sin rehacer nada.',
+  'POST /moderation/album/reinstate':
+    'idem, y va como ruta separada y no como toggle a propósito: las dos son IDEMPOTENTES, y eso sólo se puede prometer si la ruta dice qué estado querés dejar. Con un toggle, un reintento por timeout desharía la sanción.',
+  'POST /moderation/cases/:caseId/escalation':
+    'superficie de OPERADOR (@Auth ADMIN): abre el hold legal de un expediente, o sea que detiene la destrucción de su material. La ejerce quien modera, nunca la app.',
+  'POST /moderation/cases/:caseId/legal-clearance':
+    'idem: cierra el hold y arranca el reloj de retención.',
+  'POST /moderation/cases/:caseId/resolution':
+    'idem: marca el caso como resuelto, que NO es lo mismo que «se tomó acción».',
   'POST /moderation/content/remove':
     'superficie de OPERADOR (@Auth ADMIN): la remocion de una pieza por autoridad de plataforma se ejerce a mano, desde Postman, tras leer un reclamo. La app NO la llama y no debe: la moderacion del contenido de un album es de su dueno, y la plataforma solo interviene ante material ilegal o el derecho de un tercero que no es usuario.',
 };

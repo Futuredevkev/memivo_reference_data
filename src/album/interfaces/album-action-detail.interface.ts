@@ -87,16 +87,19 @@ export interface AlbumActionDetail {
    * borrar adentro del álbum, así que es el único lugar donde la pregunta
    * «¿por qué se apagó esto?» tiene respuesta después.
    *
-   * ── ⚠️ ES TEXTO VISIBLE, NO UNA NOTA INTERNA ──────────────────────────
-   * El registro de actividad lo lee cualquier organizador del álbum, así que
-   * esto se escribe PARA ÉL: es la explicación que va a leer quien pida la
-   * revisión que el corpus legal promete. Las notas internas de un moderador
-   * —las que no se le muestran a nadie— viven en el expediente, que es otra
-   * tabla y tiene otra audiencia.
+   * ── HOY NO LO DIBUJA NADIE, Y ESO ESTÁ DECLARADO ──────────────────────
+   * Es de la misma clase que `folderNames` o `revokedInvites`: contesta la
+   * pregunta FORENSE, que se hace contra la base, y ninguna pantalla lo
+   * muestra. Por eso está en `INTENTIONAL_WITHOUT_READER` del auditor de
+   * campos — que lo detectó solo el día que este campo nació, que es
+   * exactamente para lo que ese auditor existe.
    *
-   * Es la misma distinción que ya gobierna a `revokedInvites`, que guarda el
-   * NÚMERO y nunca el código: lo que entra acá es lo que se puede leer en voz
-   * alta.
+   * ⚠️ **Aun así se escribe como si fuera visible**, y no es una contradicción:
+   * el registro de actividad de un álbum lo lee cualquiera que lo organice, así
+   * que el día que una pantalla lo dibuje —y la promesa de revisión del corpus
+   * legal empuja en esa dirección— no puede aparecer una nota interna de un
+   * moderador. Las notas que no se le muestran a nadie viven en el expediente,
+   * que es otra tabla y tiene otra audiencia.
    */
   moderationReason?: string;
 }
