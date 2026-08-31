@@ -119,6 +119,7 @@ const SORTED_BARRELS = [
   'reactions/index.ts',
   'reactions/interfaces/index.ts',
   'reference-data/iso-country-codes/index.ts',
+  'reports/constants/index.ts',
   'reports/enums/index.ts',
   'reports/index.ts',
   'reports/interfaces/index.ts',

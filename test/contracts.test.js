@@ -94,10 +94,10 @@ const social = require('../dist/social/index.js');
 // el motivo no es de permisos: el autor tampoco puede editar un sticker, y
 // contestarlo con el código de permiso haría que la app explique «no es tuyo»
 // sobre algo que sí lo es.
-test('el catálogo consolidado expone 191 códigos de error únicos', () => {
+test('el catálogo consolidado expone 195 códigos de error únicos', () => {
   const values = Object.values(errors.ErrorCode);
 
-  assert.equal(values.length, 191);
+  assert.equal(values.length, 195);
   assert.equal(new Set(values).size, values.length);
 });
 

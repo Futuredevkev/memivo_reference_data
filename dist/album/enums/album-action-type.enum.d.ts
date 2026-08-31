@@ -36,5 +36,19 @@ export declare enum AlbumActionType {
     ALBUM_COVER_CHANGED = "ALBUM_COVER_CHANGED",
     FOLDER_CREATED = "FOLDER_CREATED",
     FOLDER_RENAMED = "FOLDER_RENAMED",
-    FOLDER_COVER_SET = "FOLDER_COVER_SET"
+    FOLDER_COVER_SET = "FOLDER_COVER_SET",
+    /**
+     * Memivo retiró una pieza del álbum por su propia autoridad: material
+     * ilegal, o el derecho de un tercero que no es usuario de Memivo.
+     *
+     * Tiene acción propia y no se cuelga de `GUEST_POST_DELETED` porque lo que
+     * cambia no es QUÉ se borró sino QUIÉN lo decidió y con qué potestad, y ése
+     * es el dato que el registro de un álbum privado existe para conservar. Con
+     * la acción de organizador, la fila diría que la moderación fue del álbum
+     * cuando el álbum no tuvo nada que ver — y los miembros no tendrían cómo
+     * distinguir un retiro de la plataforma de uno de su propio organizador.
+     *
+     * Va siempre con `actorUserId` nulo y `AlbumActorRole.PLATFORM`.
+     */
+    CONTENT_REMOVED_BY_PLATFORM = "CONTENT_REMOVED_BY_PLATFORM"
 }

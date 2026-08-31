@@ -38,4 +38,21 @@ export enum NotificationType {
   ALBUM_MODERATION_ALERT = 'ALBUM_MODERATION_ALERT',
   CONTENT_REMOVED_BY_ORGANIZER = 'CONTENT_REMOVED_BY_ORGANIZER',
   ALBUM_QR_CODE_EXPIRING = 'ALBUM_QR_CODE_EXPIRING',
+  /**
+   * Memivo retiró una pieza tuya, por su propia autoridad.
+   *
+   * ── POR QUÉ NO REUSA `CONTENT_REMOVED_BY_ORGANIZER` ─────────────────────
+   * Porque ese aviso dice, textual y en los tres idiomas, «Un organizador
+   * removió …», y el comentario que justifica esa palabra se apoya en que el
+   * tipo dispara SÓLO para moderación de owner/organizer. Un retiro de
+   * plataforma por reclamo de un tercero rompe esa premisa: el autor recibiría
+   * un aviso que le miente sobre quién actuó y que además le echa la culpa a
+   * un organizador que no hizo nada. Compila igual, el test pasa igual, y la
+   * persona se entera mal — que es el peor modo de falla posible para un
+   * aviso.
+   *
+   * Comparte la metadata con su hermano (`ContentRemovalMetadata`): el dato es
+   * el mismo y lo que cambia es la voz del texto.
+   */
+  CONTENT_REMOVED_BY_MEMIVO = 'CONTENT_REMOVED_BY_MEMIVO',
 }

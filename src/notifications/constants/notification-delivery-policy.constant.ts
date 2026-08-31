@@ -463,4 +463,20 @@ export const NOTIFICATION_DELIVERY_POLICY: Readonly<
     replacedBy: null,
     anonymousActor: true,
   }),
+  [NotificationType.CONTENT_REMOVED_BY_MEMIVO]: policy({
+    // Misma fila que su hermano, y por el mismo motivo: no hay superficie
+    // in-app que cuente que una pieza se retiró, así que callar la push
+    // perdería el hecho. Acá pesa además que el aviso es lo único que le dice
+    // al autor a dónde escribir si le parece un error — el derecho a pedir
+    // revisión que los términos §10.1 ya publican.
+    //
+    // `anonymousActor: true` no es cosmético: el aviso se emite por la puerta
+    // de sistema, que llena el actor con el propio destinatario. Sin esta
+    // marca, la campanita le firmaría con su propio nombre un hecho que no
+    // hizo.
+    foreground: 'none',
+    bellRow: true,
+    replacedBy: null,
+    anonymousActor: true,
+  }),
 };
