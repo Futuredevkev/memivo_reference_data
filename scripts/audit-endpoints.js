@@ -91,6 +91,8 @@ const INTENTIONAL_WITHOUT_CLIENT = {
     'superficie de OPERADOR (@RoleProtected ADMIN): la ejerce el admin desde Postman, documentada en moderation/README.md. Pasaba por el fallback de prefijo —el `POST /reports/profile` con que la app CREA la denuncia la avalaba— y por eso el titular decía «todos con consumidor» sobre una ruta que ninguna pantalla llama.',
   'POST /reports/profile/:reportId/status':
     'idem: @RoleProtected ADMIN para cerrar el reporte sin banear, misma clase que sus hermanas de /moderation/*.',
+  'POST /moderation/content/remove':
+    'superficie de OPERADOR (@Auth ADMIN): la remocion de una pieza por autoridad de plataforma se ejerce a mano, desde Postman, tras leer un reclamo. La app NO la llama y no debe: la moderacion del contenido de un album es de su dueno, y la plataforma solo interviene ante material ilegal o el derecho de un tercero que no es usuario.',
 };
 
 const HTTP_DECORATOR = /@(Get|Post|Put|Patch|Delete)\s*\(\s*(?:'([^']*)'|"([^"]*)"|`([^`]*)`)?\s*\)/g;

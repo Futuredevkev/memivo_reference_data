@@ -5,7 +5,7 @@ import type { ChatGroupNotificationMetadata } from './chat-group-notification-me
 import type { ChatMessageNotificationMetadata } from './chat-message-notification-metadata.interface';
 import type { ChatReactionNotificationMetadata } from './chat-reaction-notification-metadata.interface';
 import type { CommentNotificationMetadata } from './comment-notification-metadata.interface';
-import type { ContentRemovedByOrganizerMetadata } from './internal/content-removed-by-organizer-metadata.interface';
+import type { ContentRemovalMetadata } from './internal/content-removal-metadata.interface';
 import type { CountedAlbumMetadata } from './counted-album-metadata.interface';
 import type { DownloadReadyMetadata } from './download-ready-metadata.interface';
 import type { PhotoNotificationMetadata } from './photo-notification-metadata.interface';
@@ -30,7 +30,8 @@ export type NotificationMetadataByType = {
   [NotificationType.HIGHLIGHTS_REMINDER]: AlbumNotificationMetadata;
   [NotificationType.ALBUM_QR_CODE_EXPIRING]: AlbumNotificationMetadata;
   [NotificationType.ALBUM_MODERATION_ALERT]: AlbumModerationAlertMetadata;
-  [NotificationType.CONTENT_REMOVED_BY_ORGANIZER]: ContentRemovedByOrganizerMetadata;
+  [NotificationType.CONTENT_REMOVED_BY_ORGANIZER]: ContentRemovalMetadata;
+  [NotificationType.CONTENT_REMOVED_BY_MEMIVO]: ContentRemovalMetadata;
   [NotificationType.PROFESSIONAL_PHOTOS_UPLOADED]: CountedAlbumMetadata;
   [NotificationType.MEMIVO_MOMENTS]: CountedAlbumMetadata;
   [NotificationType.LIKE_PHOTO]: PhotoNotificationMetadata;

@@ -14,4 +14,10 @@ var ReportErrorCode;
     ReportErrorCode["PROFILE_REPORT_STATUS_UPDATE_FAILED"] = "PROFILE_REPORT_STATUS_UPDATE_FAILED";
     ReportErrorCode["PROFILE_REPORT_BAN_REPORTED_USER_FAILED"] = "PROFILE_REPORT_BAN_REPORTED_USER_FAILED";
     ReportErrorCode["MODERATION_BAN_SELF_FORBIDDEN"] = "MODERATION_BAN_SELF_FORBIDDEN";
+    /** La razon elegida exige senalar una pieza y la denuncia no la trajo. */
+    ReportErrorCode["PROFILE_REPORT_CONTENT_REQUIRED"] = "PROFILE_REPORT_CONTENT_REQUIRED";
+    /** La razon elegida no admite pieza: su sujeto es la conducta o la cuenta. */
+    ReportErrorCode["PROFILE_REPORT_CONTENT_NOT_ALLOWED"] = "PROFILE_REPORT_CONTENT_NOT_ALLOWED";
+    /** Llego el tipo sin el id, o el id sin el tipo: ninguno de los dos senala nada solo. */
+    ReportErrorCode["PROFILE_REPORT_CONTENT_INCOMPLETE"] = "PROFILE_REPORT_CONTENT_INCOMPLETE";
 })(ReportErrorCode || (exports.ReportErrorCode = ReportErrorCode = {}));

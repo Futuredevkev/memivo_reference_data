@@ -1,6 +1,6 @@
 {
   "name": "@memivo/contracts",
-  "version": "14.2.0",
+  "version": "15.2.0",
   "description": "Contratos, catálogos y reglas públicas compartidas por memivo_client y memivo_api.",
   "license": "UNLICENSED",
   "main": "dist/index.js",

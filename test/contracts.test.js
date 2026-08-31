@@ -94,10 +94,34 @@ const social = require('../dist/social/index.js');
 // el motivo no es de permisos: el autor tampoco puede editar un sticker, y
 // contestarlo con el código de permiso haría que la app explique «no es tuyo»
 // sobre algo que sí lo es.
-test('el catálogo consolidado expone 191 códigos de error únicos', () => {
+// v15.0.0: +4, todos de la ola de reclamos de derechos (N2). Tres del reporte y
+// uno de la remoción, y son cuatro y no uno porque cada uno manda a hacer algo
+// distinto:
+//   · `PROFILE_REPORT_CONTENT_REQUIRED`: el motivo exige señalar la pieza y no
+//     vino ninguna. Manda a volver y elegirla.
+//   · `PROFILE_REPORT_CONTENT_NOT_ALLOWED`: el motivo la RECHAZA y vino igual.
+//     Manda a sacarla; con este motivo se juzga a la persona, no una pieza.
+//   · `PROFILE_REPORT_CONTENT_INCOMPLETE`: vino media referencia —tipo sin id, o
+//     al revés—. Manda a completarla, que es otra acción que las dos de arriba.
+//   · `MODERATED_CONTENT_NOT_FOUND`: la pieza que el expediente manda remover no
+//     existe. Es del otro lado del flujo y lo lee un moderador, no quien
+//     denuncia.
+//   La entrada de esta ola faltaba: la v15.0.0 movió el número de 191 a 195 y no
+//   lo explicó acá, que es exactamente lo que este ledger existe para impedir.
+//   Se escribe ahora, junto con la de la v15.2.0.
+//
+// v15.2.0: +1. `MODERATED_CONTENT_TYPE_NOT_REMOVABLE`, y nace SEPARADO de
+// `MODERATED_CONTENT_NOT_FOUND` por la misma razón por la que este ledger
+// separa los cuatro de arriba: las dos causas piden cosas distintas del
+// moderador. «No existe» manda a revisar el id; ésta manda a elegir otra de las
+// tres salidas que los términos §10.1 dan para un reclamo válido. Contestar «no
+// existe» sobre una pieza que está publicada —una foto PROFESSIONAL, que en el
+// vocabulario de moderación nunca fue lo que `PHOTO` nombra— lo mandaba a
+// buscar un id que estaba bien.
+test('el catálogo consolidado expone 196 códigos de error únicos', () => {
   const values = Object.values(errors.ErrorCode);
 
-  assert.equal(values.length, 191);
+  assert.equal(values.length, 196);
   assert.equal(new Set(values).size, values.length);
 });
 
