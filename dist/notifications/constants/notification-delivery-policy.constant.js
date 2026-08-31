@@ -429,6 +429,39 @@ exports.NOTIFICATION_DELIVERY_POLICY = {
         replacedBy: null,
         anonymousActor: true,
     }),
+    [enums_1.NotificationType.ALBUM_SUSPENDED_BY_MEMIVO]: policy({
+        // El álbum desaparece de la lista de quien lo organiza y cada acción suya
+        // empieza a contestar un error. La push es la ÚNICA explicación de que fue
+        // moderación y no una falla, y lo único que le dice a dónde reclamar — el
+        // derecho a pedir revisión que el corpus legal ya publica.
+        //
+        // `anonymousActor: true` por el mismo motivo que su hermano de remoción:
+        // se emite por la puerta de sistema, que llena el actor con el propio
+        // destinatario. Sin esta marca, la campanita le firmaría con su propio
+        // nombre el haberse suspendido el álbum.
+        foreground: 'none',
+        bellRow: true,
+        replacedBy: null,
+        anonymousActor: true,
+    }),
+    [enums_1.NotificationType.ALBUM_REINSTATED_BY_MEMIVO]: policy({
+        // Misma fila que la suspensión, y por simetría: quien recibió el aviso de
+        // que le apagaron el álbum tiene que recibir el de que se lo prendieron.
+        // Sin esto, la única forma de enterarse es volver a probar.
+        foreground: 'none',
+        bellRow: true,
+        replacedBy: null,
+        anonymousActor: true,
+    }),
+    [enums_1.NotificationType.WARNING_ISSUED_BY_MEMIVO]: policy({
+        // Una advertencia que no llega no es una advertencia: su único efecto es
+        // que la persona se entere. No hay superficie in-app donde vivan las
+        // sanciones, así que callar la push perdería el hecho entero.
+        foreground: 'none',
+        bellRow: true,
+        replacedBy: null,
+        anonymousActor: true,
+    }),
     [enums_1.NotificationType.CONTENT_REMOVED_BY_MEMIVO]: policy({
         // Misma fila que su hermano, y por el mismo motivo: no hay superficie
         // in-app que cuente que una pieza se retiró, así que callar la push
