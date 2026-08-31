@@ -31,7 +31,7 @@ export declare enum AlbumActionType {
      * tiempo, y esa asimetría es justo lo que hay que poder auditar.
      */
     ALBUM_QR_CODE_EXTENDED = "ALBUM_QR_CODE_EXTENDED",
-    /** The owner enabled, changed, or removed the album access password. */
+    /** El dueño puso, cambió o sacó la contraseña de acceso del álbum. */
     ALBUM_ACCESS_PASSWORD_CHANGED = "ALBUM_ACCESS_PASSWORD_CHANGED",
     ALBUM_COVER_CHANGED = "ALBUM_COVER_CHANGED",
     FOLDER_CREATED = "FOLDER_CREATED",
@@ -50,5 +50,37 @@ export declare enum AlbumActionType {
      *
      * Va siempre con `actorUserId` nulo y `AlbumActorRole.PLATFORM`.
      */
-    CONTENT_REMOVED_BY_PLATFORM = "CONTENT_REMOVED_BY_PLATFORM"
+    CONTENT_REMOVED_BY_PLATFORM = "CONTENT_REMOVED_BY_PLATFORM",
+    /**
+     * Memivo apagó el álbum entero: sigue existiendo con todo adentro, y nadie
+     * —tampoco quien lo organiza— puede entrar.
+     *
+     * ── EL DEFECTO QUE CIERRA ─────────────────────────────────────────────────
+     * Hasta la ola N3 la única palanca que bajaba un álbum entero era borrarlo, y
+     * el borrado **se lleva por CASCADE el propio registro de acciones** — o sea
+     * que la acción que más hay que poder explicar después era justo la que
+     * destruía la explicación. El dueño lo puso en mayúsculas: bajar un álbum es
+     * APAGARLO, no eliminar la información, porque la información es evidencia.
+     *
+     * ── POR QUÉ NO ES `ALBUM_VISIBILITY_CHANGED` ──────────────────────────────
+     * Ése es el toggle del organizador: self-service, reversible por quien lo
+     * apagó, y con el organizador conservando el álbum entero del otro lado. Una
+     * sanción que el sancionado puede levantar no es una sanción. Son dos verbos
+     * distintos sobre la misma tabla y por eso son dos acciones distintas en el
+     * registro: quien lea la fila después tiene que poder distinguir «el
+     * organizador ocultó su álbum» de «Memivo lo apagó».
+     *
+     * Va siempre con `actorUserId` nulo y `AlbumActorRole.PLATFORM`.
+     */
+    ALBUM_SUSPENDED_BY_PLATFORM = "ALBUM_SUSPENDED_BY_PLATFORM",
+    /**
+     * Memivo volvió a prender un álbum que había apagado.
+     *
+     * Es una fila NUEVA, no la mutación de la que suspendió: el registro del
+     * álbum es append-only y la reversión de una sanción es un hecho con su
+     * propia fecha y su propio motivo. El unban ya sentó ese precedente —levantar
+     * un ban abre un expediente nuevo en vez de tachar el viejo—, y por la misma
+     * razón: tachar la sanción borraría que existió.
+     */
+    ALBUM_REINSTATED_BY_PLATFORM = "ALBUM_REINSTATED_BY_PLATFORM"
 }

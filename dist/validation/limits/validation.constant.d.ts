@@ -2,7 +2,7 @@ export declare const VALIDATION: {
     readonly PROFILE_NAME_MIN: 2;
     readonly PROFILE_NAME_MAX: 200;
     readonly PROFILE_URL_MAX: 500;
-    readonly MIN_AGE_YEARS: 18;
+    readonly MIN_AGE_YEARS: 16;
     readonly ALBUM_TITLE_MIN: 3;
     readonly ALBUM_TITLE_MAX: 100;
     readonly ALBUM_DESCRIPTION_MAX: 500;

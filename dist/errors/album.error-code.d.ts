@@ -21,5 +21,26 @@ export declare enum AlbumErrorCode {
     ALBUM_PASSWORD_REQUIRED = "ALBUM_PASSWORD_REQUIRED",
     ALBUM_PASSWORD_INVALID = "ALBUM_PASSWORD_INVALID",
     ALBUM_NOT_SCANNED = "ALBUM_NOT_SCANNED",
+    /**
+     * El álbum existe, está entero, y Memivo lo apagó.
+     *
+     * ── A QUIÉN SE LE DICE, Y POR QUÉ SÓLO A ÉL ───────────────────────────────
+     * **Sólo a quien organiza el álbum.** A cualquier otro —miembro o no— la
+     * ausencia se le cuenta con la voz colapsada de siempre, que no distingue
+     * causas: separar «no existe» de «existe pero no podés verlo» es
+     * exactamente el dato que no hay que dar.
+     *
+     * Con quien organiza no aplica ese motivo: **ya sabe que su álbum existía**,
+     * así que decirle la causa no le revela nada de nadie. Y sin este código no
+     * hay a dónde mandarlo: el corpus legal promete revisión, y una revisión sin
+     * dirección a la que escribir es una promesa sin camino.
+     *
+     * ── LA TRAMPA, ESCRITA ────────────────────────────────────────────────────
+     * Del lado del cliente la tabla de voz de ausencia se llavea por la FORMA del
+     * nombre —`…_NOT_FOUND` y `…_EXPIRED`—, así que éste **no entra solo**: hay
+     * que anotarlo a mano en la lista de códigos sin forma. Es un techo conocido
+     * y está declarado ahí.
+     */
+    ALBUM_SUSPENDED = "ALBUM_SUSPENDED",
     PARTICIPANT_NOT_FOUND = "PARTICIPANT_NOT_FOUND"
 }

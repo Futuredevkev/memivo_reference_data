@@ -78,4 +78,25 @@ export interface AlbumActionDetail {
    * contestarlo, porque es el único que ve el estado anterior dentro del lock.
    */
   accessPasswordKind?: AlbumAccessPasswordChangeKind;
+  /**
+   * Por qué Memivo apagó —o volvió a prender— el álbum.
+   *
+   * ── POR QUÉ SE GUARDA ─────────────────────────────────────────────────
+   * Porque una sanción sin motivo registrado no es evidencia de nada. El
+   * registro del álbum es append-only y sobrevive a todo lo que se pueda
+   * borrar adentro del álbum, así que es el único lugar donde la pregunta
+   * «¿por qué se apagó esto?» tiene respuesta después.
+   *
+   * ── ⚠️ ES TEXTO VISIBLE, NO UNA NOTA INTERNA ──────────────────────────
+   * El registro de actividad lo lee cualquier organizador del álbum, así que
+   * esto se escribe PARA ÉL: es la explicación que va a leer quien pida la
+   * revisión que el corpus legal promete. Las notas internas de un moderador
+   * —las que no se le muestran a nadie— viven en el expediente, que es otra
+   * tabla y tiene otra audiencia.
+   *
+   * Es la misma distinción que ya gobierna a `revokedInvites`, que guarda el
+   * NÚMERO y nunca el código: lo que entra acá es lo que se puede leer en voz
+   * alta.
+   */
+  moderationReason?: string;
 }

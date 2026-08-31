@@ -118,6 +118,26 @@ const social = require('../dist/social/index.js');
 // existe» sobre una pieza que está publicada —una foto PROFESSIONAL, que en el
 // vocabulario de moderación nunca fue lo que `PHOTO` nombra— lo mandaba a
 // buscar un id que estaba bien.
+//
+// v16.0.0: +1 −1, y el total NO se mueve. Es la primera vez que este ledger
+// registra un empate, y por eso se escribe con más cuidado que un número que
+// cambia: quien mire sólo el ancla de abajo va a leer «no pasó nada».
+//   · ENTRA `ALBUM_SUSPENDED`. Memivo puede apagar un álbum entero sin borrarlo
+//     —la información es evidencia y tiene que quedar—, y quien lo organiza
+//     necesita que se lo digan con una dirección a la que escribir. A cualquier
+//     otro la ausencia se le cuenta con la voz colapsada de siempre: separar
+//     «no existe» de «existe pero no podés verlo» es el dato que no se da.
+//     Éste es la excepción justificada, no un olvido — quien organiza YA sabe
+//     que su álbum existía, así que la causa no le revela nada de nadie.
+//   · SALE `MODERATED_CONTENT_TYPE_NOT_REMOVABLE`, que había entrado en la
+//     v15.2.0 y vivió **veinticuatro horas**. No se saca por prolijidad ni
+//     porque estuviera mal: fue correcto durante esas veinticuatro horas, y
+//     dejó de tener sentido el día que el dueño decidió que una foto
+//     PROFESIONAL también se puede remover. Sin esa restricción el código se
+//     quedó **sin un solo emisor en todo el árbol**, y un errorCode sin emisor
+//     es superficie publicada que nadie produce, que es lo que ORDEN §7 llama
+//     código muerto. Cuando la restricción se va, se va el código que la
+//     nombra.
 test('el catálogo consolidado expone 196 códigos de error únicos', () => {
   const values = Object.values(errors.ErrorCode);
 
