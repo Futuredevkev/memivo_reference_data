@@ -54,8 +54,9 @@ export const PROFILE_REPORT_CONTENT_REQUIREMENT_BY_REASON: Readonly<
   // v15.0.0: todo teléfono con la versión anterior ofrece esta razón y arma un
   // cuerpo SIN pieza, así que con `REQUIRED` el servidor le contesta 400 y la
   // denuncia no se crea. Medido: es la ÚNICA razón que rompe al binario viejo
-  // —las tres `FORBIDDEN` nunca mandan pieza, y `COPYRIGHT` es nueva y el
-  // binario viejo no la ofrece—, y encima el `errorCode` no existe en su locale,
+  // —las filas `FORBIDDEN` de esta misma tabla nunca mandan pieza, y `COPYRIGHT`
+  // es nueva y el binario viejo no la ofrece—, y encima el `errorCode` no
+  // existe en su locale,
   // así que la persona lee el mensaje crudo en inglés.
   //
   // Entre las dos salidas se elige la que no puede perder una denuncia: una que
