@@ -1,0 +1,17 @@
+# `dist/` SE COMPARA BYTE A BYTE, ASÍ QUE SUS FINALES DE LÍNEA NO PUEDEN VARIAR.
+#
+# EL DEFECTO QUE CIERRA. `test/dist-matches-src.test.js` afirma que cada archivo
+# de `dist/` es exactamente el que `tsc` emite — byte a byte, que es lo único que
+# prueba que nadie editó el compilado a mano. Y `tsc` emite LF siempre.
+#
+# En una máquina con `core.autocrlf=true` —la de desarrollo lo tiene— Git
+# materializa esos archivos con CRLF en CADA checkout. O sea que después de
+# cualquier `clone`, `reset --hard` o cambio de rama, el gate falla sin que nadie
+# haya tocado nada, y la única forma de arreglarlo es correr `npm run build`.
+#
+# Medido: bloqueó un `push` entero. `git diff` no mostraba NADA —Git normaliza al
+# comparar— mientras el gate, que lee del disco, listaba nueve archivos
+# desfasados. Un rojo que la herramienta de diagnóstico obvia declara inexistente.
+#
+# Con esto el checkout escribe LF y el gate vuelve a medir lo que dice medir.
+dist/** eol=lf
