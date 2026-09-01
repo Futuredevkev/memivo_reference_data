@@ -54,5 +54,47 @@ export declare enum NotificationType {
      * Comparte la metadata con su hermano (`ContentRemovalMetadata`): el dato es
      * el mismo y lo que cambia es la voz del texto.
      */
-    CONTENT_REMOVED_BY_MEMIVO = "CONTENT_REMOVED_BY_MEMIVO"
+    CONTENT_REMOVED_BY_MEMIVO = "CONTENT_REMOVED_BY_MEMIVO",
+    /**
+     * Memivo apagó tu álbum entero, por su propia autoridad.
+     *
+     * ── EL DEFECTO QUE CIERRA ──────────────────────────────────
+     * La suspensión de álbum nació sin aviso: al dueño y a los organizadores no
+     * les llegaba nada —ni push, ni campanita, ni correo— y se enteraban porque
+     * cada request les contestaba un error. El corpus legal les promete que
+     * pueden pedir revisión, y **no tenían cómo saber a quién escribirle, porque
+     * no sabían que había sido Memivo.** Una sanción silenciosa no es apelable.
+     *
+     * ── POR QUÉ NO REUSA `ALBUM_HIDDEN` ─────────────────────────────
+     * Porque aquel dice que el álbum dejó de estar visible y va a los MIEMBROS,
+     * con actor anónimo, y su docblock apoya esa decisión en que quien organiza
+     * no pierde el acceso. Bajo suspensión el organizador **sí** lo pierde, y lo
+     * que necesita leer no es «el álbum se ocultó» sino quién lo apagó y a dónde
+     * reclamar. Es el mismo razonamiento por el que la remoción de plataforma no
+     * reusa la del organizador.
+     */
+    ALBUM_SUSPENDED_BY_MEMIVO = "ALBUM_SUSPENDED_BY_MEMIVO",
+    /**
+     * Memivo volvió a prender tu álbum.
+     *
+     * Va con su hermano y no después: un aviso que dice «suspendimos tu álbum»
+     * sin contraparte deja a la persona con una acusación en pie y sin forma de
+     * saber que se levantó. La reversión se cuenta, igual que se cuenta la
+     * sanción.
+     */
+    ALBUM_REINSTATED_BY_MEMIVO = "ALBUM_REINSTATED_BY_MEMIVO",
+    /**
+     * Memivo te advirtió por algo que publicás o hacés.
+     *
+     * ── POR QUÉ EXISTE ──────────────────────────────────────────
+     * La advertencia es una de las cuatro sanciones que los Términos y las Normas
+     * de Comunidad publican, y era **la única sin mecanismo**: no existía ni como
+     * acción de expediente ni como aviso. Sin ella toda decisión de moderación
+     * sobre una persona es todo-o-nada —la primera vez, o no se hace nada o se
+     * banea—, que es el mismo problema que dio origen a la ola de derechos de
+     * autor y que allá se cerró para el CONTENIDO y quedó abierto para la PERSONA.
+     *
+     * Y sin advertencia no hay reincidencia: no queda registro de la primera vez.
+     */
+    WARNING_ISSUED_BY_MEMIVO = "WARNING_ISSUED_BY_MEMIVO"
 }

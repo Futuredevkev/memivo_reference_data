@@ -13,6 +13,8 @@ const { dirname, resolve, join } = require('node:path');
  * ejercitan contra repos SINTÉTICOS por las costuras `MEMIVO_AUDIT_API_SRC` /
  * `MEMIVO_AUDIT_CLIENT_SRC`: sin eso, la única forma de probar que el auditor detecta
  * un duplicado sería tener el duplicado de verdad en un consumidor.
+ *
+ * @control-positivo en este archivo: un regex del contrato copiado DENTRO de un decorador se detecta como duplicado
  */
 const auditor = resolve(__dirname, '..', 'scripts', 'audit-consumers.js');
 

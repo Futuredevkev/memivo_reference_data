@@ -171,15 +171,23 @@ test('las push-only silenciadas en foreground son exactamente las esperadas', ()
   ].sort());
 });
 
-test('los tipos que dejan fila en la campanita son 28 de 40', () => {
+test('los tipos que dejan fila en la campanita son 31 de 43', () => {
   const withBellRow = entries().filter(([, policy]) => policy.persistsBellRow);
 
   // El número de la izquierda importa más que el de la derecha: un tipo nuevo
   // que NO deja fila es push-only, o sea que suprimirlo pierde el evento para
   // siempre. Que los dos suban juntos es lo esperable; que suba sólo el total
   // es una decisión que alguien tiene que haber tomado a conciencia.
-  assert.equal(entries().length, 40);
-  assert.equal(withBellRow.length, 28);
+  //
+  // v17.0.0: **los dos suben en TRES**, que es lo esperable. Los tres nuevos son
+  // avisos de sanción de plataforma —suspensión de álbum, su reinstalación, y
+  // la advertencia— y los tres dejan fila por el mismo motivo que su hermano de
+  // remoción: **no hay superficie in-app donde vivan las sanciones**, así que
+  // callar la push perdería el hecho entero. Y en los tres el aviso es lo único
+  // que le dice a la persona a dónde escribir para pedir la revisión que el
+  // corpus legal ya le promete.
+  assert.equal(entries().length, 43);
+  assert.equal(withBellRow.length, 31);
 });
 
 test('getNotificationDeliveryPolicy devuelve null ante un tipo desconocido', () => {

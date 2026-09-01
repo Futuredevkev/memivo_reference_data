@@ -138,10 +138,21 @@ const social = require('../dist/social/index.js');
 //     es superficie publicada que nadie produce, que es lo que ORDEN §7 llama
 //     código muerto. Cuando la restricción se va, se va el código que la
 //     nombra.
-test('el catálogo consolidado expone 196 códigos de error únicos', () => {
+//
+// v17.0.0: **+2**, los dos del mismo eje. El hold legal de un expediente dejó de
+// ser dos columnas mutables y pasó a ser un registro append-only, y con eso
+// nacieron transiciones que se pueden nombrar:
+//   · `MODERATION_LEGAL_HOLD_TRANSITION_INVALID`, para abrir un hold ya abierto
+//     o liberar uno que no lo está.
+//   · `MODERATION_CASE_ALREADY_RESOLVED`, para resolver algo ya resuelto.
+// Los dos cierran el MISMO defecto: esas tres puertas contestaban `200` con el
+// estado sin cambios, que es **indistinguible de haber funcionado**. Que quien
+// modera crea que reabrió un hold es grave, porque de ese hold depende que el
+// material no se destruya.
+test('el catálogo consolidado expone 198 códigos de error únicos', () => {
   const values = Object.values(errors.ErrorCode);
 
-  assert.equal(values.length, 196);
+  assert.equal(values.length, 198);
   assert.equal(new Set(values).size, values.length);
 });
 

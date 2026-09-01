@@ -16,6 +16,7 @@ import type { ReactionOnPhotoMetadata } from './reaction-on-photo-metadata.inter
 import type { StoryCommentNotificationMetadata } from './story-comment-notification-metadata.interface';
 import type { StoryNotificationMetadata } from './story-notification-metadata.interface';
 import type { StoryUploadNotificationMetadata } from './story-upload-notification-metadata.interface';
+import type { WarningMetadata } from './internal/warning-metadata.interface';
 
 export type NotificationMetadataByType = {
   [NotificationType.ALBUM_DELETED]: AlbumNotificationMetadata;
@@ -32,6 +33,9 @@ export type NotificationMetadataByType = {
   [NotificationType.ALBUM_MODERATION_ALERT]: AlbumModerationAlertMetadata;
   [NotificationType.CONTENT_REMOVED_BY_ORGANIZER]: ContentRemovalMetadata;
   [NotificationType.CONTENT_REMOVED_BY_MEMIVO]: ContentRemovalMetadata;
+  [NotificationType.ALBUM_SUSPENDED_BY_MEMIVO]: AlbumNotificationMetadata;
+  [NotificationType.ALBUM_REINSTATED_BY_MEMIVO]: AlbumNotificationMetadata;
+  [NotificationType.WARNING_ISSUED_BY_MEMIVO]: WarningMetadata;
   [NotificationType.PROFESSIONAL_PHOTOS_UPLOADED]: CountedAlbumMetadata;
   [NotificationType.MEMIVO_MOMENTS]: CountedAlbumMetadata;
   [NotificationType.LIKE_PHOTO]: PhotoNotificationMetadata;
