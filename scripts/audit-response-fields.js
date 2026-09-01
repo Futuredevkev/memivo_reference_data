@@ -86,13 +86,28 @@ const ts = require('typescript');
 
 const packageRoot = resolve(__dirname, '..');
 const workspaceRoot = dirname(packageRoot);
-const packageSrc = resolve(packageRoot, 'src');
+/**
+ * LAS TRES RAÍCES, TODAS CON SU COSTURA DE ENTORNO.
+ *
+ * Sólo `clientSrc` la tenía, y eso dejaba a este auditor imposible de probar:
+ * el universo se siembra desde el CONTRATO y desde los handlers del API, así
+ * que sin poder plantar esos dos árboles no hay forma de escribir un caso que
+ * ponga rojo al detector. Un auditor sin un caso que lo ponga rojo está
+ * apagado, no limpio — es la misma frase con la que se abrió el arnés de
+ * `audit-endpoints.js`, y los nombres de las variables de entorno son los
+ * SUYOS a propósito: un solo vocabulario para toda la familia.
+ */
+const packageSrc = process.env.MEMIVO_AUDIT_PACKAGE_SRC
+  ? resolve(process.env.MEMIVO_AUDIT_PACKAGE_SRC)
+  : resolve(packageRoot, 'src');
 
 const clientSrc = process.env.MEMIVO_AUDIT_CLIENT_SRC
   ? resolve(process.env.MEMIVO_AUDIT_CLIENT_SRC)
   : resolve(workspaceRoot, 'memivo_client', 'src');
 
-const apiSrc = resolve(workspaceRoot, 'memivo_api', 'src');
+const apiSrc = process.env.MEMIVO_AUDIT_API_SRC
+  ? resolve(process.env.MEMIVO_AUDIT_API_SRC)
+  : resolve(workspaceRoot, 'memivo_api', 'src');
 
 const verbose = process.argv.includes('--verbose');
 
