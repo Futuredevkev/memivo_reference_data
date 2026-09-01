@@ -95,6 +95,8 @@ const INTENTIONAL_WITHOUT_CLIENT = {
     'superficie de OPERADOR (@Auth ADMIN): apaga un álbum entero sin borrarlo. Entrada manual desde Postman, igual que su hermana de remoción de contenido — el volumen real de Memivo hoy no justifica una pantalla, y el expediente que abre ya está construido para que una pantalla se apoye en él sin rehacer nada.',
   'POST /moderation/album/reinstate':
     'idem, y va como ruta separada y no como toggle a propósito: las dos son IDEMPOTENTES, y eso sólo se puede prometer si la ruta dice qué estado querés dejar. Con un toggle, un reintento por timeout desharía la sanción.',
+  'POST /moderation/warning':
+    'superficie de OPERADOR (@Auth ADMIN): emite la advertencia, que es la sanción que faltaba entre no hacer nada y banear. Entrada manual desde Postman, misma clase que sus hermanas de suspensión y remoción. Y a diferencia de ellas NO es idempotente a propósito: advertir dos veces a la misma persona son DOS advertencias, y contarlas es lo único que hace visible al reincidente.',
   'POST /moderation/cases/:caseId/escalation':
     'superficie de OPERADOR (@Auth ADMIN): abre el hold legal de un expediente, o sea que detiene la destrucción de su material. La ejerce quien modera, nunca la app.',
   'POST /moderation/cases/:caseId/legal-clearance':
