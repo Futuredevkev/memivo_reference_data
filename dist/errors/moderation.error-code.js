@@ -27,4 +27,18 @@ var ModerationErrorCode;
      * de eso depende que el material no se destruya.
      */
     ModerationErrorCode["MODERATION_LEGAL_HOLD_TRANSITION_INVALID"] = "MODERATION_LEGAL_HOLD_TRANSITION_INVALID";
+    /**
+     * Falló bajar una pieza por moderación de plataforma, por algo IMPREVISTO.
+     *
+     * Los casos previsibles ya tienen nombre —`MODERATED_CONTENT_NOT_FOUND` para
+     * la pieza que no está—; éste cubre lo demás: la base, Cloudinary, o alguno
+     * de los cinco colaboradores que la remoción orquesta dentro de su
+     * transacción.
+     *
+     * Sin él ese camino salía como `INTERNAL_SERVER_ERROR`, así que quien
+     * atiende un reclamo legal de un tercero leía «error interno del servidor»
+     * sobre la única superficie que Memivo tiene para bajar UNA pieza con
+     * expediente.
+     */
+    ModerationErrorCode["MODERATED_CONTENT_REMOVAL_FAILED"] = "MODERATED_CONTENT_REMOVAL_FAILED";
 })(ModerationErrorCode || (exports.ModerationErrorCode = ModerationErrorCode = {}));

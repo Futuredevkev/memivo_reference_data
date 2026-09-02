@@ -56,5 +56,18 @@ export declare enum ChatErrorCode {
      * sitios que usaban `CHAT_PINNED_MESSAGE_FORBIDDEN` significaban esto, y el
      * cliente le decía «no tenés permiso» a alguien que sí lo tiene. */
     CHAT_MESSAGE_ALREADY_PINNED = "CHAT_MESSAGE_ALREADY_PINNED",
-    CHAT_REACTION_TOGGLE_FAILED = "CHAT_REACTION_TOGGLE_FAILED"
+    CHAT_REACTION_TOGGLE_FAILED = "CHAT_REACTION_TOGGLE_FAILED",
+    /**
+     * Falló ABRIR un mensaje de una sola vista, por algo imprevisto.
+     *
+     * Los cuatro `CHAT_VIEW_ONCE_*` de arriba nombran CONDICIONES —venció, ya se
+     * vio, no lo puede abrir quien lo mandó, no se puede descargar— y las cuatro
+     * las tira a mano el validador. Faltaba el «falló la operación».
+     *
+     * Sin él ese camino prestaba `CHAT_MESSAGE_SEND_FAILED`, que el filtro
+     * global conserva y el cliente traduce «No se pudo enviar el mensaje.»: una
+     * frase FALSA sobre una operación que estaba abriendo, no enviando. Un
+     * código prestado es peor que el genérico — el genérico no afirma nada.
+     */
+    CHAT_VIEW_ONCE_OPEN_FAILED = "CHAT_VIEW_ONCE_OPEN_FAILED"
 }

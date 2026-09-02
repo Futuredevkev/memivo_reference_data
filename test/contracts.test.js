@@ -149,10 +149,20 @@ const social = require('../dist/social/index.js');
 // estado sin cambios, que es **indistinguible de haber funcionado**. Que quien
 // modera crea que reabrió un hold es grave, porque de ese hold depende que el
 // material no se destruya.
-test('el catálogo consolidado expone 198 códigos de error únicos', () => {
+// v19.0.0: **+2**, los dos del mismo eje —«la operación falló» donde sólo
+// había nombres para CONDICIONES puntuales—, y los dos salieron de un barrido
+// de 327 agentes sobre los 364 archivos de servicio y borde del api:
+//   · `MODERATED_CONTENT_REMOVAL_FAILED`. La única superficie que baja UNA
+//     pieza con expediente no clasificaba sus errores, así que quien atiende un
+//     reclamo legal de un tercero leía «error interno del servidor».
+//   · `CHAT_VIEW_ONCE_OPEN_FAILED`. Abrir un mensaje de una sola vista prestaba
+//     `CHAT_MESSAGE_SEND_FAILED`, que el cliente traduce «No se pudo enviar el
+//     mensaje.»: una frase FALSA sobre una operación que estaba abriendo. Un
+//     código prestado es peor que el genérico — el genérico no afirma nada.
+test('el catálogo consolidado expone 200 códigos de error únicos', () => {
   const values = Object.values(errors.ErrorCode);
 
-  assert.equal(values.length, 198);
+  assert.equal(values.length, 200);
   assert.equal(new Set(values).size, values.length);
 });
 
