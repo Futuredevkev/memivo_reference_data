@@ -64,11 +64,12 @@ const intentionalBoundaries = new Map([
   // `CHAT_VIDEO_MAX_DURATION_MS`. La línea es ésa: el paquete publica lo que el
   // producto DECIDE, no la aritmética con la que se escribe.
   //
-  // El par lo forma sólo `MINUTES_PER_HOUR` porque es el único literal pelado a
-  // los dos lados: en el servidor `MS_PER_MINUTE` y `MS_PER_DAY` se derivan de
-  // sus hermanos, así que la firma no coincide y la heurística no los aparea. La
-  // misma decisión vale para toda la familia.
+  // Los pares los forman los literales PELADOS a los dos lados: en el servidor
+  // `MS_PER_MINUTE` y `MS_PER_DAY` se derivan de sus hermanos, así que la firma
+  // no coincide y la heurística no los aparea. La misma decisión vale para toda
+  // la familia, se aparee o no.
   ['const:MINUTES_PER_HOUR', 'Conversión física compartida por definición, no contrato de producto: una hora tiene 60 minutos en los dos repos y ninguna versión del paquete puede cambiarlo. Lo que sí publica contracts son los PLAZOS medidos en esas unidades.'],
+  ['const:MINUTES_PER_DAY', 'Idem: mil cuatrocientos cuarenta minutos en un día. Nació del lado del cliente cuando el formateador de duraciones ganó su rama de días —hasta entonces treinta días salían «720 h»— y lleva el MISMO nombre que su gemelo del servidor a propósito, que es lo que este árbol ya decidió para las conversiones de tiempo.'],
   ['const:MS_PER_SECOND', 'Idem: mil milisegundos en un segundo. Misma familia, misma decisión.'],
   ['const:SECONDS_PER_MINUTE', 'Idem: sesenta segundos en un minuto. Misma familia, misma decisión.'],
 ]);
