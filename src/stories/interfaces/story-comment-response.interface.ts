@@ -22,12 +22,14 @@ export interface StoryCommentResponse<TTimestamp = string> {
    * El autor reescribió el texto después de publicarlo. Ver el docblock de
    * `CommentResponse.isEdited`.
    *
-   * Que la historia venza en 24 h NO lo exime, y la tentación de eximirlo es
-   * justamente la ventana de gracia que el dueño descartó: un comentario de
-   * historia se lee y se contesta dentro de esas 24 h, así que la ventana en la
-   * que se puede reescribir sin que nadie se entere es EL flujo entero, no un
-   * borde. La marca aparece siempre, en las tres superficies donde hay un texto
-   * que otro ya leyó.
+   * Por qué el vencimiento de la historia NO lo exime, con el argumento entero:
+   * el docblock de `StoryComment.isEdited` en el api. Acá vivía ese mismo
+   * párrafo copiado palabra por palabra, con un plazo escrito a mano que la
+   * constante del servidor desmentía — y este archivo viaja DENTRO del `.d.ts`
+   * que los dos repos instalan, así que la copia falsa se distribuía.
+   *
+   * La marca aparece siempre, en las tres superficies donde hay un texto que
+   * otro ya leyó.
    */
   isEdited: boolean;
   /**

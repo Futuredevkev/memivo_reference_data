@@ -135,6 +135,7 @@ const SORTED_BARRELS = [
   'stickers/helpers/index.ts',
   'stickers/index.ts',
   'stickers/interfaces/index.ts',
+  'stories/constants/index.ts',
   'stories/enums/index.ts',
   'stories/index.ts',
   'stories/types/index.ts',

@@ -10,9 +10,9 @@
  *
  * Lo que pasa después no se parece a un problema de dependencias:
  *
- *     src/album/constants/album-password/album-password-too-long-code.constant.ts:14:10
+ *     src/album/constants/<el reexport fino que lo trae>.constant.ts:14:10
  *       error TS2305: Module '"@memivo/contracts/album"' has no exported member
- *       'ALBUM_PASSWORD_TOO_LONG_CODE'.
+ *       '<el símbolo que el tag pedido agrega y el instalado no tiene>'.
  *
  * Tres errores de tipos que no nombran a npm, a la versión ni al tag. En la
  * auditoría del 2026-08-04 el backend estaba caído por esto —`package.json`
