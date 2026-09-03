@@ -159,10 +159,22 @@ const social = require('../dist/social/index.js');
 //     `CHAT_MESSAGE_SEND_FAILED`, que el cliente traduce «No se pudo enviar el
 //     mensaje.»: una frase FALSA sobre una operación que estaba abriendo. Un
 //     código prestado es peor que el genérico — el genérico no afirma nada.
-test('el catálogo consolidado expone 200 códigos de error únicos', () => {
+// v18.2.0: **+2**, los dos porque un código estaba nombrando DOS reglas y una
+// frase que dijera el número de una mentía sobre la otra:
+//   · `FILES_DIMENSIONS_TOO_LARGE`. `FILES_TOO_LARGE` salía de seis emisores:
+//     tres comparan BYTES y tres comparan PÍXELES contra el lado máximo. Con el
+//     rechazo diciendo su tope —que es lo que la ola vino a hacer— «el máximo es
+//     de 5 MB» habría sido falso en la mitad de los sitios que lo producen, que
+//     es la misma mentira que ya costó borrar `IMAGE_TOO_LARGE`.
+//   · `FILES_CONTENT_INVALID`. Dos de los seis emisores de
+//     `FILES_UNSUPPORTED_FORMAT` no hablan de formato: uno dispara cuando la
+//     imagen no se puede leer y el otro cuando el contenido no coincide con el
+//     tipo declarado. Con la lista de formatos dicha en la frase, ahí se leería
+//     «se aceptan JPG, PNG…» sobre un archivo que ES un PNG.
+test('el catálogo consolidado expone 202 códigos de error únicos', () => {
   const values = Object.values(errors.ErrorCode);
 
-  assert.equal(values.length, 200);
+  assert.equal(values.length, 202);
   assert.equal(new Set(values).size, values.length);
 });
 
