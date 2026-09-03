@@ -6,7 +6,6 @@ const album_access_password_max_constant_1 = require("./album-access-password-ma
 const album_access_password_min_constant_1 = require("./album-access-password-min.constant");
 const album_member_batch_max_constant_1 = require("./album-member-batch-max.constant");
 const album_title_max_constant_1 = require("./album-title-max.constant");
-const album_title_min_constant_1 = require("./album-title-min.constant");
 const batch_min_items_constant_1 = require("./batch-min-items.constant");
 const chat_caption_max_constant_1 = require("./chat-caption-max.constant");
 const chat_message_max_constant_1 = require("./chat-message-max.constant");
@@ -24,7 +23,6 @@ const poll_options_max_constant_1 = require("./poll-options-max.constant");
 const poll_options_min_constant_1 = require("./poll-options-min.constant");
 const poll_option_max_constant_1 = require("./poll-option-max.constant");
 const poll_question_max_constant_1 = require("./poll-question-max.constant");
-const poll_question_min_constant_1 = require("./poll-question-min.constant");
 const post_description_max_constant_1 = require("./post-description-max.constant");
 const profile_name_max_constant_1 = require("./profile-name-max.constant");
 const profile_name_min_constant_1 = require("./profile-name-min.constant");
@@ -38,7 +36,6 @@ exports.VALIDATION = {
     PROFILE_NAME_MAX: profile_name_max_constant_1.PROFILE_NAME_MAX,
     PROFILE_URL_MAX: profile_url_max_constant_1.PROFILE_URL_MAX,
     MIN_AGE_YEARS: min_age_years_constant_1.MIN_AGE_YEARS,
-    ALBUM_TITLE_MIN: album_title_min_constant_1.ALBUM_TITLE_MIN,
     ALBUM_TITLE_MAX: album_title_max_constant_1.ALBUM_TITLE_MAX,
     ALBUM_DESCRIPTION_MAX: album_description_max_constant_1.ALBUM_DESCRIPTION_MAX,
     ALBUM_ACCESS_PASSWORD_MIN: album_access_password_min_constant_1.ALBUM_ACCESS_PASSWORD_MIN,
@@ -46,7 +43,6 @@ exports.VALIDATION = {
     BATCH_MIN_ITEMS: batch_min_items_constant_1.BATCH_MIN_ITEMS,
     ALBUM_MEMBER_BATCH_MAX: album_member_batch_max_constant_1.ALBUM_MEMBER_BATCH_MAX,
     GENERIC_BATCH_MAX: generic_batch_max_constant_1.GENERIC_BATCH_MAX,
-    POLL_QUESTION_MIN: poll_question_min_constant_1.POLL_QUESTION_MIN,
     POLL_QUESTION_MAX: poll_question_max_constant_1.POLL_QUESTION_MAX,
     POLL_OPTION_MAX: poll_option_max_constant_1.POLL_OPTION_MAX,
     POLL_OPTIONS_MIN: poll_options_min_constant_1.POLL_OPTIONS_MIN,

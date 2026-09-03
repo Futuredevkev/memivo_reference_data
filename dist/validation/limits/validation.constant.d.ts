@@ -3,7 +3,6 @@ export declare const VALIDATION: {
     readonly PROFILE_NAME_MAX: 200;
     readonly PROFILE_URL_MAX: 500;
     readonly MIN_AGE_YEARS: 16;
-    readonly ALBUM_TITLE_MIN: 3;
     readonly ALBUM_TITLE_MAX: 100;
     readonly ALBUM_DESCRIPTION_MAX: 500;
     readonly ALBUM_ACCESS_PASSWORD_MIN: 6;
@@ -11,7 +10,6 @@ export declare const VALIDATION: {
     readonly BATCH_MIN_ITEMS: 1;
     readonly ALBUM_MEMBER_BATCH_MAX: 50;
     readonly GENERIC_BATCH_MAX: 100;
-    readonly POLL_QUESTION_MIN: 5;
     readonly POLL_QUESTION_MAX: 200;
     readonly POLL_OPTION_MAX: 100;
     readonly POLL_OPTIONS_MIN: 2;
