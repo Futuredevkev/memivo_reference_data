@@ -863,6 +863,65 @@ function localeErrorKeys(locale) {
  * comporta como antes: exige traducción para los 194. Es el default seguro — de
  * más el gate molesta, de menos deja pasar un hueco real.
  */
+/**
+ * Los códigos que el cliente declara INALCANZABLES para él.
+ *
+ * La tercera respuesta posible a «¿por qué este código no tiene copia?», y
+ * faltaba. Las otras dos son «habla con la voz única» (`ONE_VOICE` en la tabla
+ * de ausencia) y «habla con la voz de aquel» (`SHARED_VOICE_BY_ERROR_CODE`).
+ * La que faltaba es «NO LLEGA»: catorce códigos salen de rutas
+ * `@Auth(ValidRoles.ADMIN)` o de un webhook server-to-server, y esa app no
+ * tiene pantalla de moderación.
+ *
+ * Sin esta lectura el auditor los contaba como HUECO y tumbaba el push — con
+ * razón mientras la ausencia no estuviera escrita. Ahora lo está, con el
+ * motivo por fila, y el criterio queda del lado del cliente, que es quien
+ * sabe qué pantallas tiene.
+ *
+ * Si la tabla no existe, devuelve el conjunto vacío: el default seguro es
+ * exigir copia.
+ */
+function unreachableErrorCodes() {
+  const file = resolve(roots.client, 'constants', 'unreachable-by-this-client.constant.ts');
+  if (!existsSync(file)) return new Set();
+  const { source } = sourceFile(file);
+  const unreachable = new Set();
+  const visit = (node) => {
+    if (ts.isPropertyAssignment(node) && ts.isStringLiteralLike(node.initializer)) {
+      const key = node.name.getText(source).replace(/^['"]|['"]$/g, '');
+      if (/^[A-Z][A-Z0-9_]+$/.test(key)) unreachable.add(key);
+      return;
+    }
+    ts.forEachChild(node, visit);
+  };
+  visit(source);
+  return unreachable;
+}
+
+/**
+ * Los códigos que hablan con la voz de un HERMANO.
+ *
+ * `SHARED_VOICE_BY_ERROR_CODE` es la otra mitad del colapso y el auditor no la
+ * leía: un código fusionado a propósito —con su motivo argumentado fila por
+ * fila— se contaba como hueco igual que un olvido. El `speaksAs` dice a quién
+ * le presta la voz; lo que importa acá es sólo que la tiene.
+ */
+function sharedVoiceErrorCodes() {
+  const file = resolve(roots.client, 'constants', 'shared-voice-by-error-code.constant.ts');
+  if (!existsSync(file)) return new Set();
+  const { source } = sourceFile(file);
+  const shared = new Set();
+  const visit = (node) => {
+    if (ts.isPropertyAssignment(node) && ts.isObjectLiteralExpression(node.initializer)) {
+      const key = node.name.getText(source).replace(/^['"]|['"]$/g, '');
+      if (/^[A-Z][A-Z0-9_]+$/.test(key)) { shared.add(key); return; }
+    }
+    ts.forEachChild(node, visit);
+  };
+  visit(source);
+  return shared;
+}
+
 function collapsedErrorCodes() {
   const file = resolve(roots.client, 'constants', 'absence-voice-by-error-code.constant.ts');
   if (!existsSync(file)) return new Set();
@@ -1141,7 +1200,13 @@ const unusedSharedExports = [...sharedExports]
     !wildcardDomains.has(domain))
   .map(([symbol]) => symbol)
   .sort();
-const collapsed = collapsedErrorCodes();
+// Las TRES respuestas válidas a «no tiene copia»: colapsa a la voz única,
+// habla con la voz de un hermano, o no llega nunca a este cliente.
+const collapsed = new Set([
+  ...collapsedErrorCodes(),
+  ...sharedVoiceErrorCodes(),
+  ...unreachableErrorCodes(),
+]);
 const localeCoverage = Object.fromEntries(
   ['en', 'es', 'pt'].map((locale) => {
     const keys = localeErrorKeys(locale);
