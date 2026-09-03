@@ -1,3 +1,4 @@
+export * from './backup-code-length.constant';
 export * from './backup-code-regex.constant';
 export * from './device-time-zone-max-length.constant';
 export * from './oauth-verification-intent.constant';

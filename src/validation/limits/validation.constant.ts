@@ -3,7 +3,6 @@ import { ALBUM_ACCESS_PASSWORD_MAX } from './album-access-password-max.constant'
 import { ALBUM_ACCESS_PASSWORD_MIN } from './album-access-password-min.constant';
 import { ALBUM_MEMBER_BATCH_MAX } from './album-member-batch-max.constant';
 import { ALBUM_TITLE_MAX } from './album-title-max.constant';
-import { ALBUM_TITLE_MIN } from './album-title-min.constant';
 import { BATCH_MIN_ITEMS } from './batch-min-items.constant';
 import { CHAT_CAPTION_MAX } from './chat-caption-max.constant';
 import { CHAT_MESSAGE_MAX } from './chat-message-max.constant';
@@ -21,7 +20,6 @@ import { POLL_OPTIONS_MAX } from './poll-options-max.constant';
 import { POLL_OPTIONS_MIN } from './poll-options-min.constant';
 import { POLL_OPTION_MAX } from './poll-option-max.constant';
 import { POLL_QUESTION_MAX } from './poll-question-max.constant';
-import { POLL_QUESTION_MIN } from './poll-question-min.constant';
 import { POST_DESCRIPTION_MAX } from './post-description-max.constant';
 import { PROFILE_NAME_MAX } from './profile-name-max.constant';
 import { PROFILE_NAME_MIN } from './profile-name-min.constant';
@@ -36,7 +34,6 @@ export const VALIDATION = {
   PROFILE_NAME_MAX,
   PROFILE_URL_MAX,
   MIN_AGE_YEARS,
-  ALBUM_TITLE_MIN,
   ALBUM_TITLE_MAX,
   ALBUM_DESCRIPTION_MAX,
   ALBUM_ACCESS_PASSWORD_MIN,
@@ -44,7 +41,6 @@ export const VALIDATION = {
   BATCH_MIN_ITEMS,
   ALBUM_MEMBER_BATCH_MAX,
   GENERIC_BATCH_MAX,
-  POLL_QUESTION_MIN,
   POLL_QUESTION_MAX,
   POLL_OPTION_MAX,
   POLL_OPTIONS_MIN,
