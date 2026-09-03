@@ -9,6 +9,7 @@ export * from './chat-caption-max.constant';
 export * from './chat-message-max.constant';
 export * from './client-temp-id-max-length.constant';
 export * from './comment-max.constant';
+export * from './folder-max-count-per-album.constant';
 export * from './folder-name-max.constant';
 export * from './generic-batch-max.constant';
 export * from './group-name-max.constant';

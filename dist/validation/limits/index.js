@@ -25,6 +25,7 @@ __exportStar(require("./chat-caption-max.constant"), exports);
 __exportStar(require("./chat-message-max.constant"), exports);
 __exportStar(require("./client-temp-id-max-length.constant"), exports);
 __exportStar(require("./comment-max.constant"), exports);
+__exportStar(require("./folder-max-count-per-album.constant"), exports);
 __exportStar(require("./folder-name-max.constant"), exports);
 __exportStar(require("./generic-batch-max.constant"), exports);
 __exportStar(require("./group-name-max.constant"), exports);

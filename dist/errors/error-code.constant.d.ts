@@ -231,8 +231,10 @@ export declare const ErrorCode: {
     readonly VALIDATION_ERROR: CommonErrorCode.VALIDATION_ERROR;
     readonly FILES_EMPTY: CommonErrorCode.FILES_EMPTY;
     readonly FILES_TOO_LARGE: CommonErrorCode.FILES_TOO_LARGE;
+    readonly FILES_DIMENSIONS_TOO_LARGE: CommonErrorCode.FILES_DIMENSIONS_TOO_LARGE;
     readonly FILES_TOO_MANY: CommonErrorCode.FILES_TOO_MANY;
     readonly FILES_UNSUPPORTED_FORMAT: CommonErrorCode.FILES_UNSUPPORTED_FORMAT;
+    readonly FILES_CONTENT_INVALID: CommonErrorCode.FILES_CONTENT_INVALID;
     readonly TOO_MANY_REQUESTS: CommonErrorCode.TOO_MANY_REQUESTS;
     readonly UPLOAD_FAILED: CommonErrorCode.UPLOAD_FAILED;
     readonly UPLOAD_FILE_MISSING: CommonErrorCode.UPLOAD_FILE_MISSING;

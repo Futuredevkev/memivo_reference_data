@@ -1,3 +1,5 @@
+import type { ResourceType } from '../media/enums';
+import type { UploadIntentContext } from '../media/types';
 /**
  * Forma canónica del body de CUALQUIER respuesta de error de la API. La arma
  * `GlobalExceptionFilter` (memivo_api, las dos ramas: `HttpException` y
@@ -55,4 +57,33 @@ export interface ApiErrorEnvelope {
      * empareja los dos canales bajo el mismo contrato.
      */
     registrationChallengeToken?: string;
+    /**
+     * QUÉ SE ESTABA SUBIENDO cuando el tope de peso o el de formato lo frenó.
+     *
+     * ── POR QUÉ VIAJA LA LLAVE Y NO EL NÚMERO ────────────────────────────────
+     * El tope de bytes y la lista de formatos de cada recurso los publica este
+     * mismo paquete ({@link RESOURCE_UPLOAD_LIMITS}), así que mandarlos por el
+     * cable les daría DOS orígenes en el cliente: el cuerpo del error por el
+     * camino del servidor, y el contrato por el camino del chequeo previo —que no
+     * tiene servidor del cual leerlos—. Con la llave, los dos caminos terminan
+     * leyendo la misma fila y no se pueden desincronizar.
+     *
+     * El eje es el RECURSO y no el contexto de subida porque la regla es del
+     * recurso: un `chat_media` admite 5 MB si es imagen y 100 MB si es video.
+     *
+     * Presente sólo con `FILES_TOO_LARGE` y `FILES_UNSUPPORTED_FORMAT`.
+     */
+    resourceType?: ResourceType;
+    /**
+     * DESDE DÓNDE se estaba subiendo cuando el tope de CANTIDAD lo frenó.
+     *
+     * Es otro eje que {@link ApiErrorEnvelope.resourceType}, y a propósito:
+     * cuántos archivos entran no es propiedad del recurso sino del contexto —una
+     * publicación admite diez, sean fotos o videos— y eso lo decide
+     * {@link UPLOAD_CONTEXT_FILE_LIMITS}. Llavear las dos reglas por el mismo
+     * campo sería elegir el eje equivocado para una de las dos.
+     *
+     * Presente sólo con `FILES_TOO_MANY`.
+     */
+    uploadContext?: UploadIntentContext;
 }

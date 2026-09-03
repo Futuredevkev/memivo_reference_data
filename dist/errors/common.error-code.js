@@ -15,8 +15,10 @@ var CommonErrorCode;
     CommonErrorCode["VALIDATION_ERROR"] = "VALIDATION_ERROR";
     CommonErrorCode["FILES_EMPTY"] = "FILES_EMPTY";
     CommonErrorCode["FILES_TOO_LARGE"] = "FILES_TOO_LARGE";
+    CommonErrorCode["FILES_DIMENSIONS_TOO_LARGE"] = "FILES_DIMENSIONS_TOO_LARGE";
     CommonErrorCode["FILES_TOO_MANY"] = "FILES_TOO_MANY";
     CommonErrorCode["FILES_UNSUPPORTED_FORMAT"] = "FILES_UNSUPPORTED_FORMAT";
+    CommonErrorCode["FILES_CONTENT_INVALID"] = "FILES_CONTENT_INVALID";
     CommonErrorCode["TOO_MANY_REQUESTS"] = "TOO_MANY_REQUESTS";
     // Upload errors
     CommonErrorCode["UPLOAD_FAILED"] = "UPLOAD_FAILED";
