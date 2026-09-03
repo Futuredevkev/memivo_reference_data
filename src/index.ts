@@ -10,6 +10,7 @@ export * from './media';
 export * from './notifications';
 export * from './polls';
 export * from './reactions';
+export * from './moderation';
 export * from './reports';
 export * from './sockets';
 export * from './social';

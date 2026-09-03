@@ -1,4 +1,5 @@
-import { ProfileReportContentRequirement, ProfileReportReason } from '../enums';
+import { ModerationReason } from '../../moderation';
+import { ProfileReportContentRequirement } from '../enums';
 /**
  * EL DUEÑO de «¿esta razón de denuncia señala una pieza de contenido?», y es
  * uno solo para los dos lados del cable.
@@ -17,7 +18,7 @@ import { ProfileReportContentRequirement, ProfileReportReason } from '../enums';
  * Una lista de «razones que piden pieza» no tiene gate: la razón siguiente
  * entra en silencio heredando el comportamiento de estar afuera de la lista,
  * que es justo la decisión que hay que tomar a conciencia. Con el `Record`
- * total, un miembro nuevo de {@link ProfileReportReason} **no compila** hasta
+ * total, un miembro nuevo de {@link ModerationReason} **no compila** hasta
  * que alguien conteste esta pregunta (ORDEN §6).
  *
  * Y no puede ser `Partial`: un opcional no obliga a nada — la razón sin fila no
@@ -35,4 +36,4 @@ import { ProfileReportContentRequirement, ProfileReportReason } from '../enums';
  * la remoción es una acción de plataforma con su propio expediente, y se toma a
  * mano. La denuncia sigue siendo contra la PERSONA en las ocho filas.
  */
-export declare const PROFILE_REPORT_CONTENT_REQUIREMENT_BY_REASON: Readonly<Record<ProfileReportReason, ProfileReportContentRequirement>>;
+export declare const PROFILE_REPORT_CONTENT_REQUIREMENT_BY_REASON: Readonly<Record<ModerationReason, ProfileReportContentRequirement>>;

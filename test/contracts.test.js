@@ -171,10 +171,10 @@ const social = require('../dist/social/index.js');
 //     imagen no se puede leer y el otro cuando el contenido no coincide con el
 //     tipo declarado. Con la lista de formatos dicha en la frase, ahí se leería
 //     «se aceptan JPG, PNG…» sobre un archivo que ES un PNG.
-test('el catálogo consolidado expone 202 códigos de error únicos', () => {
+test('el catálogo consolidado expone 203 códigos de error únicos', () => {
   const values = Object.values(errors.ErrorCode);
 
-  assert.equal(values.length, 202);
+  assert.equal(values.length, 203);
   assert.equal(new Set(values).size, values.length);
 });
 

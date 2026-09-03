@@ -1,5 +1,5 @@
 import type { ModeratedContentType } from '../../album';
-import type { ProfileReportReason } from '../enums';
+import type { ModerationReason } from '../../moderation';
 /**
  * El cuerpo con el que se crea una denuncia de perfil.
  *
@@ -26,7 +26,7 @@ import type { ProfileReportReason } from '../enums';
  */
 export interface CreateProfileReportRequest {
     reportedUserId: string;
-    reason: ProfileReportReason;
+    reason: ModerationReason;
     description?: string;
     contentType?: ModeratedContentType;
     contentId?: string;

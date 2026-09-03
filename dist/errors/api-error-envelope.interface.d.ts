@@ -1,3 +1,4 @@
+import type { ModerationReason } from '../moderation';
 import type { ResourceType } from '../media/enums';
 import type { UploadIntentContext } from '../media/types';
 /**
@@ -43,6 +44,26 @@ export interface ApiErrorEnvelope {
     isPermanent?: boolean;
     /** Sólo presente cuando errorCode === USER_BANNED y el ban es temporal. */
     expiresAt?: string | null;
+    /**
+     * POR QUÉ está suspendida la cuenta, en la mitad que se puede traducir.
+     *
+     * ── EL HECHO ESTÁ PARTIDO EN DOS, Y ES A PROPÓSITO ──────────────────
+     * `moderation_bans.reason` es texto libre que tipea quien modera: no tiene
+     * idioma, así que pintarlo en un cartel le muestra inglés —o lo que se haya
+     * tipeado— a alguien que tiene la app en castellano. Es exactamente la fuga
+     * que el eje de la copia cerró, así que ese texto **sólo viaja por mail**.
+     *
+     * Lo que viaja por acá es la CATEGORÍA: lista cerrada, publicada por este
+     * mismo paquete y traducida por el cliente en los tres idiomas. La persona
+     * se entera del motivo en el instante del rechazo y el detalle lo lee en el
+     * correo, que es el reparto que pidió el dueño.
+     *
+     * ── POR QUÉ ES OPCIONAL ────────────────────────────────────
+     * Las filas anteriores a la migración que creó la columna no la tienen. El
+     * cliente cae a la frase sin motivo cuando falta, que es lo que decía antes
+     * para todos.
+     */
+    reasonCategory?: ModerationReason;
     /**
      * Sólo presente cuando errorCode === AUTH_NOT_VERIFIED: es lo que el cliente
      * canjea por un reenvío del código de verificación.

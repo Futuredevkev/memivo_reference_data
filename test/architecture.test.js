@@ -107,6 +107,8 @@ const SORTED_BARRELS = [
   'media/index.ts',
   'media/interfaces/index.ts',
   'media/types/index.ts',
+  'moderation/enums/index.ts',
+  'moderation/index.ts',
   'notifications/constants/index.ts',
   'notifications/enums/index.ts',
   'notifications/index.ts',
