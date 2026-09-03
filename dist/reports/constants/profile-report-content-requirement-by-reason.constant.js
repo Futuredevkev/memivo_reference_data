@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PROFILE_REPORT_CONTENT_REQUIREMENT_BY_REASON = void 0;
+const moderation_1 = require("../../moderation");
 const enums_1 = require("../enums");
 /**
  * EL DUEÑO de «¿esta razón de denuncia señala una pieza de contenido?», y es
@@ -20,7 +21,7 @@ const enums_1 = require("../enums");
  * Una lista de «razones que piden pieza» no tiene gate: la razón siguiente
  * entra en silencio heredando el comportamiento de estar afuera de la lista,
  * que es justo la decisión que hay que tomar a conciencia. Con el `Record`
- * total, un miembro nuevo de {@link ProfileReportReason} **no compila** hasta
+ * total, un miembro nuevo de {@link ModerationReason} **no compila** hasta
  * que alguien conteste esta pregunta (ORDEN §6).
  *
  * Y no puede ser `Partial`: un opcional no obliga a nada — la razón sin fila no
@@ -40,7 +41,7 @@ const enums_1 = require("../enums");
  */
 exports.PROFILE_REPORT_CONTENT_REQUIREMENT_BY_REASON = {
     // Sin la pieza no hay reclamo: «tenés algo mío» exige decir qué.
-    [enums_1.ProfileReportReason.COPYRIGHT]: enums_1.ProfileReportContentRequirement.REQUIRED,
+    [moderation_1.ModerationReason.COPYRIGHT]: enums_1.ProfileReportContentRequirement.REQUIRED,
     // ⚠️ DECISIÓN PROVISORIA (31 ago 2026) — bajada de REQUIRED a OPTIONAL, y el
     // motivo NO es de producto sino de los binarios que ya están instalados.
     //
@@ -65,22 +66,22 @@ exports.PROFILE_REPORT_CONTENT_REQUIREMENT_BY_REASON = {
     // pudo traer», y eso pide un piso de versión de cliente que este proyecto NO
     // TIENE (no hay `minimumVersion` ni `forceUpdate` en ninguno de los cuatro
     // repos). El día que exista, esta fila puede volver a `REQUIRED`.
-    [enums_1.ProfileReportReason.CHILD_EXPLOITATION]: enums_1.ProfileReportContentRequirement.OPTIONAL,
+    [moderation_1.ModerationReason.CHILD_EXPLOITATION]: enums_1.ProfileReportContentRequirement.OPTIONAL,
     // Desnudos o violencia: señalar la pieza ayuda a revisar, pero el patrón que
     // se sanciona es de la persona, así que no se exige.
-    [enums_1.ProfileReportReason.INAPPROPRIATE_CONTENT]: enums_1.ProfileReportContentRequirement.OPTIONAL,
+    [moderation_1.ModerationReason.INAPPROPRIATE_CONTENT]: enums_1.ProfileReportContentRequirement.OPTIONAL,
     // Puede ser una amenaza concreta —que conviene poder mirar— o una conducta
     // sostenida que no vive en ninguna pieza.
-    [enums_1.ProfileReportReason.SAFETY_CONCERN]: enums_1.ProfileReportContentRequirement.OPTIONAL,
+    [moderation_1.ModerationReason.SAFETY_CONCERN]: enums_1.ProfileReportContentRequirement.OPTIONAL,
     // El acoso es un patrón, no un mensaje. Bajar uno no arregla nada, y pedirlo
     // haría creer que sí.
-    [enums_1.ProfileReportReason.HARASSMENT]: enums_1.ProfileReportContentRequirement.FORBIDDEN,
+    [moderation_1.ModerationReason.HARASSMENT]: enums_1.ProfileReportContentRequirement.FORBIDDEN,
     // El sujeto es la cuenta entera: la infracción es hacerse pasar por alguien,
     // no ninguna publicación en particular.
-    [enums_1.ProfileReportReason.IMPERSONATION]: enums_1.ProfileReportContentRequirement.FORBIDDEN,
+    [moderation_1.ModerationReason.IMPERSONATION]: enums_1.ProfileReportContentRequirement.FORBIDDEN,
     // Ídem: se sanciona a quien lo hace, y bajar un posteo deja al que lo publica.
-    [enums_1.ProfileReportReason.SPAM_OR_SCAM]: enums_1.ProfileReportContentRequirement.FORBIDDEN,
+    [moderation_1.ModerationReason.SPAM_OR_SCAM]: enums_1.ProfileReportContentRequirement.FORBIDDEN,
     // Sin forma conocida no se puede pedir evidencia estructurada; lo que haya se
     // cuenta en la descripción.
-    [enums_1.ProfileReportReason.OTHER]: enums_1.ProfileReportContentRequirement.FORBIDDEN,
+    [moderation_1.ModerationReason.OTHER]: enums_1.ProfileReportContentRequirement.FORBIDDEN,
 };

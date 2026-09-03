@@ -1132,18 +1132,23 @@ function rawRuntimeContractLiterals(enumNamesOverride) {
             ) {
               reason = 'HTTP method, not a moderated-content type.';
             } else if (
-              owners.includes('ProfileReportReason') &&
-              !/(?:reason|report)/i.test(immediateContext)
+              owners.includes('ModerationReason') &&
+              !/(?:reason|report|ban)/i.test(immediateContext)
             ) {
-              // `ProfileReportReason.OTHER` vale 'other', que es además una palabra
+              // `ModerationReason.OTHER` vale 'other', que es además una palabra
               // corriente: `CACHE_DOMAIN_OTHER` —el balde de lo no clasificado en la
-              // métrica de Redis— la usa sin tener nada que ver con un reporte. El
+              // métrica de Redis— la usa sin tener nada que ver con moderación. El
               // discriminante es el mismo que usan las ramas de `Language` y
               // `UploadContext`: si el contexto inmediato no nombra el concepto, el
               // literal es un tocayo. Y sigue cortando lo que importa — un
               // `reason: 'other'` escrito a mano en vez de importar el enum tiene
               // `reason` en su contexto y no recibe excusa.
-              reason = 'Overlapping named constant or label; not a profile-report reason.';
+              //
+              // El catálogo se llamaba `ProfileReportReason` y esta rama lo nombraba
+              // así. Cuando ganó su segundo lector —la CATEGORÍA de una suspensión— se
+              // generalizó, y `ban` entró al discriminante junto con `reason`/`report`:
+              // ahora el mismo enum clasifica denuncias y sanciones.
+              reason = 'Overlapping named constant or label; not a moderation reason.';
             }
             occurrences.push({
               side,

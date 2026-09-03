@@ -6,8 +6,12 @@ const { resolve } = require('node:path');
 const {
   PROFILE_REPORT_CONTENT_REQUIREMENT_BY_REASON,
   ProfileReportContentRequirement,
-  ProfileReportReason,
 } = require('../dist/reports');
+// El catálogo de razones se mudó a `moderation/` cuando ganó su segundo lector
+// —la categoría de una suspensión—: dejó de ser sólo de denuncias y el nombre
+// `ProfileReportReason` mentía. La tabla de requisito de contenido SIGUE siendo
+// de denuncias, y por eso ella no se mudó.
+const { ModerationReason } = require('../dist/moderation');
 
 /**
  * CADA RAZÓN DE DENUNCIA CONTESTÓ, A CONCIENCIA, SI SEÑALA UNA PIEZA.
@@ -55,7 +59,7 @@ const lineas = () => readFileSync(FUENTE, 'utf8').split('\n');
  * clave y no el valor.
  */
 const lineaDeLaFila = (razon) => {
-  const clave = `[ProfileReportReason.${razon}]:`;
+  const clave = `[ModerationReason.${razon}]:`;
   return lineas().findIndex((linea) => linea.trim().startsWith(clave));
 };
 
@@ -71,12 +75,12 @@ const comentarioSobre = (indice) => {
   return partes.join(' ');
 };
 
-const razones = Object.keys(ProfileReportReason).map(
-  (clave) => ProfileReportReason[clave],
+const razones = Object.keys(ModerationReason).map(
+  (clave) => ModerationReason[clave],
 );
 
 /** El nombre del miembro del enum, que es como se escribe la clave del Record. */
-const nombresDeRazon = Object.keys(ProfileReportReason);
+const nombresDeRazon = Object.keys(ModerationReason);
 
 test('mide algo: el archivo se lee y toda razón tiene su fila localizable', () => {
   // Sin esto, un archivo movido o una clave escrita de otra forma dejarían a
