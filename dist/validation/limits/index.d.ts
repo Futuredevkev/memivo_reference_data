@@ -38,5 +38,4 @@ export * from './search-term-max.constant';
 export * from './session-device-name-max.constant';
 export * from './story-caption-max.constant';
 export * from './story-tags-max-items.constant';
-export * from './validation.constant';
 export * from './verification-code-length.constant';

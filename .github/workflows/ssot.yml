@@ -145,6 +145,14 @@ jobs:
         working-directory: memivo-reference-data
         run: npm run audit:route-parity
 
+      # Mide sobre los `package.json` y los `package-lock.json`, que estan
+      # VERSIONADOS, asi que corre entero aca sin un solo `npm ci` en los
+      # hermanos. Es lo que lo distingue de `audit:installed-version`, que si
+      # necesita su `node_modules` y por eso esta exento de este workflow.
+      - name: audit:shared-tooling
+        working-directory: memivo-reference-data
+        run: npm run audit:shared-tooling
+
       - name: test
         working-directory: memivo-reference-data
         run: npm test

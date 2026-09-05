@@ -36,11 +36,16 @@ const { join, resolve } = require('node:path');
  * pone roja y hay que sacarla.
  *
  * ── ALCANCE DECLARADO (ORDEN §10) ────────────────────────────────────────
- * · Reconoce la invocación por el texto `npm run <auditor>` en el YAML. No
- *   parsea el workflow ni verifica que el paso esté en el job correcto: si
- *   alguien escribe el comando adentro de un `if:` que nunca se cumple, esto
- *   no lo ve. Es un piso de existencia, igual que el `invoca()` del gate
- *   hermano del api.
+ * · Reconoce la invocación por `npm run <auditor>` EN POSICIÓN DE COMANDO,
+ *   sobre el YAML con comentarios y literales enmascarados. No parsea el
+ *   workflow ni verifica que el paso esté en el job correcto: si alguien
+ *   escribe el comando adentro de un `if:` que nunca se cumple, esto no lo ve.
+ *   Es un piso de existencia.
+ *   ⚠️ Este párrafo decía «igual que el `invoca()` del gate hermano del api», y
+ *   era FALSO: aquél ya exigía posición de comando y enmascaraba comentarios, y
+ *   éste era un `includes` disfrazado de regex. Se midió mutando el archivo —un
+ *   `# npm run audit:route-parity` lo dejaba verde— y se emparejó con el
+ *   hermano en vez de bajar la afirmación.
  * · `:verbose` no es un auditor más: es la misma medición con más salida.
  */
 
@@ -74,18 +79,41 @@ const EXENTOS = new Map([
 const yaml = () => readFileSync(WORKFLOW, 'utf8');
 
 /**
- * `npm run <auditor>` seguido de algo que NO continúa el nombre.
+ * El YAML con los comentarios y lo entrecomillado reemplazados por espacios.
  *
- * El corte va por regex y no por `includes` de la línea entera por dos razones
- * medidas: los finales de línea del repo son CRLF en Windows —un
- * `includes('… \n')` no matchea nunca—, y `npm run audit:endpoints` es prefijo
- * de `npm run audit:endpoints:verbose`, que es la MISMA medición y no cuenta
- * como correr al auditor por su nombre.
+ * Sin esto, `corre()` es un match de texto pelado: una línea comentada
+ * (`# npm run audit:route-parity`) o un `run: echo "npm run audit:route-parity"`
+ * lo dejaban VERDE sobre un auditor que el workflow ya no corre. Se midió
+ * mutando el archivo, y el gate no se movió — que es exactamente el modo de
+ * falla que este archivo declara perseguir en los demás.
+ */
+const soloComandos = (texto) =>
+  texto.replace(/(^|\s)#[^\n]*/g, '$1').replace(/"[^"\n]*"/g, ' ');
+
+/**
+ * `npm run <auditor>` EN POSICIÓN DE COMANDO y seguido de algo que NO continúa
+ * el nombre.
+ *
+ * Dos cortes, y los dos por una medición:
+ *  · **Posición de comando** (principio de línea, `run:`, `&&`, `;` o `|`): la
+ *    forma débil —cualquier aparición del texto— dejaba pasar el comentario y
+ *    el `echo`. Es el mismo corte que ya usaba el gate hermano del api, y por
+ *    el mismo motivo escrito allá: «dejaba este gate en VERDE contra el `echo`».
+ *  · **`(?![\w:-])`**: `npm run audit:endpoints` es prefijo de
+ *    `npm run audit:endpoints:verbose`, que es la MISMA medición y no cuenta
+ *    como correr al auditor por su nombre.
+ *
+ * Va por regex y no por `includes` de la línea entera porque los finales de
+ * línea del repo son CRLF en Windows: un `includes('… \n')` no matchea nunca.
  */
 const corre = (texto, auditor) =>
-  new RegExp(`npm run ${auditor.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![\\w:-])`).test(
-    texto,
-  );
+  new RegExp(
+    `(?:^|&&|;|\\||run:)[ \\t]*npm run ${auditor.replace(
+      /[.*+?^${}()|[\]\\]/g,
+      '\\$&',
+    )}(?![\\w:-])`,
+    'm',
+  ).test(soloComandos(texto));
 
 test('mide algo: el paquete declara auditores y el workflow existe', () => {
   // Control de vacío por las dos puntas. Sin esto, un `package.json` sin
@@ -192,4 +220,27 @@ test('el reconocedor de checkouts engancha: distingue traer un repo de nombrarlo
   // por no encontrar nada — el modo de falla mudo de ORDEN §10.
   assert.equal(haceCheckout('        with:\n          path: memivo_api\n', 'memivo_api'), true);
   assert.equal(haceCheckout('        # clonar memivo_api sería lindo\n', 'memivo_api'), false);
+});
+
+test('el reconocedor de auditores engancha: distingue correr de nombrar', () => {
+  // El control que faltaba, y que este archivo le exige a los demás. Sin él,
+  // `corre()` podía degradarse a un `includes` sin que nada se moviera — que es
+  // lo que había pasado.
+  assert.equal(corre('        run: npm run audit:route-parity\n', 'audit:route-parity'), true);
+  assert.equal(corre('          npm run audit:route-parity\n', 'audit:route-parity'), true);
+  assert.equal(
+    corre('        # npm run audit:route-parity\n', 'audit:route-parity'),
+    false,
+    'Un comentario que lo nombra no lo corre.',
+  );
+  assert.equal(
+    corre('        run: echo "npm run audit:route-parity"\n', 'audit:route-parity'),
+    false,
+    'Un texto impreso no es un comando.',
+  );
+  assert.equal(
+    corre('        run: npm run audit:endpoints:verbose\n', 'audit:endpoints'),
+    false,
+    'La variante `:verbose` es la misma medición, no correr al auditor por su nombre.',
+  );
 });
