@@ -1,3 +1,5 @@
+import type { ModerationReason } from '../../../moderation';
+
 /**
  * Lo que necesita saber el aviso de una ADVERTENCIA de plataforma.
  *
@@ -15,8 +17,17 @@
  * pantalla de bloqueo del teléfono — una nota interna que nadie escribió para
  * que se lea así. Lo que la persona ve es la categoría, y el detalle lo pide
  * escribiendo al correo que el aviso le da.
+ *
+ * ── POR QUÉ EL TIPO ES EL ENUM Y NO `string` ──────────────────────────────
+ * Porque escrito `string` esta frase era una promesa que nada sostenía, y el
+ * api la incumplió: metía el texto libre del moderador en la metadata, que se
+ * persiste en el JSONB de `notifications` y vuelve verbatim por
+ * `GET /notifications` al propio sancionado. Con `string`, `tsc` no puede
+ * distinguir la categoría de la nota interna — es la misma forma que un `select`
+ * parcial tipado como entidad entera, con el tipo afirmando algo que el valor no
+ * cumple. Con el enum, mandar el texto libre no compila.
  */
 export interface WarningMetadata {
   /** La categoría de la advertencia. Es la misma que la del reporte. */
-  reason: string;
+  reason: ModerationReason;
 }

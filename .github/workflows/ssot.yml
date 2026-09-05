@@ -82,11 +82,25 @@ jobs:
           token: ${{ secrets.MEMIVO_REPOS_TOKEN }}
           path: memivo_client
 
+      # EL CUARTO HERMANO. No lo pide ningún auditor —los seis comparan
+      # contrato↔api↔cliente— sino el `npm test` de este mismo repo:
+      # `gate-corpus-control-positive-ratio` recorre los gates de los CUATRO
+      # repos y **falla fuerte** cuando le falta uno, con su motivo escrito
+      # («un gate cross-repo que no puede leer a los otros no está pasando,
+      # está ciego»). Sin este checkout, el único gate que cruza los cuatro no
+      # podía pasar acá: el workflow nombraba tres.
+      - name: Checkout landing
+        uses: actions/checkout@v4
+        with:
+          repository: Futuredevkev/memivo_landing
+          token: ${{ secrets.MEMIVO_REPOS_TOKEN }}
+          path: memivo_landing
+
       - name: Align consumers to the audited branch when available
         env:
           AUDIT_REF: ${{ inputs.audit_ref || github.head_ref || github.ref_name }}
         run: |
-          for repository in memivo_api memivo_client; do
+          for repository in memivo_api memivo_client memivo_landing; do
             if git -C "$repository" ls-remote --exit-code origin "refs/heads/$AUDIT_REF"; then
               git -C "$repository" fetch --depth=1 origin "$AUDIT_REF"
               git -C "$repository" checkout --detach FETCH_HEAD
@@ -103,7 +117,10 @@ jobs:
         working-directory: memivo-reference-data
         run: npm ci
 
-      # Los tres, EN SERIE. Nunca dos a la vez.
+      # Los auditores, EN SERIE. Nunca dos a la vez. Cuántos son NO se escribe
+      # acá: que este workflow corra todos los `audit:*` del `package.json`
+      # —con la única exención escrita llevando su motivo— lo exige
+      # `test/ssot-workflow-runs-every-auditor.test.js`.
       - name: audit:consumers
         working-directory: memivo-reference-data
         run: npm run audit:consumers
@@ -119,6 +136,14 @@ jobs:
       - name: audit:endpoints
         working-directory: memivo-reference-data
         run: npm run audit:endpoints
+
+      # El ÚNICO que aparea api y cliente por RUTA. Faltaba acá, así que su
+      # único disparador era el `pre-push` local del api: se salteaba con
+      # `--no-verify` y no existía en ninguna CI, que es exactamente la
+      # condición que este workflow vino a cerrar para sus tres hermanos.
+      - name: audit:route-parity
+        working-directory: memivo-reference-data
+        run: npm run audit:route-parity
 
       - name: test
         working-directory: memivo-reference-data

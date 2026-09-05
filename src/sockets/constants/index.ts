@@ -4,6 +4,7 @@ export * from './album-socket-events.constant';
 export * from './album-socket-namespace.constant';
 export * from './chat-socket-events.constant';
 export * from './chat-socket-namespace.constant';
+export * from './forced-logout-ban-fields.constant';
 export * from './notification-socket-events.constant';
 export * from './notification-socket-namespace.constant';
 export * from './ws-join-resource.constant';

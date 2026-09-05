@@ -20,6 +20,7 @@ __exportStar(require("./album-socket-events.constant"), exports);
 __exportStar(require("./album-socket-namespace.constant"), exports);
 __exportStar(require("./chat-socket-events.constant"), exports);
 __exportStar(require("./chat-socket-namespace.constant"), exports);
+__exportStar(require("./forced-logout-ban-fields.constant"), exports);
 __exportStar(require("./notification-socket-events.constant"), exports);
 __exportStar(require("./notification-socket-namespace.constant"), exports);
 __exportStar(require("./ws-join-resource.constant"), exports);
