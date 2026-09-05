@@ -3,8 +3,8 @@
  * persona.
  *
  * ── EL DEFECTO QUE CIERRA ──────────────────────────────────────────────────
- * De los diez plazos que la app le puede nombrar a una persona, éste es el
- * ÚNICO cuyo número cambia la conducta: mientras corre, no se puede volver a
+ * De los plazos que la app le puede nombrar a una persona, éste es el ÚNICO
+ * cuyo número cambia la conducta: mientras corre, no se puede volver a
  * denunciar a la misma cuenta. Y la frase que lo anunciaba decía otra cosa —«Esperá
  * a que moderación revise tu reporte anterior»— sobre un predicado que no mira
  * el estado del reporte: moderación puede haberlo cerrado y la ventana sigue

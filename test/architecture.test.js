@@ -72,9 +72,10 @@ test('el root no acumula contratos sueltos', () => {
  * el estado de hoy.** El trinquete los mueve: N1c ordenó
  * `sockets/interfaces/index.ts` al agregarle dos exports, y el caso de abajo
  * hizo lo que tiene que hacer — exigir que se mudara a la lista congelada—.
- * Hoy son **56 y 6**. Se anota en vez de reescribir la medición porque lo que
- * explica la lista es de dónde salió, y el conteo vivo lo contestan los dos
- * arrays.
+ * **Cuántos son HOY no se escribe acá**: este renglón llegó a decir «56 y 6»
+ * sobre unos arrays que ya iban por otro número, que es la misma clase de censo
+ * transcrito que el resto del archivo persigue. Lo que explica la lista es de
+ * dónde salió; el conteo vivo lo contestan los dos arrays, que están abajo.
  */
 const SORTED_BARRELS = [
   'album/enums/index.ts',
