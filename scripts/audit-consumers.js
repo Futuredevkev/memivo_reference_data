@@ -43,15 +43,14 @@ const intentionalBoundaries = new Map([
   ['class:MemivoMoment', 'Entidad ORM del ranking persistido; el ítem que viaja al cliente es la unión MemivoMoment.'],
   ['interface:AlbumGuest', 'Modelo de UI normalizado del cliente; el shape HTTP compartido lo valida el servicio.'],
   ['const:EMAIL_REGEX', 'Redacción de PII en Sentry (global, sin anclas) vs validación de un email completo.'],
-  // Los dos valen una hora en ms y ahí termina el parecido: uno es el TTL de un
-  // contador de generación en Redis y el otro la granularidad a la que el cliente
-  // ancla el borde de una ventana rodante. No hay contrato que compartir: si el
-  // techo de memoria de `state` pidiera bajar el TTL, la ventana del Baúl no tiene
-  // por qué moverse. Es el falso positivo que la heurística de VALOR IDÉNTICO
-  // produce por diseño —el propio comentario de `substantial` lo asume— y el
-  // reemplazo del día que sobren: comparar también el EJE (unidad + dominio del
-  // símbolo), no sólo el número.
-  ['const:CACHE_GENERATION_TTL_MS', 'Una hora en ms por coincidencia: TTL del contador de generación de caché vs. granularidad del borde de una ventana rodante en el cliente. Dominios sin relación.'],
+  // Acá vivía `const:CACHE_GENERATION_TTL_MS`, y la excusa se PAGÓ: los dos
+  // lados valían una hora en ms por coincidencia —el TTL de un contador de
+  // generación en Redis contra la granularidad del borde de una ventana
+  // rodante en el cliente— y el cliente dejó de escribir el número: su
+  // granularidad se deriva de `MS_PER_HOUR`. Sin dos literales iguales no hay
+  // colisión que excusar, y una frontera que no matchea nada tapa cualquier
+  // declaración futura con ese nombre. El propio auditor lo reportó por
+  // `resolvedBoundaries`, que existe exactamente para esto.
   // CONVERSIÓN FÍSICA, no contrato. Los dos lados dicen que una hora tiene
   // sesenta minutos, y eso no puede desincronizarse: no hay versión del paquete
   // que cambie cuánto dura una hora. Publicarlo haría que CADA expresión
@@ -814,8 +813,10 @@ function localeErrorKeys(locale) {
   if (!existsSync(file)) {
     throw new Error(
       `audit:consumers — falta el archivo de locale "${locale}": ${file}. ` +
-        'La cobertura de traducciones de los 194 códigos de error se mide contra los 3 ' +
-        'locales del cliente; si el cliente apunta a otro lado, revisá MEMIVO_AUDIT_CLIENT_SRC.',
+        'La cobertura de traducciones del catálogo de errores se mide contra los tres ' +
+        'locales del cliente; si el cliente apunta a otro lado, revisá MEMIVO_AUDIT_CLIENT_SRC. ' +
+        'Cuántos códigos son lo dice el propio reporte (`sharedErrorCodes`), y por eso no va ' +
+        'escrito en esta frase: acá decía 194 mientras el catálogo ya iba por doscientos.',
     );
   }
   const { source } = sourceFile(file);

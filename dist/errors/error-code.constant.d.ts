@@ -168,6 +168,7 @@ export declare const ErrorCode: {
     readonly PHOTO_TAG_FORBIDDEN: PhotoErrorCode.PHOTO_TAG_FORBIDDEN;
     readonly PHOTO_TAG_NOT_GUEST_PHOTO: PhotoErrorCode.PHOTO_TAG_NOT_GUEST_PHOTO;
     readonly PHOTO_TAG_NOT_FOUND: PhotoErrorCode.PHOTO_TAG_NOT_FOUND;
+    readonly PHOTO_TAG_LIMIT_REACHED: PhotoErrorCode.PHOTO_TAG_LIMIT_REACHED;
     readonly UPLOAD_ALL_FAILED: PhotoErrorCode.UPLOAD_ALL_FAILED;
     readonly UPLOAD_ALBUM_MISMATCH: PhotoErrorCode.UPLOAD_ALBUM_MISMATCH;
     readonly IMAGE_NOT_FOUND: PhotoErrorCode.IMAGE_NOT_FOUND;

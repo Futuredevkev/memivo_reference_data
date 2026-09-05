@@ -1,6 +1,6 @@
 {
   "name": "@memivo/contracts",
-  "version": "21.0.0",
+  "version": "22.0.0",
   "description": "Contratos, catálogos y reglas públicas compartidas por memivo_client y memivo_api.",
   "license": "UNLICENSED",
   "main": "dist/index.js",
@@ -109,7 +109,7 @@
   },
   "devDependencies": {
     "eslint": "^9.39.5",
-    "knip": "^6.34.0",
+    "knip": "^6.4.1",
     "typescript": "^5.9.2",
     "typescript-eslint": "^8.67.0"
   }
