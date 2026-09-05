@@ -1,10 +1,21 @@
 #!/bin/sh
 #
-# Corre los cinco gates del SSOT antes de dejar pushear.
+# LA PUERTA DE ESTE REPO CORRE `npm run quality`, Y NO SU PROPIA LISTA.
 #
-# Van EN SERIE a propósito: son los que leen el `src/` de los tres repos, y
-# correr dos a la vez con Docker arriba es exactamente cómo se consiguen
-# resultados que no se pueden reproducir.
+# Este hook llegó a enumerar CUATRO auditores a mano —y su comentario decía
+# «los cinco»—, o sea una QUINTA copia del conjunto que `scripts.quality` ya
+# declara. Se desincronizó exactamente como se desincronizó `ssot.yml`: le
+# faltaba `audit:route-parity`, el único que aparea api y cliente por RUTA, o
+# sea el que contesta la pregunta por la que existe este repo. Y le faltaban
+# además `lint`, `dead` y `audit:installed-version`.
+#
+# El mismo concepto escrito en dos lugares se desincroniza (ORDEN §1), así que
+# acá no hay lista: hay un solo comando, y `scripts.quality` es su dueño único.
+# Que la puerta pase por ahí lo exige `test/push-gate-is-installed.test.js`.
+#
+# Van EN SERIE porque `quality` los encadena: son los que leen el `src/` de los
+# repos hermanos, y correr dos a la vez con Docker arriba es exactamente cómo se
+# consiguen resultados que no se pueden reproducir.
 #
 # Instalación (una vez por clon):
 #   git config core.hooksPath .githooks
@@ -13,17 +24,5 @@
 
 set -e
 
-echo "pre-push: audit:consumers"
-npm run audit:consumers
-
-echo "pre-push: audit:transport"
-npm run audit:transport
-
-echo "pre-push: audit:response-fields"
-npm run audit:response-fields
-
-echo "pre-push: audit:endpoints"
-npm run audit:endpoints
-
-echo "pre-push: test"
-npm test
+echo "pre-push: npm run quality"
+npm run quality

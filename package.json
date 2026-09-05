@@ -1,6 +1,6 @@
 {
   "name": "@memivo/contracts",
-  "version": "22.0.0",
+  "version": "23.0.0",
   "description": "Contratos, catálogos y reglas públicas compartidas por memivo_client y memivo_api.",
   "license": "UNLICENSED",
   "main": "dist/index.js",
@@ -98,10 +98,12 @@
     "audit:endpoints": "node scripts/audit-endpoints.js",
     "audit:route-parity": "node scripts/audit-route-parity.js",
     "audit:route-parity:verbose": "node scripts/audit-route-parity.js --verbose",
+    "audit:shared-tooling": "node scripts/audit-shared-tooling.js",
+    "audit:shared-tooling:verbose": "node scripts/audit-shared-tooling.js --verbose",
     "audit:endpoints:verbose": "node scripts/audit-endpoints.js --verbose",
     "audit:response-fields:verbose": "node scripts/audit-response-fields.js --verbose",
     "dead": "knip",
-    "quality": "npm run lint && npm run dead && npm run audit:consumers && npm run audit:transport && npm run audit:response-fields && npm run audit:endpoints && npm run audit:route-parity && npm test && npm run audit:installed-version",
+    "quality": "npm run lint && npm run dead && npm run audit:consumers && npm run audit:transport && npm run audit:response-fields && npm run audit:endpoints && npm run audit:route-parity && npm run audit:shared-tooling && npm test && npm run audit:installed-version",
     "test": "node --test",
     "audit:installed-version": "node scripts/audit-installed-version.js",
     "audit:installed-version:verbose": "node scripts/audit-installed-version.js --verbose",
@@ -109,7 +111,7 @@
   },
   "devDependencies": {
     "eslint": "^9.39.5",
-    "knip": "^6.4.1",
+    "knip": "6.4.1",
     "typescript": "^5.9.2",
     "typescript-eslint": "^8.67.0"
   }

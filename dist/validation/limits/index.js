@@ -54,5 +54,4 @@ __exportStar(require("./search-term-max.constant"), exports);
 __exportStar(require("./session-device-name-max.constant"), exports);
 __exportStar(require("./story-caption-max.constant"), exports);
 __exportStar(require("./story-tags-max-items.constant"), exports);
-__exportStar(require("./validation.constant"), exports);
 __exportStar(require("./verification-code-length.constant"), exports);

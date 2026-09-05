@@ -1,5 +1,15 @@
 {
-  "entry": ["test/**/*.test.js", "scripts/**/*.js"],
-  "project": ["src/**/*.ts", "eslint/**/*.js", "scripts/**/*.js"],
-  "ignoreExportsUsedInFile": true
+  "entry": [
+    "test/**/*.test.js",
+    "scripts/**/*.js"
+  ],
+  "project": [
+    "src/**/*.ts",
+    "eslint/**/*.js",
+    "scripts/**/*.js"
+  ],
+  "ignoreExportsUsedInFile": true,
+  "rules": {
+    "enumMembers": "off"
+  }
 }
