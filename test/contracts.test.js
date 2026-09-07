@@ -210,10 +210,21 @@ const social = require('../dist/social/index.js');
 //     puerta —para poder cambiar sólo a quién se acredita sin volver a subir el
 //     mismo logo—, y ésa es exactamente la ventana que cierra: marca con nombre
 //     y sin logo es un estado a medias que ninguna superficie sabe pintar.
-test('el catálogo consolidado expone 212 códigos de error únicos', () => {
+// La ola del VIDEO PROFESIONAL sube DOS, y cada uno por un motivo distinto:
+//   · `PROFESSIONAL_VIDEO_TOO_LONG`. No es opcional: declarar
+//     `maxDurationSeconds` en la fila del recurso pone rojo el gate del api que
+//     exige que todo tipo con tope de duración tenga su propio código, y el
+//     motivo de que sean cinco y no uno es que la frase DICE el número —reusar
+//     el del invitado le mostraría al organizador el plazo de otra superficie.
+//     El sufijo `_TOO_LONG` es el que la tabla de copias del cliente reconoce.
+//   · `PLAN_ALBUM_PROFESSIONAL_VIDEO_REQUIRED`. El video profesional es una
+//     CAPACIDAD del plan pago, no un tope: en gratis no entran pocos, no entra
+//     ninguno. Por eso no lleva `_EXCEEDED` —no hay número que decir— y sigue
+//     la forma de sus dos hermanos de capacidad, las estadísticas y la marca.
+test('el catálogo consolidado expone 214 códigos de error únicos', () => {
   const values = Object.values(errors.ErrorCode);
 
-  assert.equal(values.length, 212);
+  assert.equal(values.length, 214);
   assert.equal(new Set(values).size, values.length);
 });
 

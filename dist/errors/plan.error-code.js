@@ -70,4 +70,31 @@ var PlanErrorCode;
      * sucesión de propiedad los separe.
      */
     PlanErrorCode["PLAN_ALBUM_BRANDING_REQUIRED"] = "PLAN_ALBUM_BRANDING_REQUIRED";
+    /**
+     * El VIDEO profesional es del plan pago.
+     *
+     * Misma forma que sus dos hermanos de capacidad —estadísticas y marca— y por
+     * el mismo motivo: no anuncia ningún número que la frase pueda decir, así que
+     * no lleva sufijo de regla; y no significa «esto ya no está», así que tampoco
+     * de ausencia.
+     *
+     * ── ES UNA CAPACIDAD, NO UN TOPE, Y ESO CAMBIA LA FRASE ─────────────────
+     * El video profesional NO EXISTE en el plan gratis: no es que entren pocos,
+     * es que no entra ninguno. Por eso no hay `…_EXCEEDED` ni número que decir —
+     * y por eso el pre-chequeo del cliente no es un contador sino un sí/no.
+     *
+     * ── SE MIRA AL SUBIR, NUNCA AL VER NI AL BAJAR ─────────────────────────
+     * Este código sólo puede salir de la puerta que CREA el intent de subida. Un
+     * plan vencido no esconde, no degrada y no borra un video ya entregado, y la
+     * descarga masiva lo sigue incluyendo para todo miembro: degradar hacia atrás
+     * está prohibido con todas las letras, y la descarga de lo profesional no se
+     * topea por plan en ninguna de sus dos ramas.
+     *
+     * ── Y EL EJE ES EL ÁLBUM, NO EL ACTOR ──────────────────────────────────
+     * Lo decide el plan de quien CREÓ el álbum, igual que el cupo de fotos. Un
+     * fotógrafo con plan, promovido como organizador en un álbum creado por una
+     * cuenta gratis, tampoco puede subir video ahí — y a ése la hoja no le puede
+     * ofrecer comprar, porque comprar no destraba ESE álbum.
+     */
+    PlanErrorCode["PLAN_ALBUM_PROFESSIONAL_VIDEO_REQUIRED"] = "PLAN_ALBUM_PROFESSIONAL_VIDEO_REQUIRED";
 })(PlanErrorCode || (exports.PlanErrorCode = PlanErrorCode = {}));

@@ -5,7 +5,19 @@ export interface ProfessionalPhotoListItem<TTimestamp = string> {
     url: string;
     thumbnailUrl: string | null;
     created_at: TTimestamp;
-    file?: PhotoFile;
+    /**
+     * El archivo de la pieza. **Obligatorio, y antes era opcional.**
+     *
+     * ── POR QUÉ DEJÓ DE SER OPCIONAL ──────────────────────────────────────
+     * Porque `photos.fileId` es NOT NULL con clave foránea: no existe una pieza
+     * sin archivo, y el `?` describía un estado que la base no puede producir.
+     * El costo de esa opcionalidad dejó de ser teórico cuando una carpeta pasó a
+     * tener dos clases de pieza: quien dibuja la grilla tiene que saber si la
+     * celda es foto o video, ese dato vive acá adentro, y con la clave opcional
+     * el cliente terminaba adivinando por otro lado — mirando si la URL termina
+     * en `.mp4`, que funciona hasta el día que no.
+     */
+    file: PhotoFile;
     /**
      * Quién subió la foto, o `null` si no se sabe.
      *

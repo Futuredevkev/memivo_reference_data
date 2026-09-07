@@ -38,6 +38,7 @@ exports.PLAN_LIMITS = {
         professionalPhotosPerAlbum: 100,
         albumQrCodeBirthTtlDays: 30,
         albumStats: false,
+        professionalVideo: false,
     },
     [plan_tier_enum_1.PlanTier.PRO]: {
         // `null` en las dos que topean por cantidad: el plan pago no tiene tope
@@ -47,5 +48,6 @@ exports.PLAN_LIMITS = {
         professionalPhotosPerAlbum: null,
         albumQrCodeBirthTtlDays: 180,
         albumStats: true,
+        professionalVideo: true,
     },
 };

@@ -22,6 +22,8 @@ export * from './media-composition-min-scale.constant';
 export * from './media-composition-modes.constant';
 export * from './media-composition-version.constant';
 export * from './media-filter-ids.constant';
+export * from './professional-video-max-duration-ms.constant';
+export * from './professional-video-max-file-size-bytes.constant';
 export * from './profile-report-screenshot-max-count.constant';
 export * from './resource-upload-limits.constant';
 export * from './story-upload-file-limit.constant';

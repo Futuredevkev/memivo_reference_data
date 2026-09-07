@@ -10,6 +10,19 @@ export enum PhotoErrorCode {
    * habla de BORRAR fotos: el único caller es el PATCH de edición. */
   GUEST_POST_EDIT_FORBIDDEN = 'GUEST_POST_EDIT_FORBIDDEN',
   GUEST_VIDEO_TOO_LONG = 'GUEST_VIDEO_TOO_LONG',
+  /**
+   * El video PROFESIONAL se pasó del plazo que su fila del catálogo declara.
+   *
+   * ── POR QUÉ TIENE CÓDIGO PROPIO Y NO REUSA EL DEL INVITADO ─────────────
+   * Porque los dos plazos son distintos y la frase dice el número: reusar el
+   * código dejaría al organizador leyendo el tope del invitado. Es la misma
+   * razón por la que ya hay cuatro `…_TOO_LONG` y no uno, y lo sostiene un
+   * gate del api que cruza los tipos con tope contra este mapa.
+   *
+   * El sufijo `_TOO_LONG` no es estético: es lo que hace que el cliente lo
+   * clasifique como regla con número y busque su fila en la tabla de copias.
+   */
+  PROFESSIONAL_VIDEO_TOO_LONG = 'PROFESSIONAL_VIDEO_TOO_LONG',
 
   // Photo Tags
   PHOTO_TAG_ALREADY_EXISTS = 'PHOTO_TAG_ALREADY_EXISTS',

@@ -8,6 +8,7 @@ export * from './album-member-role.constant';
 export * from './album-sort-field.type';
 export * from './album-sort-fields.constant';
 export * from './folder-deletion-job-status.enum';
+export * from './folder-piece-kind.enum';
 export * from './moderated-content-type.enum';
 export * from './organizer-album-sort-field.type';
 export * from './organizer-album-sort-fields.constant';

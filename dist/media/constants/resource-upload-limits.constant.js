@@ -26,6 +26,43 @@ exports.RESOURCE_UPLOAD_LIMITS = {
     [enums_1.ResourceType.CHAT_GROUP_AVATAR]: { maxFileSize: 5 * mb_constant_1.MB, formats: allowed_image_formats_constant_1.ALLOWED_IMAGE_FORMATS },
     [enums_1.ResourceType.ALBUM_COVER]: { maxFileSize: 5 * mb_constant_1.MB, formats: allowed_image_formats_constant_1.ALLOWED_IMAGE_FORMATS },
     [enums_1.ResourceType.PROFESSIONAL_PHOTO]: { maxFileSize: 15 * mb_constant_1.MB, formats: allowed_image_formats_constant_1.ALLOWED_IMAGE_FORMATS },
+    /**
+     * El video profesional, y sus dos números están ATADOS ENTRE SÍ.
+     *
+     * ── POR QUÉ 500 MB Y NO LOS 100 DE TODOS LOS DEMÁS ────────────────────
+     * Porque los otros tres videos del producto los graba un teléfono para
+     * mirarse en un teléfono, y éste es una ENTREGA: es la pieza por la que se
+     * paga el plan. Con 100 MB, diez minutos de video son 1,3 Mbps — un bitrate
+     * que se ve mal en 1080p y peor en una tele. A 500 MB los mismos diez
+     * minutos son ~6,7 Mbps, que es una entrega real.
+     *
+     * ── Y POR QUÉ LOS DOS NÚMEROS SE ELIGIERON JUNTOS ─────────────────────
+     * Un tope de duración que el de bytes no puede sostener es una promesa
+     * falsa: si dijera 30 minutos con 500 MB, el único video de 30 minutos que
+     * entra es uno a 2,2 Mbps, o sea que el tope real seguiría siendo el de
+     * bytes y el número escrito acá mentiría. Los 600 s son el plazo que 500 MB
+     * pueden entregar con calidad, no un número elegido aparte.
+     *
+     * ── DE DÓNDE SALE EL PLAZO, Y QUÉ NO ES ───────────────────────────────
+     * 10 minutos es el highlight film de una boda, que es la pieza que un
+     * fotógrafo entrega junto con las fotos. NO alcanza para la ceremonia
+     * entera ni para el film largo: Memivo entrega el álbum, no es una
+     * plataforma de entrega de películas. Si algún día lo fuera, lo que cambia
+     * no es este número sino la forma de servirlo (streaming adaptativo), y eso
+     * es una ola propia.
+     *
+     * ── EL TOPE DE DURACIÓN CUESTA UN `ErrorCode`, Y SE PAGÓ ──────────────
+     * Declarar `maxDurationSeconds` obliga a que el tipo tenga su propio código
+     * `…_TOO_LONG` (lo sostiene un gate del api). La salida barata era no
+     * declararlo: el video quedaría acotado sólo por bytes, y un video de dos
+     * horas muy comprimido entraría — pagando transcodificación y entrega por
+     * algo que el producto no quiere alojar. Se eligió declararlo.
+     */
+    [enums_1.ResourceType.PROFESSIONAL_VIDEO]: {
+        maxFileSize: 500 * mb_constant_1.MB,
+        maxDurationSeconds: 600,
+        formats: allowed_video_formats_constant_1.ALLOWED_VIDEO_FORMATS,
+    },
     [enums_1.ResourceType.GUEST_PHOTO]: { maxFileSize: 10 * mb_constant_1.MB, formats: allowed_image_formats_constant_1.ALLOWED_IMAGE_FORMATS },
     [enums_1.ResourceType.GUEST_VIDEO]: {
         maxFileSize: 100 * mb_constant_1.MB,

@@ -59,4 +59,21 @@ export interface PlanLimits {
    * que haya usuarios usándolas, quien ya las tenga queda grandfathereado.
    */
   readonly albumStats: boolean;
+
+  /**
+   * Si en los álbumes de este plan se puede subir VIDEO profesional.
+   *
+   * Es una CAPACIDAD y no un tope: en el plan gratis el video profesional no
+   * existe para nadie, así que no hay número que un rechazo pueda decir. Por
+   * eso es `boolean` y no `number | null` — un `0` habría sido el mismo hecho
+   * escrito de una forma que invita a interpolarlo en una frase.
+   *
+   * ── ES ADITIVA: NO LE SACA NADA A NADIE ────────────────────────────────
+   * A diferencia de las estadísticas —la única resta del modelo—, ésta no
+   * recorta ninguna capacidad existente: hoy nadie puede subir video
+   * profesional. El día que se apague un plan, los videos ya subidos siguen
+   * enteros, se siguen viendo y se siguen descargando; lo único que se apaga es
+   * subir uno nuevo.
+   */
+  readonly professionalVideo: boolean;
 }

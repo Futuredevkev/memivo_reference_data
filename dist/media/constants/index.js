@@ -38,6 +38,8 @@ __exportStar(require("./media-composition-min-scale.constant"), exports);
 __exportStar(require("./media-composition-modes.constant"), exports);
 __exportStar(require("./media-composition-version.constant"), exports);
 __exportStar(require("./media-filter-ids.constant"), exports);
+__exportStar(require("./professional-video-max-duration-ms.constant"), exports);
+__exportStar(require("./professional-video-max-file-size-bytes.constant"), exports);
 __exportStar(require("./profile-report-screenshot-max-count.constant"), exports);
 __exportStar(require("./resource-upload-limits.constant"), exports);
 __exportStar(require("./story-upload-file-limit.constant"), exports);

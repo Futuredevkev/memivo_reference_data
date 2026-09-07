@@ -24,6 +24,7 @@ __exportStar(require("./album-member-role.constant"), exports);
 __exportStar(require("./album-sort-field.type"), exports);
 __exportStar(require("./album-sort-fields.constant"), exports);
 __exportStar(require("./folder-deletion-job-status.enum"), exports);
+__exportStar(require("./folder-piece-kind.enum"), exports);
 __exportStar(require("./moderated-content-type.enum"), exports);
 __exportStar(require("./organizer-album-sort-field.type"), exports);
 __exportStar(require("./organizer-album-sort-fields.constant"), exports);

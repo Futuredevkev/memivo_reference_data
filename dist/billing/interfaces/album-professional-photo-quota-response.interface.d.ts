@@ -43,4 +43,27 @@ export interface AlbumProfessionalPhotoQuotaResponse {
      * el tope se aplica es el servidor, en la subida, contra el plan del creador.
      */
     readonly viewerIsCreator: boolean;
+    /**
+     * ¿En este álbum se puede subir VIDEO profesional?
+     *
+     * ── POR QUÉ VIAJA ACÁ Y NO EN UNA RESPUESTA PROPIA ─────────────────────
+     * Porque es la MISMA pregunta que el cupo, leída sobre el mismo eje: las dos
+     * las contesta el plan de quien creó el álbum, y las dos las necesita el
+     * mismo momento — el instante anterior a abrir el selector de archivos. Una
+     * respuesta aparte serían dos idas al servidor para pintar una sola pantalla,
+     * y dos lecturas del entitlement que podrían contestar distinto si el derecho
+     * vence entre una y otra.
+     *
+     * ── PARA QUÉ LO USA EL CLIENTE, Y PARA QUÉ NO ──────────────────────────
+     * Para dos cosas de DIBUJO: decidir si el selector deja elegir videos, y qué
+     * decir cuando el filtro de videos no tiene nada que mostrar. **No autoriza
+     * nada**: quien decide si el video entra es el servidor, en el alta del
+     * intent, contra el plan del creador. Si esta bandera dijera `true` de más, lo
+     * único que pasaría es que la persona elige un video y recibe el rechazo — no
+     * que el video entre.
+     *
+     * Es un `boolean` y no un número porque la palanca es una CAPACIDAD: en el
+     * plan gratis el video profesional no existe, no es que entren pocos.
+     */
+    readonly videoIncluded: boolean;
 }

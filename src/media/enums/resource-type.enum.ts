@@ -3,6 +3,33 @@ export enum ResourceType {
   CHAT_GROUP_AVATAR = 'chat_group_avatar',
   ALBUM_COVER = 'album_cover',
   PROFESSIONAL_PHOTO = 'professional_photo',
+  /**
+   * El VIDEO que el organizador entrega dentro de una carpeta, al lado de sus
+   * fotos.
+   *
+   * ── POR QUÉ ES UN `ResourceType` NUEVO Y NO UN `PhotoType` NUEVO ────────
+   * Son dos ejes distintos y la ola los separó a propósito. `PhotoType` dice
+   * DE QUIÉN es la pieza —profesional o de invitado— y de ahí cuelga el
+   * invariante «pieza profesional ⟺ vive en una carpeta», escrito como CHECK
+   * bidireccional en la base. Un `PhotoType.PROFESSIONAL_VIDEO` habría caído
+   * del lado equivocado de ese CHECK: le PROHIBIRÍA tener carpeta, y con eso
+   * el video se caería de la descarga masiva, de la portada de carpeta, del
+   * contador de la carpeta y del cupo del álbum — cuatro dominios que hoy
+   * preguntan por el tipo de foto.
+   *
+   * `ResourceType` dice QUÉ ES el archivo, y ése es el eje que cambia: el
+   * pipeline por el que sube, con qué se entrega, cómo se lo mide y con qué
+   * `resource_type` se lo borra. Las cinco tablas totales del enum obligan a
+   * contestar esas cinco preguntas, que es exactamente lo que hacía falta.
+   *
+   * ── LO QUE ESTO IMPLICA, DICHO ─────────────────────────────────────────
+   * El video profesional ES una fila `photos` con `type = PROFESSIONAL`, así
+   * que entra en carpetas obligatoriamente —no hay «videos sueltos del
+   * álbum»—, lo cuenta `Folder.photoCount`, lo cuenta el cupo de piezas
+   * profesionales del álbum y lo incluye la descarga masiva. Nada de eso es
+   * un efecto lateral no querido: es la decisión.
+   */
+  PROFESSIONAL_VIDEO = 'professional_video',
   GUEST_PHOTO = 'guest_photo',
   GUEST_VIDEO = 'guest_video',
   CHAT_IMAGE = 'chat_image',
