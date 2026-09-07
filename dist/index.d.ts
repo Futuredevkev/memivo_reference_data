@@ -1,6 +1,7 @@
 export * from './reference-data';
 export * from './album';
 export * from './auth';
+export * from './billing';
 export * from './chat';
 export * from './common';
 export * from './downloads';

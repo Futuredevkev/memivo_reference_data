@@ -171,10 +171,33 @@ const social = require('../dist/social/index.js');
 //     imagen no se puede leer y el otro cuando el contenido no coincide con el
 //     tipo declarado. Con la lista de formatos dicha en la frase, ahí se leería
 //     «se aceptan JPG, PNG…» sobre un archivo que ES un PNG.
-test('el catálogo consolidado expone 204 códigos de error únicos', () => {
+// v24.0.0: **+4**. Tres son el vocabulario del PLAN, que hasta esta ola no
+// existía en ninguno de los cuatro repos, y el cuarto no tiene nada que ver con
+// cobrar:
+//   · `PLAN_ALBUMS_EXCEEDED` y `PLAN_ALBUM_PROFESSIONAL_PHOTOS_EXCEEDED`. Los
+//     dos topes que el plan levanta. Llevan `_EXCEEDED` y no `_LIMIT_REACHED`
+//     porque el cliente recorta `RuleShapedErrorCode` POR LA FORMA DEL NOMBRE:
+//     con el sufijo correcto, su tabla de copias no compila hasta que alguien
+//     diga qué número dice la frase. `PHOTO_TAG_LIMIT_REACHED` es la prueba de
+//     lo que cuesta errarle — tuvo que agregarse a mano a la lista de falsos
+//     negativos.
+//   · `PLAN_ALBUM_STATS_REQUIRED`. Deliberadamente SIN forma de regla ni de
+//     ausencia: no anuncia un número y no significa «esto no está». Es el
+//     respaldo del servidor sobre una lectura que la pantalla ya gobierna con
+//     el plan que conoce — existe para que la autoridad no viva en el cliente.
+//     Y **no se acuñó `PLAN_EXPIRED`**, que era la forma tentadora: caería a la
+//     vez en los dos dominios del cliente y las dos tablas lo reclamarían.
+//   · `DOWNLOAD_QUOTA_EXCEEDED`, y NO es del plan. Es la cota de bytes por
+//     ventana rodante, **ciega al plan**: la misma para el que paga y el que
+//     no. Cierra un agujero de costo que existe hoy, con o sin cobro — la
+//     validación de un trabajo de descarga mira acceso y no rol, así que
+//     cualquier invitado pide el techo del sistema y lo repite. Por eso vive en
+//     el enum de descargas y no en el de plan: el prefijo diría que se vende, y
+//     no se vende.
+test('el catálogo consolidado expone 208 códigos de error únicos', () => {
   const values = Object.values(errors.ErrorCode);
 
-  assert.equal(values.length, 204);
+  assert.equal(values.length, 208);
   assert.equal(new Set(values).size, values.length);
 });
 

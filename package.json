@@ -1,6 +1,6 @@
 {
   "name": "@memivo/contracts",
-  "version": "23.0.0",
+  "version": "24.0.0",
   "description": "Contratos, catálogos y reglas públicas compartidas por memivo_client y memivo_api.",
   "license": "UNLICENSED",
   "main": "dist/index.js",
@@ -18,6 +18,10 @@
     "./auth": {
       "types": "./dist/auth/index.d.ts",
       "default": "./dist/auth/index.js"
+    },
+    "./billing": {
+      "types": "./dist/billing/index.d.ts",
+      "default": "./dist/billing/index.js"
     },
     "./chat": {
       "types": "./dist/chat/index.d.ts",

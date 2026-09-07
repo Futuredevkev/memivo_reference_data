@@ -24,6 +24,7 @@ import { DownloadErrorCode } from './download.error-code';
 import { LikeErrorCode } from './like.error-code';
 import { OAuthErrorCode } from './oauth.error-code';
 import { StickerErrorCode } from './sticker.error-code';
+import { PlanErrorCode } from './plan.error-code';
 
 // Re-export individual enums
 export {
@@ -48,6 +49,7 @@ export {
   LikeErrorCode,
   OAuthErrorCode,
   StickerErrorCode,
+  PlanErrorCode,
 };
 
 export * from './error-code.constant';

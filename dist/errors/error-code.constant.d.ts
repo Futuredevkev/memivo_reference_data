@@ -19,6 +19,7 @@ import { DownloadErrorCode } from './download.error-code';
 import { LikeErrorCode } from './like.error-code';
 import { OAuthErrorCode } from './oauth.error-code';
 import { StickerErrorCode } from './sticker.error-code';
+import { PlanErrorCode } from './plan.error-code';
 /**
  * Enum consolidado para retrocompatibilidad
  * Combina todos los códigos de error en un solo objeto
@@ -37,6 +38,9 @@ import { StickerErrorCode } from './sticker.error-code';
  * tampoco.
  */
 export declare const ErrorCode: {
+    readonly PLAN_ALBUMS_EXCEEDED: PlanErrorCode.PLAN_ALBUMS_EXCEEDED;
+    readonly PLAN_ALBUM_PROFESSIONAL_PHOTOS_EXCEEDED: PlanErrorCode.PLAN_ALBUM_PROFESSIONAL_PHOTOS_EXCEEDED;
+    readonly PLAN_ALBUM_STATS_REQUIRED: PlanErrorCode.PLAN_ALBUM_STATS_REQUIRED;
     readonly STICKER_CATALOG_UNAVAILABLE: StickerErrorCode.STICKER_CATALOG_UNAVAILABLE;
     readonly STICKER_CATALOG_QUOTA_EXCEEDED: StickerErrorCode.STICKER_CATALOG_QUOTA_EXCEEDED;
     readonly STICKER_NOT_FOUND: StickerErrorCode.STICKER_NOT_FOUND;
@@ -68,6 +72,7 @@ export declare const ErrorCode: {
     readonly DOWNLOAD_JOB_FORBIDDEN: DownloadErrorCode.DOWNLOAD_JOB_FORBIDDEN;
     readonly DOWNLOAD_JOB_CREATE_FAILED: DownloadErrorCode.DOWNLOAD_JOB_CREATE_FAILED;
     readonly DOWNLOAD_JOB_CANCEL_FAILED: DownloadErrorCode.DOWNLOAD_JOB_CANCEL_FAILED;
+    readonly DOWNLOAD_QUOTA_EXCEEDED: DownloadErrorCode.DOWNLOAD_QUOTA_EXCEEDED;
     readonly UPLOAD_INTENT_NOT_FOUND: UploadErrorCode.UPLOAD_INTENT_NOT_FOUND;
     readonly UPLOAD_INTENT_EXPIRED: UploadErrorCode.UPLOAD_INTENT_EXPIRED;
     readonly UPLOAD_INTENT_FORBIDDEN: UploadErrorCode.UPLOAD_INTENT_FORBIDDEN;

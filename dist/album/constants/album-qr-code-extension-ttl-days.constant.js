@@ -1,8 +1,21 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ALBUM_QR_CODE_TTL_DAYS = void 0;
+exports.ALBUM_QR_CODE_EXTENSION_TTL_DAYS = void 0;
 /**
- * CUÁNTOS DÍAS vive un código QR de álbum, y cuántos suma cada extensión.
+ * CUÁNTOS DÍAS suma cada EXTENSIÓN de un código QR de álbum.
+ *
+ * ── POR QUÉ SE LLAMA `EXTENSION` DESDE QUE EL PLAN EXISTE ─────────────────
+ * Porque era UNA constante para DOS conceptos, y el día que el nacimiento pasó
+ * a depender del plan la mentira quedaba a la vista: el botón del cliente dice
+ * «Extender N días» y el registro de actividad narra «extendió N días» —los dos
+ * son EXTENSIÓN—, mientras el servidor la usaba además para decidir con cuánto
+ * NACE el código. Volverla plan-aware sin separarlas le habría hecho leer a un
+ * organizador con plan «Extender 180 días» en un botón que suma 30.
+ *
+ * Con cuánto nace vive ahora en `PLAN_LIMITS[tier].albumQrCodeBirthTtlDays`.
+ * **Las extensiones siguen siendo ILIMITADAS y de este plazo PARA TODOS**:
+ * topearlas sería recortar hacia atrás una capacidad ya entregada, y vender
+ * «sin vencimiento» está prohibido por decisión escrita del dueño.
  *
  * ── EL DEFECTO QUE CIERRA ──────────────────────────────────────────────────
  * Este número estaba escrito en TRES lugares que no se conocen entre sí: el
@@ -30,4 +43,4 @@ exports.ALBUM_QR_CODE_TTL_DAYS = void 0;
  * error caro; el de arriba lo corrige el organizador rotando el código, que es
  * una acción que ya existe.
  */
-exports.ALBUM_QR_CODE_TTL_DAYS = 30;
+exports.ALBUM_QR_CODE_EXTENSION_TTL_DAYS = 30;
