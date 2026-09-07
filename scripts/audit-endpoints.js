@@ -79,6 +79,8 @@ const INTENTIONAL_WITHOUT_CLIENT = {
     'hermano del anterior: mismo desvío de nginx para el preview de un post compartido.',
   'POST /auth/oauth/apple/notifications':
     'server-to-server notifications de Apple. Lo llama Apple, no la app.',
+  'POST /billing/webhooks/polar':
+    'avisos de pago del merchant of record. Lo llama el proveedor de cobro sin sesion, y la confianza es la firma HMAC sobre los bytes crudos; la app no lo llama nunca ni podria — no conoce al proveedor.',
   'POST /moderation/users/:userId/ban':
     'superficie de OPERADOR (@Auth ADMIN): la ejerce el bot de moderación, no la app.',
   'POST /moderation/users/:userId/unban':

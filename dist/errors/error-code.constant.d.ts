@@ -20,6 +20,7 @@ import { LikeErrorCode } from './like.error-code';
 import { OAuthErrorCode } from './oauth.error-code';
 import { StickerErrorCode } from './sticker.error-code';
 import { PlanErrorCode } from './plan.error-code';
+import { BillingErrorCode } from './billing.error-code';
 /**
  * Enum consolidado para retrocompatibilidad
  * Combina todos los códigos de error en un solo objeto
@@ -38,6 +39,7 @@ import { PlanErrorCode } from './plan.error-code';
  * tampoco.
  */
 export declare const ErrorCode: {
+    readonly BILLING_CHECKOUT_UNAVAILABLE: BillingErrorCode.BILLING_CHECKOUT_UNAVAILABLE;
     readonly PLAN_ALBUMS_EXCEEDED: PlanErrorCode.PLAN_ALBUMS_EXCEEDED;
     readonly PLAN_ALBUM_PROFESSIONAL_PHOTOS_EXCEEDED: PlanErrorCode.PLAN_ALBUM_PROFESSIONAL_PHOTOS_EXCEEDED;
     readonly PLAN_ALBUM_STATS_REQUIRED: PlanErrorCode.PLAN_ALBUM_STATS_REQUIRED;

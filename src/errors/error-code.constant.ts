@@ -20,6 +20,7 @@ import { LikeErrorCode } from './like.error-code';
 import { OAuthErrorCode } from './oauth.error-code';
 import { StickerErrorCode } from './sticker.error-code';
 import { PlanErrorCode } from './plan.error-code';
+import { BillingErrorCode } from './billing.error-code';
 
 /**
  * Enum consolidado para retrocompatibilidad
@@ -85,6 +86,9 @@ export const ErrorCode = {
 
   // Plan
   ...PlanErrorCode,
+
+  // Billing
+  ...BillingErrorCode,
 } as const;
 
 export type ErrorCode = (typeof ErrorCode)[keyof typeof ErrorCode];

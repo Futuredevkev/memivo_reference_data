@@ -33,4 +33,38 @@ export interface EntitlementResponse {
      * vez que decide si se puede crear.
      */
     readonly albumsCreatedWhileFree: number;
+    /**
+     * EN QUÉ REGIONES se puede ofrecer la compra por web, en ISO 3166-1 alpha-2 y
+     * en mayúsculas. Vacío significa: en ninguna, no la ofrezcas en ningún lado.
+     *
+     * ── POR QUÉ LA LISTA VIAJA Y NO UN `boolean` YA RESUELTO ────────────────
+     * Porque el servidor no sabe en qué tienda está parado quien pregunta. La
+     * regla que gobierna esto es de la tienda de aplicaciones —hay storefronts
+     * donde enlazar a un cobro de afuera está permitido y otros donde no—, y esa
+     * pertenencia la conoce el dispositivo, no una IP. Un `boolean` resuelto en
+     * el servidor sería una respuesta sobre algo que el servidor no puede
+     * observar.
+     *
+     * ── PERO LA POLÍTICA ES DEL SERVIDOR, Y ÉSE ES EL PUNTO ─────────────────
+     * La lista se decide del lado del servidor a propósito: la regla que la funda
+     * está judicialmente en movimiento y puede haber que apagar el canal de un
+     * día para el otro. Con la lista horneada en el binario, apagarlo sería
+     * publicar una versión y esperar que la gente actualice; con la lista en la
+     * respuesta, es un deploy.
+     *
+     * ── ESTO NO ES AUTORIDAD, Y NO LA PARECE ────────────────────────────────
+     * Decide si se DIBUJA un botón, nada más. No autoriza a cobrar ni a otorgar:
+     * quien emite el intento de compra es el servidor, contra la sesión, y quien
+     * escribe el plan es el aviso firmado del proveedor. Una lista adulterada en
+     * el cliente sólo consigue que se le muestre un botón a alguien a quien no
+     * correspondía mostrárselo — que es un problema de cumplimiento con la
+     * tienda, no un agujero de cobro.
+     *
+     * ── FALLA HACIA EL LADO SEGURO ──────────────────────────────────────────
+     * No es opcional y no admite `null`: cuando el canal no está configurado, el
+     * servidor manda el array VACÍO. Un campo ausente obligaría a cada lector a
+     * decidir qué hacer sin él, y la mitad de las veces esa decisión sale
+     * «mostralo».
+     */
+    readonly webCheckoutRegions: readonly string[];
 }

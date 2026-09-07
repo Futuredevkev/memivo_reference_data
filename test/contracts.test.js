@@ -210,10 +210,10 @@ const social = require('../dist/social/index.js');
 //     puerta —para poder cambiar sólo a quién se acredita sin volver a subir el
 //     mismo logo—, y ésa es exactamente la ventana que cierra: marca con nombre
 //     y sin logo es un estado a medias que ninguna superficie sabe pintar.
-test('el catálogo consolidado expone 211 códigos de error únicos', () => {
+test('el catálogo consolidado expone 212 códigos de error únicos', () => {
   const values = Object.values(errors.ErrorCode);
 
-  assert.equal(values.length, 211);
+  assert.equal(values.length, 212);
   assert.equal(new Set(values).size, values.length);
 });
 

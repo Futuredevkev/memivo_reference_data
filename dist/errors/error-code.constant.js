@@ -23,6 +23,7 @@ const like_error_code_1 = require("./like.error-code");
 const oauth_error_code_1 = require("./oauth.error-code");
 const sticker_error_code_1 = require("./sticker.error-code");
 const plan_error_code_1 = require("./plan.error-code");
+const billing_error_code_1 = require("./billing.error-code");
 /**
  * Enum consolidado para retrocompatibilidad
  * Combina todos los códigos de error en un solo objeto
@@ -85,4 +86,6 @@ exports.ErrorCode = {
     ...sticker_error_code_1.StickerErrorCode,
     // Plan
     ...plan_error_code_1.PlanErrorCode,
+    // Billing
+    ...billing_error_code_1.BillingErrorCode,
 };

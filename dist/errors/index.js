@@ -18,7 +18,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PlanErrorCode = exports.StickerErrorCode = exports.OAuthErrorCode = exports.LikeErrorCode = exports.DownloadErrorCode = exports.UploadErrorCode = exports.BlockErrorCode = exports.ModerationErrorCode = exports.ReportErrorCode = exports.StoryCommentErrorCode = exports.StoryErrorCode = exports.ReactionErrorCode = exports.MailErrorCode = exports.CommentErrorCode = exports.PollErrorCode = exports.ChatErrorCode = exports.PhotoErrorCode = exports.FolderErrorCode = exports.AlbumErrorCode = exports.UserErrorCode = exports.AuthErrorCode = exports.CommonErrorCode = void 0;
+exports.BillingErrorCode = exports.PlanErrorCode = exports.StickerErrorCode = exports.OAuthErrorCode = exports.LikeErrorCode = exports.DownloadErrorCode = exports.UploadErrorCode = exports.BlockErrorCode = exports.ModerationErrorCode = exports.ReportErrorCode = exports.StoryCommentErrorCode = exports.StoryErrorCode = exports.ReactionErrorCode = exports.MailErrorCode = exports.CommentErrorCode = exports.PollErrorCode = exports.ChatErrorCode = exports.PhotoErrorCode = exports.FolderErrorCode = exports.AlbumErrorCode = exports.UserErrorCode = exports.AuthErrorCode = exports.CommonErrorCode = void 0;
 const common_error_code_1 = require("./common.error-code");
 Object.defineProperty(exports, "CommonErrorCode", { enumerable: true, get: function () { return common_error_code_1.CommonErrorCode; } });
 const auth_error_code_1 = require("./auth.error-code");
@@ -63,6 +63,8 @@ const sticker_error_code_1 = require("./sticker.error-code");
 Object.defineProperty(exports, "StickerErrorCode", { enumerable: true, get: function () { return sticker_error_code_1.StickerErrorCode; } });
 const plan_error_code_1 = require("./plan.error-code");
 Object.defineProperty(exports, "PlanErrorCode", { enumerable: true, get: function () { return plan_error_code_1.PlanErrorCode; } });
+const billing_error_code_1 = require("./billing.error-code");
+Object.defineProperty(exports, "BillingErrorCode", { enumerable: true, get: function () { return billing_error_code_1.BillingErrorCode; } });
 __exportStar(require("./error-code.constant"), exports);
 __exportStar(require("./api-error-envelope.interface"), exports);
 __exportStar(require("./api-success-envelope.interface"), exports);
