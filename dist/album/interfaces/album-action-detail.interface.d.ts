@@ -10,8 +10,8 @@ import type { AlbumAccessPasswordChangeKind } from '../enums/album-access-passwo
  * `oldName` el único del nombre anterior de una que se renombró; el nombre
  * actual ya no existe en ningún lado.
  *
- * Son SIETE los campos sin lector: `folderIds`, `folderNames`, `oldRole`,
- * `newRole`, `oldName`, `newName` y `revokedInvites`.
+ * Son OCHO los campos sin lector: `folderIds`, `folderNames`, `oldRole`,
+ * `newRole`, `oldName`, `newName`, `revokedInvites` y `brandingCleared`.
  *
  * CINCO están declarados en `INTENTIONAL_WITHOUT_READER` del auditor con este
  * motivo. Los otros dos —`folderIds` y `newName`— NO están, y es deliberado: su
@@ -102,4 +102,20 @@ export interface AlbumActionDetail {
      * que es otra tabla y tiene otra audiencia.
      */
     moderationReason?: string;
+    /**
+     * La marca del álbum quedó QUITADA, no puesta.
+     *
+     * Existe porque `ALBUM_BRANDING_CHANGED` es UNA acción para los tres verbos
+     * —poner, cambiar y sacar—, y sin este campo el registro no podría
+     * distinguir «acreditó a alguien» de «dejó el álbum sin marca», que son los
+     * dos hechos opuestos que un dueño va a querer explicar después. Tres
+     * acciones separadas habrían pedido tres etiquetas en cada idioma para
+     * distinguir algo que un booleano ya distingue.
+     *
+     * A quién se acreditó NO se guarda acá: es el `brandingUserId` del álbum, y
+     * copiarlo al registro sería un segundo dueño del mismo dato con la única
+     * ventaja de sobrevivir al borrado de la cuenta — que es justo el caso en el
+     * que la marca deja de existir de todos modos.
+     */
+    brandingCleared?: boolean;
 }

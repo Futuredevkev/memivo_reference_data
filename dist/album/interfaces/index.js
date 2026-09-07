@@ -15,11 +15,15 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./album-access-response-album.interface"), exports);
+__exportStar(require("./album-branding.interface"), exports);
+__exportStar(require("./album-branding-response.interface"), exports);
+__exportStar(require("./set-album-branding-request.interface"), exports);
 __exportStar(require("./album-access-response.interface"), exports);
 __exportStar(require("./album-action-detail.interface"), exports);
 __exportStar(require("./album-activity-entry.interface"), exports);
 __exportStar(require("./album-activity-query-request.interface"), exports);
 __exportStar(require("./album-guest.interface"), exports);
+__exportStar(require("./album-guests-query-request.interface"), exports);
 __exportStar(require("./album-people-query-request.interface"), exports);
 __exportStar(require("./album-people-response.interface"), exports);
 __exportStar(require("./album-person.interface"), exports);

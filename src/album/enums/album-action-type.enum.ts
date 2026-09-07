@@ -34,6 +34,23 @@ export enum AlbumActionType {
   /** El dueño puso, cambió o sacó la contraseña de acceso del álbum. */
   ALBUM_ACCESS_PASSWORD_CHANGED = 'ALBUM_ACCESS_PASSWORD_CHANGED',
   ALBUM_COVER_CHANGED = 'ALBUM_COVER_CHANGED',
+  /**
+   * El dueño puso, cambió o sacó la marca del álbum: el logo y a quién
+   * acredita.
+   *
+   * Queda en el registro por la misma razón que la portada, y con una de más:
+   * la marca dice ante todos los miembros QUIÉN entregó el álbum. Es una
+   * afirmación sobre una persona, hecha en la superficie más visible del
+   * producto, y quien la hace es el dueño y no el acreditado. Sin rastro,
+   * alguien que aparece acreditado —o que dejó de aparecer— no tiene cómo
+   * saber quién lo decidió ni cuándo.
+   *
+   * Es UNA acción para los tres verbos y no tres: lo que cambia es el estado
+   * de la marca, y el detalle de a quién se acreditó vive en el `detail` de la
+   * fila. Tres acciones habrían pedido tres etiquetas en cada idioma para
+   * distinguir cosas que el propio registro ya distingue.
+   */
+  ALBUM_BRANDING_CHANGED = 'ALBUM_BRANDING_CHANGED',
   FOLDER_CREATED = 'FOLDER_CREATED',
   FOLDER_RENAMED = 'FOLDER_RENAMED',
   FOLDER_COVER_SET = 'FOLDER_COVER_SET',

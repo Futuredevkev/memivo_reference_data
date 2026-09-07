@@ -96,5 +96,26 @@ export declare enum NotificationType {
      *
      * Y sin advertencia no hay reincidencia: no queda registro de la primera vez.
      */
-    WARNING_ISSUED_BY_MEMIVO = "WARNING_ISSUED_BY_MEMIVO"
+    WARNING_ISSUED_BY_MEMIVO = "WARNING_ISSUED_BY_MEMIVO",
+    /**
+     * Tu plan está por vencer.
+     *
+     * ── POR QUÉ EXISTE: NO VENDE, RETIENE ───────────────────────────────────
+     * Sin esto, la primera baja involuntaria se descubre **chocando contra un
+     * paywall**: el derecho se apaga solo cuando el vencimiento pasa —no hay
+     * columna espejo que nadie tenga que escribir—, así que del lado de la
+     * persona no ocurre ningún evento. Un día crea un álbum y le dicen que llegó
+     * al tope de tres. Ese es el peor momento posible para enterarse.
+     *
+     * ── POR QUÉ NO SE ACUÑÓ `PLAN_EXPIRED` ──────────────────────────────────
+     * Porque el aviso tiene que llegar ANTES. Después no es un aviso, es un
+     * parte de daños — el mismo razonamiento que su hermano del código de
+     * acceso. Y además el sufijo `_EXPIRED` cae a la vez en las dos familias que
+     * el cliente clasifica por sufijo, cosa que el modelo ya dejó escrita.
+     *
+     * ── NO NOMBRA A NADIE NI A NINGÚN ÁLBUM ─────────────────────────────────
+     * Habla del plan del destinatario y de nada más, así que no hay identidad
+     * ajena que filtrar ni bloqueo que aplicar. Por eso su metadata es `never`.
+     */
+    PLAN_EXPIRING_SOON = "PLAN_EXPIRING_SOON"
 }

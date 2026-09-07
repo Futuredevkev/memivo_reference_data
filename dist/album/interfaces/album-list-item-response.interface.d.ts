@@ -1,3 +1,4 @@
+import type { AlbumBranding } from './album-branding.interface';
 import type { AlbumPermissions } from './internal/album-permissions.interface';
 export interface AlbumListItemResponse<TTimestamp = string> extends AlbumPermissions {
     id: string;
@@ -20,4 +21,22 @@ export interface AlbumListItemResponse<TTimestamp = string> extends AlbumPermiss
     coverPhoto: string | null;
     coverPhotoThumbnailUrl: string | null;
     creatorName: string;
+    /**
+     * La marca del álbum: el logo de quien lo entrega y su nombre. `null` cuando
+     * no hay marca, que es el caso de todo álbum de una cuenta sin plan.
+     *
+     * ── VIAJA EN LAS DOS LISTAS, Y ÉSA ES LA MITAD DEL PUNTO ────────────────
+     * La misma tarjeta de álbum se dibuja en Home (donde entra el MIEMBRO) y en
+     * Mi Estudio (donde entra quien administra). Si la marca viajara sólo en la
+     * del organizador, el estudio se acreditaría ante sí mismo y no ante la
+     * gente que vino a buscar sus fotos — o sea que la palanca de retención se
+     * vería exactamente donde no sirve. Por eso el campo está en los DOS
+     * contratos y con el mismo nombre.
+     *
+     * ── NO SE APAGA CUANDO EL PLAN VENCE ───────────────────────────────────
+     * El derecho se mira al ESCRIBIRLA, nunca al leerla. Apagar la marca de un
+     * álbum ya entregado sería degradar hacia atrás, que el modelo prohíbe con
+     * todas las letras. Lo que se pierde al no tener plan es poder PONERLA.
+     */
+    branding: AlbumBranding | null;
 }

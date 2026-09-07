@@ -60,4 +60,11 @@ export const RESOURCE_UPLOAD_LIMITS: Readonly<Record<ResourceType, PublicResourc
     maxFileSize: 10 * MB,
     formats: ALLOWED_IMAGE_FORMATS,
   },
+  // Los mismos 5 MB que la portada y el avatar de grupo, y por el mismo
+  // motivo: es una imagen chica que se dibuja al lado de un nombre. Un logo
+  // que necesite más que eso no es un logo, es una foto.
+  [ResourceType.ALBUM_BRANDING_LOGO]: {
+    maxFileSize: 5 * MB,
+    formats: ALLOWED_IMAGE_FORMATS,
+  },
 };

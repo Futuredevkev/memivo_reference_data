@@ -61,4 +61,11 @@ exports.RESOURCE_UPLOAD_LIMITS = {
         maxFileSize: 10 * mb_constant_1.MB,
         formats: allowed_image_formats_constant_1.ALLOWED_IMAGE_FORMATS,
     },
+    // Los mismos 5 MB que la portada y el avatar de grupo, y por el mismo
+    // motivo: es una imagen chica que se dibuja al lado de un nombre. Un logo
+    // que necesite más que eso no es un logo, es una foto.
+    [enums_1.ResourceType.ALBUM_BRANDING_LOGO]: {
+        maxFileSize: 5 * mb_constant_1.MB,
+        formats: allowed_image_formats_constant_1.ALLOWED_IMAGE_FORMATS,
+    },
 };

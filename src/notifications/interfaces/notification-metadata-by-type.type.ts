@@ -68,4 +68,22 @@ export type NotificationMetadataByType = {
    * `NotificationMetadataView` como si viajara al cliente.
    */
   [NotificationType.DAILY_MOTIVATIONAL]: never;
+  /**
+   * Sin metadata, y no por olvido: el aviso de vencimiento del plan **habla
+   * del plan del destinatario y de nada más**. No nombra un álbum, no nombra
+   * una persona y no lleva un contador. Declarar una metadata «por si acaso»
+   * abriría la única forma en que este aviso podría filtrar algo.
+   *
+   * Y el número de días tampoco viaja: la fila de la campanita PERSISTE, así
+   * que un «vence en 7 días» escrito al emitirla es mentira al día siguiente y
+   * nadie la reescribe. El número vive sólo en el cuerpo de la push, que se
+   * lee cuando llega. Es la misma decisión que su hermano del código de
+   * acceso, tomada por el mismo motivo.
+   *
+   * ⚠️ Es el único tipo con metadata `never` que además PERSISTE fila. El otro
+   * (`DAILY_MOTIVATIONAL`) es push-only, así que su ausencia no dice nada
+   * sobre lo que la campanita necesita; ésta sí: dice que la fila se dibuja
+   * entera con el tipo.
+   */
+  [NotificationType.PLAN_EXPIRING_SOON]: never;
 };

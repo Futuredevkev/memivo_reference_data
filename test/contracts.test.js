@@ -194,10 +194,26 @@ const social = require('../dist/social/index.js');
 //     cualquier invitado pide el techo del sistema y lo repite. Por eso vive en
 //     el enum de descargas y no en el de plan: el prefijo diría que se vende, y
 //     no se vende.
-test('el catálogo consolidado expone 208 códigos de error únicos', () => {
+// v25.0.0: **+3**, los tres de la MARCA del álbum (ola 6 de la monetización):
+//   · `PLAN_ALBUM_BRANDING_REQUIRED`. Sin sufijo de regla ni de ausencia, igual
+//     que `PLAN_ALBUM_STATS_REQUIRED` y por el mismo motivo: no anuncia un
+//     número y no significa «esto no está». Sólo lo emite la puerta que ESCRIBE
+//     la marca — la lectura no lo emite nunca, porque un plan vencido no apaga
+//     la marca de un álbum ya entregado.
+//   · `ALBUM_BRANDING_USER_NOT_ORGANIZER`. **No reusa `ALBUM_ORGANIZER_REQUIRED`**,
+//     y ésa es la decisión: aquél dice «VOS no sos organizador» en 403 sobre el
+//     actor, y acá el actor es el dueño —que ya pasó su gate— mientras lo malo
+//     es el id que mandó. Reusarlo le habría dicho al creador del álbum que no
+//     lo administra, con un status que el cliente colapsa en «esto ya no está»
+//     y que además lo expulsa de la pantalla.
+//   · `ALBUM_BRANDING_LOGO_REQUIRED`. Existe porque el archivo es OPCIONAL en la
+//     puerta —para poder cambiar sólo a quién se acredita sin volver a subir el
+//     mismo logo—, y ésa es exactamente la ventana que cierra: marca con nombre
+//     y sin logo es un estado a medias que ninguna superficie sabe pintar.
+test('el catálogo consolidado expone 211 códigos de error únicos', () => {
   const values = Object.values(errors.ErrorCode);
 
-  assert.equal(values.length, 208);
+  assert.equal(values.length, 211);
   assert.equal(new Set(values).size, values.length);
 });
 

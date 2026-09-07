@@ -47,4 +47,27 @@ var AlbumErrorCode;
      */
     AlbumErrorCode["ALBUM_SUSPENDED"] = "ALBUM_SUSPENDED";
     AlbumErrorCode["PARTICIPANT_NOT_FOUND"] = "PARTICIPANT_NOT_FOUND";
+    /**
+     * A quien el dueño quiso acreditar en la marca no administra ESE álbum.
+     *
+     * ── POR QUÉ NO REUSA `ALBUM_ORGANIZER_REQUIRED` ─────────────────────────
+     * Porque aquél dice «VOS no sos organizador» y sale en 403 sobre el actor.
+     * Acá el actor es el DUEÑO —ya pasó su gate— y lo que está mal es el id que
+     * mandó. Reusarlo le diría a quien creó el álbum que no lo administra, que
+     * es falso, y encima con un status que el cliente colapsa en «esto ya no
+     * está» y que lo expulsa de la pantalla donde estaba trabajando.
+     *
+     * Sale en 400: es una entrada inválida, no una autorización denegada.
+     */
+    AlbumErrorCode["ALBUM_BRANDING_USER_NOT_ORGANIZER"] = "ALBUM_BRANDING_USER_NOT_ORGANIZER";
+    /**
+     * Se quiso poner marca sin logo y el álbum tampoco tenía uno guardado.
+     *
+     * La marca es un logo MÁS un nombre: sin logo no hay nada que dibujar, y
+     * dejar entrar el nombre solo crearía un estado a medias que ninguna
+     * superficie sabe pintar. Existe porque el archivo es opcional en la puerta
+     * —para poder cambiar sólo a quién se acredita sin volver a subir el mismo
+     * logo—, y ésa es exactamente la ventana que este código cierra.
+     */
+    AlbumErrorCode["ALBUM_BRANDING_LOGO_REQUIRED"] = "ALBUM_BRANDING_LOGO_REQUIRED";
 })(AlbumErrorCode || (exports.AlbumErrorCode = AlbumErrorCode = {}));

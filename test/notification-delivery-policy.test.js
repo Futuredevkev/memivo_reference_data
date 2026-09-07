@@ -171,7 +171,7 @@ test('las push-only silenciadas en foreground son exactamente las esperadas', ()
   ].sort());
 });
 
-test('los tipos que dejan fila en la campanita son 31 de 43', () => {
+test('los tipos que dejan fila en la campanita son 32 de 44', () => {
   const withBellRow = entries().filter(([, policy]) => policy.persistsBellRow);
 
   // El número de la izquierda importa más que el de la derecha: un tipo nuevo
@@ -186,8 +186,16 @@ test('los tipos que dejan fila en la campanita son 31 de 43', () => {
   // callar la push perdería el hecho entero. Y en los tres el aviso es lo único
   // que le dice a la persona a dónde escribir para pedir la revisión que el
   // corpus legal ya le promete.
-  assert.equal(entries().length, 43);
-  assert.equal(withBellRow.length, 31);
+  //
+  // v25.0.0: **los dos suben en UNO**, que es lo esperable. El nuevo es el aviso
+  // de que el plan está por vencer, y deja fila por el mismo motivo que sus
+  // hermanos: no hay ninguna superficie in-app que cuente que el plan se
+  // termina —el derecho vive en el registro de otorgamientos y la app no lo
+  // dibuja en ninguna pantalla—, así que callar la push perdería el hecho. Y
+  // como el aviso sale UNA sola vez por vencimiento, la campanita es la única
+  // segunda oportunidad que hay si la push se pierde.
+  assert.equal(entries().length, 44);
+  assert.equal(withBellRow.length, 32);
 });
 
 test('getNotificationDeliveryPolicy devuelve null ante un tipo desconocido', () => {

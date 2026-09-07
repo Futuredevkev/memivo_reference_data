@@ -478,4 +478,29 @@ exports.NOTIFICATION_DELIVERY_POLICY = {
         replacedBy: null,
         anonymousActor: true,
     }),
+    [enums_1.NotificationType.PLAN_EXPIRING_SOON]: policy({
+        // No cuelga de NINGÚN eje de pantalla, y es el único caso de la tabla en
+        // que eso no es una omisión sino el hecho: este aviso no habla de un
+        // álbum, ni de un grupo, ni de un post. Habla del plan del destinatario,
+        // que no es un contexto que se pueda tener abierto.
+        //
+        // `foreground: 'none'` porque no hay ninguna superficie in-app que cuente
+        // que el plan se está por vencer: el vencimiento vive en el registro de
+        // otorgamientos y la app no lo dibuja en ninguna pantalla. Callar la push
+        // con la app abierta perdería el hecho, que es exactamente lo que este
+        // aviso existe para que no pase.
+        foreground: 'none',
+        // La fila persiste, y ésa es la diferencia con un recordatorio cualquiera:
+        // el aviso llega una sola vez POR VENCIMIENTO —el reclamo sobre la fila
+        // del otorgamiento lo garantiza—, así que si la push se pierde en la
+        // bandeja del sistema operativo, la campanita es la única segunda
+        // oportunidad que hay.
+        bellRow: true,
+        replacedBy: null,
+        // `true` por el mismo motivo que su hermano del código de acceso: lo emite
+        // un cron y no una persona. `notifications.actorId` es NOT NULL, así que
+        // la fila nombra al propio destinatario; sin esta marca, la campanita le
+        // firmaría con su nombre un hecho que no hizo.
+        anonymousActor: true,
+    }),
 };

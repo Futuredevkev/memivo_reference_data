@@ -32,8 +32,26 @@ const declarationRoots = { ...roots, package: packageSrc };
  * Por eso el reporte publica `resolvedBoundaries` y el gate FALLA con ellas: una
  * entrada acá tiene que estar ganándose el lugar en cada corrida.
  */
+// SE FUE `class:Album`, y el motivo se escribe porque no es el que parece.
+//
+// La frontera seguía siendo VERDADERA —la entidad del ORM y el modelo
+// normalizado del cliente siguen siendo dos capas— pero el par dejó de EXISTIR
+// para este auditor: al agregarle la MARCA al álbum, la entidad sumó cinco
+// miembros y el modelo del cliente UNO, y con eso el solape de nombres cayó por
+// debajo del umbral de `evaluatePair`. Medido el 7 de septiembre de 2026
+// sacando ese único campo del modelo del cliente: con él, la entrada aparece en
+// `resolvedBoundaries`; sin él, matchea.
+//
+// O sea que la entrada quedó INERTE, y una excusa inerte no es inofensiva: la
+// clave es `kind:name`, sin lado ni firma, así que mientras siguiera en el mapa
+// cualquier duplicación futura de `Album` —incluso una copia literal del
+// contrato— se clasificaría como frontera intencional y nunca llegaría a
+// `crossRepoRisks`. Sacarla falla hacia el lado seguro: sólo puede producir MÁS
+// escrutinio.
+//
+// Si los dos vuelven a parecerse, el par se reporta como riesgo y alguien lo
+// vuelve a decidir — que es exactamente lo que este mapa quiere que pase.
 const intentionalBoundaries = new Map([
-  ['class:Album', 'Server ORM entity and normalized client model are different layers.'],
   ['class:Folder', 'Server ORM entity and normalized client model are different layers.'],
   ['class:Notification', 'Server ORM entity and transport model have different timestamps and relations.'],
   ['class:PhotoTag', 'Server ORM entity and normalized client model are different layers.'],

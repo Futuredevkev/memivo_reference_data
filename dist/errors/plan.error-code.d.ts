@@ -45,5 +45,25 @@ export declare enum PlanErrorCode {
      * datos. Existe para que la AUTORIDAD viva en el servidor — el cliente
      * dibuja, no autoriza.
      */
-    PLAN_ALBUM_STATS_REQUIRED = "PLAN_ALBUM_STATS_REQUIRED"
+    PLAN_ALBUM_STATS_REQUIRED = "PLAN_ALBUM_STATS_REQUIRED",
+    /**
+     * La marca del álbum es del plan pago.
+     *
+     * Misma forma que su hermano de estadísticas y por el mismo motivo: no
+     * anuncia ningún número que se pueda decir y no significa «esto no está»,
+     * así que no lleva sufijo de regla ni de ausencia.
+     *
+     * ── SE MIRA AL ESCRIBIR, NUNCA AL LEER ──────────────────────────────────
+     * Este código sólo puede salir de la puerta que PONE la marca. La lectura no
+     * lo emite nunca: un plan vencido no apaga la marca de un álbum ya
+     * entregado, porque eso sería degradar hacia atrás y el modelo lo prohíbe
+     * con todas las letras.
+     *
+     * ── Y EL EJE ES EL ÁLBUM, NO EL ACTOR ───────────────────────────────────
+     * Lo decide el plan de quien CREÓ el álbum. Hoy el actor y el creador son la
+     * misma persona porque la puerta es de dueño y el dueño ES el creador; la
+     * frase igual habla del ÁLBUM, para que siga siendo verdadera el día que la
+     * sucesión de propiedad los separe.
+     */
+    PLAN_ALBUM_BRANDING_REQUIRED = "PLAN_ALBUM_BRANDING_REQUIRED"
 }
