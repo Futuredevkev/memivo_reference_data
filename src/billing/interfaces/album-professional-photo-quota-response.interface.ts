@@ -23,4 +23,24 @@ export interface AlbumProfessionalPhotoQuotaResponse {
   readonly used: number;
   /** El tope que le toca al plan de QUIEN CREÓ el álbum. `null` = sin tope. */
   readonly cap: number | null;
+  /**
+   * ¿Quien pregunta es QUIEN CREÓ el álbum?
+   *
+   * ── PARA QUÉ, Y POR QUÉ NO SE PUEDE ADIVINAR DEL LADO DEL CLIENTE ───────
+   * Porque de esto depende si comprar el plan destraba algo. El cupo es del
+   * ÁLBUM —o sea del plan de su creador—, así que a quien NO lo creó, pagar no
+   * le levanta este tope: le levanta el de los álbumes que cree él. Ofrecerle
+   * la compra ahí es venderle algo que no resuelve lo que acaba de chocar, y
+   * eso produce un reembolso y un enojo, no una conversión.
+   *
+   * El cliente no tiene con qué saberlo: el creador no viaja en ningún payload
+   * que la pantalla de subida tenga a mano. El servidor sí —ya lo trae la misma
+   * proyección con la que resuelve el cupo—, así que la respuesta es un campo y
+   * no una consulta más.
+   *
+   * ── NO ES AUTORIDAD ────────────────────────────────────────────────────
+   * Decide si se OFRECE comprar y si se listan los beneficios. Quien decide si
+   * el tope se aplica es el servidor, en la subida, contra el plan del creador.
+   */
+  readonly viewerIsCreator: boolean;
 }
