@@ -81,6 +81,10 @@ const INTENTIONAL_WITHOUT_CLIENT = {
     'server-to-server notifications de Apple. Lo llama Apple, no la app.',
   'POST /billing/webhooks/polar':
     'avisos de pago del merchant of record. Lo llama el proveedor de cobro sin sesion, y la confianza es la firma HMAC sobre los bytes crudos; la app no lo llama nunca ni podria — no conoce al proveedor.',
+  'POST /billing/webhooks/app-store':
+    'avisos de compra de la tienda de Apple. Los manda la tienda sin sesion, y la confianza es la cadena de certificados del mensaje firmado, anclada en la raiz de Apple; la app no lo llama nunca ni podria.',
+  'POST /billing/webhooks/play-store':
+    'avisos de compra de Google Play, entregados por su bus de mensajes. La confianza es el token de identidad del MENSAJERO, porque esta tienda no firma el cuerpo; la app no lo llama nunca ni podria.',
   'POST /moderation/users/:userId/ban':
     'superficie de OPERADOR (@Auth ADMIN): la ejerce el bot de moderación, no la app.',
   'POST /moderation/users/:userId/unban':
