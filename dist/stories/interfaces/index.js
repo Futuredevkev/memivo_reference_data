@@ -24,3 +24,4 @@ __exportStar(require("./story-comment-response.interface"), exports);
 __exportStar(require("./story-file-info.interface"), exports);
 __exportStar(require("./story-response.interface"), exports);
 __exportStar(require("./story-tag-info.interface"), exports);
+__exportStar(require("./story-vault-retention-response.interface"), exports);

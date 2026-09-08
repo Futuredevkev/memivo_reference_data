@@ -8,3 +8,4 @@ export * from './story-comment-response.interface';
 export * from './story-file-info.interface';
 export * from './story-response.interface';
 export * from './story-tag-info.interface';
+export * from './story-vault-retention-response.interface';

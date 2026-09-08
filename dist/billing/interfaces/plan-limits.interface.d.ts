@@ -72,4 +72,31 @@ export interface PlanLimits {
      * subir uno nuevo.
      */
     readonly professionalVideo: boolean;
+    /**
+     * Cuántos días se guarda una historia en el Baúl del álbum. `null` = para
+     * siempre.
+     *
+     * ── ES LA ÚNICA PALANCA DEL MODELO QUE PUEDE DESTRUIR DATOS ────────────
+     * Todas las demás gobiernan lo que se CREA. Ésta gobierna lo que se BORRA, y
+     * por eso su valor no se aplica hacia atrás por ningún camino: la ventana se
+     * estampa en la fila al PUBLICARSE, contra el plan que el álbum tenía en ese
+     * instante, y toda historia anterior a que existiera el estampado se queda
+     * con la ventana indefinida para siempre. Bajar este número no acorta ninguna
+     * ventana ya estampada; subirlo tampoco alarga las que ya se fueron.
+     *
+     * ── ES DEL ÁLBUM, NO DE QUIEN PUBLICA ─────────────────────────────────
+     * El Baúl lista el archivo del álbum de TODOS sus autores, y su gate de
+     * acceso es la membresía. Leído del que publica, el Baúl de un álbum con plan
+     * quedaría agujereado con las historias de sus invitados sin plan — un Baúl
+     * con agujeros por plan ajeno es peor producto que uno con purga pareja. Por
+     * eso la ventana la decide el plan de QUIEN CREÓ el álbum, igual que el cupo
+     * de fotos profesionales.
+     *
+     * ── POR QUÉ SE JUSTIFICA POR LA FACTURA Y NO POR LA VENTA ─────────────
+     * Nadie midió que la gente quiera guardar historias ahí. Lo que sí es cierto
+     * es que hoy el Baúl no se purga nunca y crece para siempre. Si algún día hay
+     * que defender esta palanca, se defiende por el costo de almacenamiento, no
+     * por el ingreso.
+     */
+    readonly storyVaultRetentionDays: number | null;
 }
