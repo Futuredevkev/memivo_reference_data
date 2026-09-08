@@ -221,10 +221,28 @@ const social = require('../dist/social/index.js');
 //     CAPACIDAD del plan pago, no un tope: en gratis no entran pocos, no entra
 //     ninguno. Por eso no lleva `_EXCEEDED` —no hay número que decir— y sigue
 //     la forma de sus dos hermanos de capacidad, las estadísticas y la marca.
-test('el catálogo consolidado expone 214 códigos de error únicos', () => {
+// La ola de las COMPRAS EN LA TIENDA sube TRES, y ninguno reusa a los que ya
+// estaban — cada uno sale en un momento distinto y con una salida distinta:
+//   · `BILLING_STORE_PURCHASE_INVALID`. El comprobante no valida, o la tienda
+//     dice que ese acceso no corre. Sufijo `…_INVALID` a propósito: queda
+//     AFUERA de las dos tablas totales del cliente, y encaja con lo que las dos
+//     declaran —«no vale» habla de algo que la persona presentó, y no de
+//     contenido que un tercero pudo esconder—. Un `…_EXPIRED` habría caído en
+//     las dos a la vez, que es el defecto ya escrito para `PLAN_EXPIRED`.
+//   · `BILLING_STORE_PURCHASE_ALREADY_CLAIMED`. **No se colapsa en el
+//     anterior**, y ésa es la decisión: es el único de la familia con una
+//     salida concreta —iniciar sesión con la otra cuenta—, y meterlo en «no
+//     pudimos verificar tu compra» dejaría a alguien reintentando para siempre
+//     algo que nunca va a funcionar.
+//   · `BILLING_STORE_UNAVAILABLE`. **No reusa `BILLING_CHECKOUT_UNAVAILABLE`**
+//     aunque los dos digan «el canal de cobro no está»: aquél sale ANTES de
+//     pagar y éste DESPUÉS, con la tienda ya habiendo cobrado. Decirle «no
+//     pudimos abrir el pago» a alguien a quien ya le cobraron es decirle lo
+//     contrario de lo que pasó.
+test('el catálogo consolidado expone 217 códigos de error únicos', () => {
   const values = Object.values(errors.ErrorCode);
 
-  assert.equal(values.length, 214);
+  assert.equal(values.length, 217);
   assert.equal(new Set(values).size, values.length);
 });
 

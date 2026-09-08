@@ -1,4 +1,6 @@
 import type { PlanTier } from '../enums/plan-tier.enum';
+import type { StorePlatform } from '../enums/store-platform.enum';
+import type { StoreOffer } from './store-offer.interface';
 
 /**
  * Lo que el servidor contesta cuando el cliente pregunta qué plan tiene.
@@ -68,4 +70,40 @@ export interface EntitlementResponse {
    * «mostralo».
    */
   readonly webCheckoutRegions: readonly string[];
+  /**
+   * QUÉ SE PUEDE COMPRAR DENTRO DE LA APP, por tienda. Vacío = en esa tienda no
+   * se ofrece nada.
+   *
+   * ── POR QUÉ VIAJA ACÁ Y NO POR UNA RUTA PROPIA ──────────────────────────
+   * Es el mismo argumento que el de las regiones del cobro web, y el mismo
+   * momento: la única pantalla que necesita saber qué se puede ofrecer ya hace
+   * esta lectura para saber si hay algo que ofrecer. Una ruta aparte serían dos
+   * viajes para pintar un botón, y dos lecturas del plan que podrían contestar
+   * distinto si el derecho vence entre una y otra.
+   *
+   * ── POR QUÉ VIENEN LAS DOS TIENDAS Y NO SÓLO LA DE QUIEN PREGUNTA ───────
+   * Porque el servidor no sabe en qué tienda está parado quien pregunta: lo
+   * sabe el teléfono, y hoy no lo manda. Se podría hacer que lo mandara —sería
+   * un dato de dispositivo, no una autoridad— pero eso cambia la firma de una
+   * lectura que hacen tres pantallas para ahorrar dos cadenas de texto. Manda
+   * las dos y que el cliente elija la suya: el payload es diminuto y la ruta no
+   * cambia.
+   *
+   * ── `Record` TOTAL, Y ES LO QUE HACE QUE SIRVA ──────────────────────────
+   * Una tienda nueva no compila hasta que alguien conteste qué se ofrece ahí.
+   * Con un objeto parcial, la tercera tienda entraría en silencio ofreciendo
+   * nada, que es exactamente la decisión que hay que tomar a conciencia.
+   *
+   * ── FALLA HACIA EL LADO SEGURO ─────────────────────────────────────────
+   * Cuando la tienda no está configurada, el servidor manda el array VACÍO para
+   * esa plataforma — nunca omite la clave. Sin producto no hay nada que
+   * pedirle a la tienda, y un botón que abre un diálogo de compra vacío es peor
+   * que no tener botón.
+   *
+   * ── NO ES AUTORIDAD ────────────────────────────────────────────────────
+   * Decide qué se DIBUJA. Quien verifica una compra es el servidor contra la
+   * tienda, y quien escribe el plan es esa verificación. Una lista adulterada
+   * del lado del cliente consigue que la tienda rechace un producto inexistente.
+   */
+  readonly storeOffers: Readonly<Record<StorePlatform, readonly StoreOffer[]>>;
 }
