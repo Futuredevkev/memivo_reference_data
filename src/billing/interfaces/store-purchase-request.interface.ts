@@ -16,6 +16,18 @@ import type { StorePlatform } from '../enums/store-platform.enum';
  * diferencia a favor: acá el comprobante lo trae la app en el mismo viaje, así
  * que no hace falta ningún identificador de un solo uso que atar.
  *
+ * ── SE LLAMABA `…Submission`, Y ESE SUFIJO LO VOLVÍA INVISIBLE ───────────
+ * Los dos instrumentos que cruzan un DTO del api contra su contrato resuelven
+ * la contraparte por CONVENCIÓN DE NOMBRE, y su lista es cerrada:
+ * `Request | Input | Payload` en el gate del api, y el mismo recorte en el
+ * auditor de consumidores de este paquete. Con `Submission` —una CUARTA forma
+ * de nombrar un cuerpo de entrada, que no conocía nadie— `StorePurchaseDto` se
+ * salteaba los dos enteros: quedó sin `implements` y el body del endpoint que
+ * otorga un plan PAGADO era el único de la ola que podía divergir de su
+ * contrato sin que se pusiera rojo nada. Se renombró en vez de ensanchar las
+ * dos listas: el nombre es más barato que dos gates tocados, y `Request` es lo
+ * que usan las otras dos puertas nuevas de esta misma serie.
+ *
  * ── POR QUÉ ESTE MISMO CUERPO SIRVE PARA COMPRAR Y PARA RESTAURAR ─────────
  * Porque son el mismo hecho: «la tienda dice que esta cuenta de tienda tiene
  * este comprobante». Que sea de hace un minuto o de hace ocho meses lo decide
@@ -23,7 +35,7 @@ import type { StorePlatform } from '../enums/store-platform.enum';
  * restaurar habría sido un segundo camino para la misma escritura, con su
  * propia forma de equivocarse.
  */
-export interface StorePurchaseSubmission {
+export interface StorePurchaseRequest {
   /**
    * A QUÉ TIENDA hay que preguntarle. No dice qué otorgar.
    *

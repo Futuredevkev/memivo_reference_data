@@ -78,6 +78,34 @@ export interface PlanLimits {
   readonly professionalVideo: boolean;
 
   /**
+   * Si los álbumes de este plan pueden llevar la MARCA de quien los entrega: el
+   * logo del estudio y la acreditación de su nombre.
+   *
+   * Es una CAPACIDAD y no un tope —hay marca o no la hay, no hay número que un
+   * rechazo pueda decir—, con la misma forma que sus dos hermanas de arriba.
+   *
+   * ── POR QUÉ ENTRA A LA TABLA, SI YA FUNCIONABA SIN ELLA ────────────────
+   * Porque era la ÚNICA de las palancas del modelo que se decidía comparando el
+   * enum a mano —`albumTier === PlanTier.FREE`—, y en DOS lugares: el servicio
+   * que la escribe y el modal que la anticipa. El costo no es estético: el día
+   * que exista un tercer escalón, `=== PlanTier.FREE` es falso para ese tier, o
+   * sea que **la marca se otorga sola, en silencio, a un plan que nadie decidió
+   * que la tuviera** — en el api y en el cliente a la vez. La tabla existe
+   * exactamente para que eso no compile.
+   *
+   * ── ES DEL ÁLBUM, NO DE QUIEN ADMINISTRA ──────────────────────────────
+   * Se lee del plan de QUIEN CREÓ el álbum, igual que el cupo de fotos y la
+   * ventana del Baúl. Leída del organizador que paga, el logo de un estudio
+   * ajeno aparecería en la portada de un casamiento que su dueño no eligió.
+   *
+   * ── ADITIVA, Y ADEMÁS NO SE MIRA AL LEER ──────────────────────────────
+   * El derecho se verifica al ESCRIBIR la marca y nunca al dibujarla: apagar el
+   * plan no borra el logo de un álbum ya entregado. Lo que se apaga es poner
+   * una marca nueva.
+   */
+  readonly albumBranding: boolean;
+
+  /**
    * Cuántos días se guarda una historia en el Baúl del álbum. `null` = para
    * siempre.
    *

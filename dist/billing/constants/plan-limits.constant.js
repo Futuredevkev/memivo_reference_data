@@ -39,6 +39,7 @@ exports.PLAN_LIMITS = {
         albumQrCodeBirthTtlDays: 30,
         albumStats: false,
         professionalVideo: false,
+        albumBranding: false,
         storyVaultRetentionDays: 90,
     },
     [plan_tier_enum_1.PlanTier.PRO]: {
@@ -50,6 +51,7 @@ exports.PLAN_LIMITS = {
         albumQrCodeBirthTtlDays: 180,
         albumStats: true,
         professionalVideo: true,
+        albumBranding: true,
         // `null` = sin purga. El Baúl de un álbum con plan no se vacía nunca.
         storyVaultRetentionDays: null,
     },

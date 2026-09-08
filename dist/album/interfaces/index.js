@@ -24,6 +24,7 @@ __exportStar(require("./album-activity-entry.interface"), exports);
 __exportStar(require("./album-activity-query-request.interface"), exports);
 __exportStar(require("./album-guest.interface"), exports);
 __exportStar(require("./album-guests-query-request.interface"), exports);
+__exportStar(require("./folder-photos-query-request.interface"), exports);
 __exportStar(require("./album-people-query-request.interface"), exports);
 __exportStar(require("./album-people-response.interface"), exports);
 __exportStar(require("./album-person.interface"), exports);

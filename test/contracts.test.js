@@ -210,7 +210,29 @@ const social = require('../dist/social/index.js');
 //     puerta —para poder cambiar sólo a quién se acredita sin volver a subir el
 //     mismo logo—, y ésa es exactamente la ventana que cierra: marca con nombre
 //     y sin logo es un estado a medias que ninguna superficie sabe pintar.
-// La ola del VIDEO PROFESIONAL sube DOS, y cada uno por un motivo distinto:
+// v26.0.0: **+1**, el del COBRO WEB — y este renglón faltaba.
+//   · `BILLING_CHECKOUT_UNAVAILABLE`. El canal de cobro no está: falta la
+//     configuración del proveedor, o su aviso no valida. Prefijo `BILLING_` y
+//     **no `PLAN_`** porque el significado es el contrario — no dice que algo
+//     sea del plan pago, dice que no se puede cobrar—, y el costo de esa
+//     elección está declarado: `plan-rejection-status` audita el dominio del
+//     plan, así que este dominio queda fuera de su censo. Sin sufijo de regla ni
+//     de ausencia: no anuncia un número y no significa «esto ya no está».
+//     Colapsa DOS causas —canal sin configurar y aviso que no valida— y las
+//     separa el STATUS, 503 contra 500, que es lo que el cliente clasifica.
+//
+//   ⚠️ **Este renglón se agregó una ola después, y ésa es la lección**: la
+//   v26.0.0 movió el trinquete de 211 a 212 con un cambio de dos líneas y no
+//   tocó este libro mayor — que es exactamente lo que este libro existe para
+//   impedir, y lo que su propia entrada de la v15.0.0 ya declara haber pagado
+//   una vez. Lo destapó contar: el bloque explicaba DOCE códigos y el diff
+//   contra `main` agregaba TRECE. Y peor, el texto que sí se escribió después lo
+//   daba por preexistente («no reusa `BILLING_CHECKOUT_UNAVAILABLE`») cuando
+//   había nacido en la misma rama.
+//
+//   Por eso las dos olas de abajo ganaron su etiqueta de VERSIÓN: sin ella el
+//   ledger no se puede barrer contra `git log`, que es como apareció el hueco.
+// v27.0.0 · la ola del VIDEO PROFESIONAL sube DOS, y cada uno por un motivo distinto:
 //   · `PROFESSIONAL_VIDEO_TOO_LONG`. No es opcional: declarar
 //     `maxDurationSeconds` en la fila del recurso pone rojo el gate del api que
 //     exige que todo tipo con tope de duración tenga su propio código, y el
@@ -221,7 +243,7 @@ const social = require('../dist/social/index.js');
 //     CAPACIDAD del plan pago, no un tope: en gratis no entran pocos, no entra
 //     ninguno. Por eso no lleva `_EXCEEDED` —no hay número que decir— y sigue
 //     la forma de sus dos hermanos de capacidad, las estadísticas y la marca.
-// La ola de las COMPRAS EN LA TIENDA sube TRES, y ninguno reusa a los que ya
+// v28.0.0 · la ola de las COMPRAS EN LA TIENDA sube TRES, y ninguno reusa a los que ya
 // estaban — cada uno sale en un momento distinto y con una salida distinta:
 //   · `BILLING_STORE_PURCHASE_INVALID`. El comprobante no valida, o la tienda
 //     dice que ese acceso no corre. Sufijo `…_INVALID` a propósito: queda

@@ -22,49 +22,48 @@ const mb_constant_1 = require("../../media/constants/mb.constant");
  *
  * ── POR QUÉ EN BYTES Y NO EN ÍTEMS ─────────────────────────────────────────
  * Porque un ítem no dice nada de la factura. La pieza más pesada del camino de
- * descarga es un archivo de chat de 100 MB y una foto profesional pesa hasta 15
- * MB, así que el mismo número de ítems puede ser un gigabyte o doscientos.
+ * descarga es un video profesional —500 MB, el techo de
+ * `RESOURCE_UPLOAD_LIMITS[PROFESSIONAL_VIDEO].maxFileSize`—, el archivo de chat
+ * es el segundo con 100 MB y una foto profesional pesa hasta 15 MB, así que el
+ * mismo número de ítems puede ser un gigabyte o dos teras.
  *
- * ── DE DÓNDE SALE EL 150, Y ES PROVISORIO — SE DICE ────────────────────────
- * Sale de criterio, no de una medición: cuando se escribió, la factura
- * desagregada del proveedor de media no estaba disponible y el egress no se
- * medía en ninguna parte del repo. El criterio fue acotar por arriba el caso
- * honesto más extremo que se pudo construir —alguien que pertenece a varios
- * álbumes con entregas grandes y se las baja en dos dispositivos, unas decenas
- * de gigabytes— y dejar más del doble de aire encima, de modo que el rechazo
- * llegue sólo a quien está pidiendo el techo del sistema en serie.
+ * ── DE DÓNDE SALE EL 8, Y LA PREGUNTA QUE LO ELIGE ─────────────────────────
+ * El número anterior —250 GiB— salió de una pregunta que no era la que había
+ * que hacer: **«¿cuánto bajaría un usuario legítimo?»**. Con esa vara el techo
+ * se acomoda al caso honesto más extremo que uno se pueda imaginar, y el
+ * resultado fue un tope que no protege nada. La pregunta correcta es
+ * **«¿cuánto se puede pagar?»**, y ésa se contesta con la factura, no con la
+ * imaginación.
+ *
+ * La factura, mirada el 8 de septiembre de 2026: el plan del proveedor de media
+ * es **Free, 25 créditos por mes**, y un crédito es aproximadamente **1 GB** de
+ * tráfico. Contra eso:
+ *
+ *  · 250 GiB ≈ 250 créditos ≈ **diez veces el plan entero**, para UNA persona,
+ *    en UNA ventana. O sea que el tope viejo no era un tope: quien lo chocara
+ *    ya habría fundido el mes diez veces.
+ *  · una entrega completa de boda —400 fotos × 15 MB— son **≈ 5,9 GiB**, que es
+ *    el **≈ 24 %** del plan mensual.
+ *  · o sea que el plan aguanta **≈ 4 descargas completas por mes ENTRE TODOS**.
+ *
+ * **8 GiB deja pasar una entrega completa entera aunque todas sus fotos sean
+ * del máximo**, y corta el desastre: un solo job de 5.000 piezas servidas tal
+ * cual son ~25 GB —el mes entero en un toque—, y `MAX_ACTIVE_PER_USER` lo
+ * multiplica por tres.
+ *
+ * ⚠️ **ES UN FRENO DE ABUSO, NO UN TECHO DE PRODUCTO, Y COMPRA TIEMPO EN VEZ
+ * DE RESOLVER.** La cuenta honesta es que **el plan Free no sostiene la promesa
+ * central del producto**: 40 invitados bajando el álbum de una boda son ~100 GB,
+ * o sea 4× el plan. Ninguna constante arregla eso. **Lo que lo resuelve es subir
+ * el plan del proveedor**, y es decisión del dueño para cuando entre gente;
+ * hasta entonces este número evita que una sola cuenta se lleve el mes.
  *
  * **CON QUÉ INSTRUMENTO SE RETUNEA**, que es lo único que hace honesto a un
- * número provisorio: con el contador que esta misma ola crea. Es el PRIMER
- * lugar del repo donde los bytes servidos por persona quedan registrados; hasta
- * ahora no había ninguno, y por eso este número no se podía derivar de nada.
- * Cuando haya semanas de datos, el techo se corrige contra esa tabla y contra
- * la factura del proveedor — no de memoria, y no acá.
- *
- * ── SUBIÓ DE 150 A 250 GiB CON EL VIDEO PROFESIONAL, Y LA CUENTA VA ACÁ ────
- * El 150 se fijó contra un mundo donde la pieza profesional más pesada eran 15
- * MB. Desde que existe el video profesional —500 MB por pieza— el caso honesto
- * extremo que el párrafo de arriba describe cambió de tamaño, y el techo tenía
- * que moverse con él o pasaba a cortarle a quien no está abusando de nada:
- *
- *  · entrega de boda SIN video: 400 fotos × 15 MB ≈ 5,9 GiB.
- *    Cinco álbumes en dos dispositivos ≈ 58,6 GiB → el 150 dejaba 2,6× de aire,
- *    que es el «más del doble» con el que se eligió.
- *  · entrega de boda CON video: 400 fotos + 6 piezas de video ≈ 8,8 GiB.
- *    Los mismos cinco álbumes en dos dispositivos ≈ 87,9 GiB → contra el 150 el
- *    aire caía a **1,7×**, o sea por debajo del criterio con el que el número
- *    había sido elegido.
- *
- * 250 GiB devuelve 2,8× sobre el caso nuevo, apenas por encima del 2,6× que el
- * número viejo tenía sobre el viejo. **No es una holgura nueva: es la misma
- * holgura, recalculada sobre un mundo con video.**
- *
- * ⚠️ **Lo que este número NO puede decir es cuánto cuesta**, y se dice en vez
- * de venderse: en el repo no hay un solo número de dinero, la factura del
- * proveedor sigue sin estar desagregada y el egress se empezó a medir con la
- * tabla que la ola 1 creó. Duplicar el techo duplica la exposición del caso
- * abusivo, y esa mitad no está medida. Queda como decisión del dueño con la
- * cuenta a la vista, no como un número que alguien tuneó de memoria.
+ * número elegido contra una factura de hoy: con el contador que la ola 1 creó
+ * (`download_byte_usages`), que es el primer lugar del repo donde los bytes
+ * servidos por persona quedan registrados. Cuando el plan del proveedor suba,
+ * el techo sube con él **contra esa tabla y contra la factura nueva** — no de
+ * memoria, y no acá.
  *
  * ⚠️ **Y hay una segunda mitad que este número no arregla**: con el tope de
  * piezas por trabajo en 5.000, un job de puro video pide 2,4 TiB y lo rechaza
@@ -72,4 +71,4 @@ const mb_constant_1 = require("../../media/constants/mb.constant");
  * ANTES de materializar nada— pero significa que el tope de PIEZAS dejó de ser
  * el que corta, y quien lo lea creyendo que acota el trabajo se va a equivocar.
  */
-exports.DOWNLOAD_QUOTA_MAX_BYTES_PER_WINDOW = 250 * 1024 * mb_constant_1.MB;
+exports.DOWNLOAD_QUOTA_MAX_BYTES_PER_WINDOW = 8 * 1024 * mb_constant_1.MB;

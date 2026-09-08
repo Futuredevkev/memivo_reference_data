@@ -20,4 +20,4 @@ __exportStar(require("./checkout-intent-response.interface"), exports);
 __exportStar(require("./entitlement-response.interface"), exports);
 __exportStar(require("./plan-limits.interface"), exports);
 __exportStar(require("./store-offer.interface"), exports);
-__exportStar(require("./store-purchase-submission.interface"), exports);
+__exportStar(require("./store-purchase-request.interface"), exports);

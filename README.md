@@ -60,21 +60,33 @@ Cada dominio mantiene sus categorías separadas y expone un barrel `index.ts`:
 
 ```text
 src/
-  album/          enums + interfaces
+  album/          enums + interfaces + reglas
   auth/           constants + enums + interfaces
+  billing/        constants + enums + interfaces (la tabla de topes del plan)
   chat/           constants + enums + interfaces
   common/         enums + interfaces
+  downloads/      constants + enums + interfaces
   errors/         un catálogo por dominio + consolidado
   highlights/     interfaces
   media/          constants + enums + interfaces + types
+  moderation/     enums + interfaces
   notifications/  enums + interfaces
+  polls/          constants + interfaces
   reactions/      constants + enums + interfaces
   reference-data/ catálogos estáticos + type guards
   reports/        enums + interfaces
+  social/         interfaces
   sockets/        constants + interfaces
+  stickers/       constants + interfaces
   stories/        interfaces
   validation/     límites + patrones + contraseñas comunes
 ```
+
+> Esta lista **no se mantiene a mano**: `test/architecture.test.js` la cruza
+> contra los directorios de `src/` en los DOS sentidos. Llegó a nombrar CATORCE
+> de veinte —faltaba `billing/`, la superficie más grande que una ola agregó— y
+> es la única página que describe el paquete. Un censo que ES el documento vive
+> donde un gate lo pueda leer (ORDEN §4).
 
 El root exporta todo y también hay subpaths estables, por ejemplo
 `@memivo/contracts/auth`, `@memivo/contracts/errors`,

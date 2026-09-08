@@ -38,6 +38,7 @@ export const PLAN_LIMITS: Readonly<Record<PlanTier, PlanLimits>> = {
     albumQrCodeBirthTtlDays: 30,
     albumStats: false,
     professionalVideo: false,
+    albumBranding: false,
     storyVaultRetentionDays: 90,
   },
   [PlanTier.PRO]: {
@@ -49,6 +50,7 @@ export const PLAN_LIMITS: Readonly<Record<PlanTier, PlanLimits>> = {
     albumQrCodeBirthTtlDays: 180,
     albumStats: true,
     professionalVideo: true,
+    albumBranding: true,
     // `null` = sin purga. El Baúl de un álbum con plan no se vacía nunca.
     storyVaultRetentionDays: null,
   },

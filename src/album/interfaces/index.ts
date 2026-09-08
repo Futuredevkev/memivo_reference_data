@@ -8,6 +8,7 @@ export * from './album-activity-entry.interface';
 export * from './album-activity-query-request.interface';
 export * from './album-guest.interface';
 export * from './album-guests-query-request.interface';
+export * from './folder-photos-query-request.interface';
 export * from './album-people-query-request.interface';
 export * from './album-people-response.interface';
 export * from './album-person.interface';
