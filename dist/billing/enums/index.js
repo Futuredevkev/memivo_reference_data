@@ -17,3 +17,4 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./plan-tier.enum"), exports);
 __exportStar(require("./store-platform.enum"), exports);
 __exportStar(require("./store-subscription-period.enum"), exports);
+__exportStar(require("./subscription-management-channel.enum"), exports);

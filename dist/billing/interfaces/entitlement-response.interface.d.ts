@@ -1,5 +1,6 @@
 import type { PlanTier } from '../enums/plan-tier.enum';
 import type { StorePlatform } from '../enums/store-platform.enum';
+import type { SubscriptionManagementChannel } from '../enums/subscription-management-channel.enum';
 import type { StoreOffer } from './store-offer.interface';
 /**
  * Lo que el servidor contesta cuando el cliente pregunta qué plan tiene.
@@ -10,10 +11,13 @@ import type { StoreOffer } from './store-offer.interface';
  * desincroniza con el cliente viejo, y además haría que el cliente creyera que
  * el número es negociable por respuesta.
  *
- * ── POR QUÉ NO VIAJA `expiresAt` ───────────────────────────────────────────
- * Porque hoy no lo lee nadie, y un payload con campos que nadie lee es deuda
- * (ORDEN §7). El aviso de vencimiento es otra ola y tiene su propio canal —una
- * notificación—: cuando llegue, este campo entra con su consumidor.
+ * ── `expiresAt` YA VIAJA, Y ENTRÓ CON SU CONSUMIDOR ────────────────────────
+ * Acá decía por qué NO viajaba: «hoy no lo lee nadie, y un payload con campos
+ * que nadie lee es deuda; cuando llegue, este campo entra con su consumidor».
+ * Llegó el consumidor —la pantalla del plan, que es la única superficie donde
+ * alguien puede ver hasta cuándo tiene lo que paga y desde dónde cancelarlo— y
+ * el campo entró con él. Es la forma en la que este archivo quería que
+ * entrara.
  *
  * ── ESTO ES CACHÉ DE CONVENIENCIA, NUNCA AUTORIDAD ─────────────────────────
  * Sirve para que la pantalla dibuje rápido y para no hacerle perder el tiempo a
@@ -105,4 +109,69 @@ export interface EntitlementResponse {
      * del lado del cliente consigue que la tienda rechace un producto inexistente.
      */
     readonly storeOffers: Readonly<Record<StorePlatform, readonly StoreOffer[]>>;
+    /**
+     * HASTA CUÁNDO vale el derecho vivo, en ISO 8601. `null` = no hay plan.
+     *
+     * ── POR QUÉ ES UN INSTANTE Y NO «CUÁNTOS DÍAS QUEDAN» ──────────────────
+     * Porque los días los cuenta quien dibuja, con el reloj del teléfono, y una
+     * cuenta hecha en el servidor envejece dentro de la propia caché: una
+     * respuesta guardada cinco minutos diría «quedan 3 días» un rato después de
+     * que quedaran 2. El instante no envejece.
+     *
+     * ── NO DICE SI RENUEVA ────────────────────────────────────────────────
+     * Es la fecha hasta la que el derecho está pago, y nada más. Si la
+     * suscripción se va a renovar sola lo sabe la tienda o la pasarela, no esta
+     * fila: el modelo resuelve el plan contra el INSTANTE justamente para no
+     * tener que mantener un espejo de ese estado. Quien lo dibuje no puede
+     * prometer una renovación.
+     *
+     * ── NO ES AUTORIDAD ───────────────────────────────────────────────────
+     * Sirve para decirlo en pantalla. Quien decide si alguien es Pro es el
+     * servidor, en cada operación, contra su propia fila.
+     */
+    readonly expiresAt: string | null;
+    /**
+     * DÓNDE se gestiona y se cancela este plan.
+     *
+     * ── POR QUÉ VIAJA, Y NO ES COSMÉTICO ──────────────────────────────────
+     * Sin esto la app no puede ofrecer cancelar, y una app con suscripción
+     * auto-renovable que no dice cómo darse de baja es motivo conocido de rechazo
+     * en la revisión de una tienda. O sea que este campo no mejora una pantalla:
+     * habilita la publicación.
+     *
+     * ── EL DESTINO LO DECIDE EL SERVIDOR ──────────────────────────────────
+     * El cliente no puede derivarlo: la suscripción pudo comprarse en una tienda
+     * y estar viéndose desde la otra, o venir del cobro web, o ser una cortesía
+     * asentada a mano. Quién cobró lo sabe la fila del otorgamiento, y el mapa de
+     * proveedor a destino es un `Record` TOTAL del lado del servidor — así que un
+     * proveedor nuevo no compila hasta que alguien diga dónde se cancela lo suyo.
+     *
+     * ── FALLA HACIA `NONE` ────────────────────────────────────────────────
+     * No es opcional: sin plan, o con un plan que no tiene portal, el servidor
+     * manda `NONE` y la pantalla lo dice en palabras en vez de ofrecer un botón
+     * que no lleva a ningún lado.
+     */
+    readonly managementChannel: SubscriptionManagementChannel;
+    /**
+     * LA DIRECCIÓN a la que lleva ese botón. `null` = no hay botón.
+     *
+     * ── POR QUÉ VIAJA LA URL Y NO LA COMPONE LA APP ───────────────────────
+     * Porque son direcciones de un TERCERO, y el conocimiento de un proveedor
+     * externo no llega al cliente (ORDEN §4). Compuesta en la app, el día que una
+     * tienda cambie su ruta hay que sacar un build por tienda y esperar la
+     * revisión de cada una; mandada desde acá, es un despliegue.
+     *
+     * ── POR QUÉ ADEMÁS DEL CANAL, Y NO EN VEZ DE ──────────────────────────
+     * Son dos preguntas: el canal elige las PALABRAS —«en la App Store», «en
+     * Google Play», «desde la web»— y la dirección elige el DESTINO. Con la URL
+     * sola la app tendría que adivinar el texto mirando el host, que es
+     * exactamente la clase de decisión que se llavea por el eje equivocado.
+     *
+     * ── NO PUEDE SER `null` CON UN CANAL DISTINTO DE `NONE` ───────────────
+     * El servidor los resuelve JUNTOS: un canal que se quedó sin dirección
+     * —el portal web sin configurar— degrada a `NONE` antes de contestar. O sea
+     * que la combinación «te digo dónde pero no a dónde» no existe, y la app no
+     * necesita defenderse de ella.
+     */
+    readonly managementUrl: string | null;
 }
