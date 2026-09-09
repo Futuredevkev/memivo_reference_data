@@ -95,7 +95,7 @@ var AlbumActionType;
      */
     AlbumActionType["ALBUM_SUSPENDED_BY_PLATFORM"] = "ALBUM_SUSPENDED_BY_PLATFORM";
     /**
-     * Memivo volvió a prender un álbum que había apagado.
+     * Memivo restableció un álbum que había suspendido.
      *
      * Es una fila NUEVA, no la mutación de la que suspendió: el registro del
      * álbum es append-only y la reversión de una sanción es un hecho con su

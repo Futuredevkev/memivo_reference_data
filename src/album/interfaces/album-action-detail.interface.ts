@@ -79,7 +79,7 @@ export interface AlbumActionDetail {
    */
   accessPasswordKind?: AlbumAccessPasswordChangeKind;
   /**
-   * Por qué Memivo apagó —o volvió a prender— el álbum.
+   * Por qué Memivo suspendió —o restableció— el álbum.
    *
    * ── POR QUÉ SE GUARDA ─────────────────────────────────────────────────
    * Porque una sanción sin motivo registrado no es evidencia de nada. El
