@@ -9,12 +9,12 @@ export interface AlbumHighlights<
   TTimestamp = string,
   TRole extends string = AlbumMemberRole,
 > {
-  funniestComment: HighlightComment<TTimestamp, TRole> | null;
-  leastFunnyComment: HighlightComment<TTimestamp, TRole> | null;
+  funniestComment: HighlightComment<TRole> | null;
+  leastFunnyComment: HighlightComment<TRole> | null;
   mostLikedPost: HighlightPost<TTimestamp, TRole> | null;
   mostCommentedPost: HighlightPost<TTimestamp, TRole> | null;
   mostReactedPost: HighlightPost<TTimestamp, TRole> | null;
-  mostRepliedComment: HighlightComment<TTimestamp, TRole> | null;
+  mostRepliedComment: HighlightComment<TRole> | null;
   postWithMostPhotos: HighlightPost<TTimestamp, TRole> | null;
   firstPost: HighlightPost<TTimestamp, TRole> | null;
   mostCommentedStory: HighlightStory<TTimestamp, TRole> | null;
