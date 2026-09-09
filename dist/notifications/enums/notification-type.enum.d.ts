@@ -75,7 +75,7 @@ export declare enum NotificationType {
      */
     ALBUM_SUSPENDED_BY_MEMIVO = "ALBUM_SUSPENDED_BY_MEMIVO",
     /**
-     * Memivo volvió a prender tu álbum.
+     * Memivo restableció tu álbum.
      *
      * Va con su hermano y no después: un aviso que dice «suspendimos tu álbum»
      * sin contraparte deja a la persona con una acusación en pie y sin forma de
