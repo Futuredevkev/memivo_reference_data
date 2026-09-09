@@ -1,5 +1,5 @@
-import type { ResourceType } from '../../../media';
-export interface OpenViewOnceResponseFile {
+import type { MediaAvailability, ResourceType } from '../../../media';
+export interface OpenViewOnceResponseFile extends MediaAvailability {
     id: string;
     url: string;
     resourceType: ResourceType;

@@ -1,5 +1,5 @@
-import type { ResourceType } from '../../../media';
-export interface ChatMessageFileResponse {
+import type { MediaAvailability, ResourceType } from '../../../media';
+export interface ChatMessageFileResponse extends MediaAvailability {
     id: string;
     url: string;
     thumbnailUrl?: string | null;

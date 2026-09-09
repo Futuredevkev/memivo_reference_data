@@ -13,6 +13,7 @@ export * from './finalize-story-upload-input.interface';
 export * from './finalize-story-upload-payload.interface';
 export * from './guest-post-media-composition.interface';
 export * from './guest-post-tag-item.interface';
+export * from './media-availability.interface';
 export * from './media-composition.interface';
 export * from './optional-media-filter-request.interface';
 export * from './upload-intent-response.interface';

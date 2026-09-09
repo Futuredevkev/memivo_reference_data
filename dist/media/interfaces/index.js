@@ -29,6 +29,7 @@ __exportStar(require("./finalize-story-upload-input.interface"), exports);
 __exportStar(require("./finalize-story-upload-payload.interface"), exports);
 __exportStar(require("./guest-post-media-composition.interface"), exports);
 __exportStar(require("./guest-post-tag-item.interface"), exports);
+__exportStar(require("./media-availability.interface"), exports);
 __exportStar(require("./media-composition.interface"), exports);
 __exportStar(require("./optional-media-filter-request.interface"), exports);
 __exportStar(require("./upload-intent-response.interface"), exports);
