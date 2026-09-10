@@ -1004,7 +1004,7 @@ const catalogosFueraDelCenso = new Map([
   [
     'MemivoMomentType',
     "Sus dos valores son 'POST' y 'STORY'. 'POST' es además el método HTTP más " +
-      'usado del repo, y el censo por valor no distingue un `httpMethod` de un ' +
+      'usado del repo, y el censo por valor no distingue un verbo HTTP de un ' +
       'tipo de momento. Es el mismo caso que la rama de `ModeratedContentType` ' +
       'que el reconocedor ya trae escrita, un enum más allá.',
   ],
@@ -1028,6 +1028,29 @@ const catalogosFueraDelCenso = new Map([
  * `FolderErrorCode` número 22 tiene que entrar por la misma puerta.
  */
 const ES_CATALOGO_DE_ERRORES = /^(?:[A-Z][A-Za-z0-9]*)?ErrorCode$/;
+
+/**
+ * El verbo de una llamada HTTP, en las dos grafías con las que se escribe una
+ * clave de método en un objeto de opciones de request.
+ *
+ * `ModeratedContentType.POST` vale `'POST'`, que es además el método HTTP más
+ * usado que existe, y el censo por VALOR no puede distinguirlos. La excusa que
+ * resolvía ese choque reconocía UNA sola grafía —`httpMethod:`, la opción de la
+ * librería de subidas del cliente—, o sea que estaba escrita para el CALL-SITE
+ * que existía y no para la clase: es la forma de defecto que ORDEN §1 persigue.
+ * `method:` a secas —la forma que toma el init de `fetch`— es la MISMA clase y
+ * no habría recibido excusa, y el auditor habría marcado un verbo HTTP como un
+ * tipo de contenido moderado, poniéndose rojo por un falso positivo.
+ *
+ * Se descartó agregar el archivo ofensor a una lista de exenciones: habría
+ * dejado el mismo agujero abierto para la grafía siguiente.
+ *
+ * Sigue cortando lo que importa: un `type: 'POST'` —un tipo de contenido
+ * moderado escrito a mano en vez de importar el enum— no tiene la clave
+ * `method` y no recibe excusa. Cuántas de las dos grafías escribe el árbol HOY
+ * lo contesta el grep, no este comentario.
+ */
+const METODO_HTTP_POST = /\b(?:http)?[Mm]ethod\s*:\s*['"]POST['"]/;
 
 /** Los catálogos que el censo SÍ mira: todo lo publicado menos lo declarado. */
 function catalogosDelCenso(contracts) {
@@ -1129,7 +1152,7 @@ function rawRuntimeContractLiterals(enumNamesOverride) {
               reason = 'Query alias or unrelated short token; not an application language.';
             } else if (
               owners.includes('ModeratedContentType') &&
-              /httpMethod\s*:\s*['"]POST['"]/.test(context)
+              METODO_HTTP_POST.test(context)
             ) {
               reason = 'HTTP method, not a moderated-content type.';
             } else if (
