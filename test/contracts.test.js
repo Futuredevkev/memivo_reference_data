@@ -179,10 +179,11 @@ const social = require('../dist/social/index.js');
 // nunca antes»— y el auditor de consumidores lo cortó: `apiUnusedErrorCodes`
 // devolvía ese código. El análisis de costo que lo justifica sigue vivo en la
 // línea de pagos, donde el emisor existe.
-test('el catálogo consolidado expone 204 códigos de error únicos', () => {
+// v34.0.0: vuelve la cuota con emisor y consumidores en la misma ola.
+test('el catálogo consolidado expone 205 códigos de error únicos', () => {
   const values = Object.values(errors.ErrorCode);
 
-  assert.equal(values.length, 204);
+  assert.equal(values.length, 205);
   assert.equal(new Set(values).size, values.length);
 });
 
