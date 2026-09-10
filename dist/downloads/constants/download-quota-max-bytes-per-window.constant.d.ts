@@ -3,68 +3,60 @@
  * rodante, sumando TODAS las formas de descarga.
  *
  * ── QUÉ CIERRA, Y NO TIENE NADA QUE VER CON COBRAR ─────────────────────────
- * Es un agujero de costo REAL, con o sin planes. La validación de acceso de un
- * trabajo de descarga mira ACCESO AL ÁLBUM, no rol: cualquier invitado dispara
- * un job de hasta `DOWNLOAD_JOB_MAX_PHOTOS` fotos y lo repite. El throttler
- * global cuenta REQUESTS, y esa ruta convierte UNA request en miles de
- * descargas, así que no la acota. Contando el techo de ítems que hoy se
- * permite, una sola cuenta puede pedir cientos de gigabytes.
+ * La validación de acceso de un trabajo de descarga mira ACCESO AL ÁLBUM, no
+ * rol: cualquier invitado dispara un job de hasta {@link DOWNLOAD_JOB_MAX_PHOTOS}
+ * fotos y lo repite. El throttler global cuenta REQUESTS, y esa ruta convierte
+ * UNA request en miles de descargas.
  *
  * ── CIEGA AL PLAN, Y ESO ES LA MITAD DEL DISEÑO ────────────────────────────
  * Es la MISMA para el que paga y el que no. No vende nada: existe para no
- * vender a pérdida. Topear la descarga por plan le pegaría a quien viene a
- * buscar sus fotos —que es quien nunca paga y nunca debería pagar— y dejaría
- * intacto al organizador, que no descarga nada porque él las subió.
+ * vender a pérdida. Topear la descarga por plan le pegaría justo a quien viene
+ * a buscar sus fotos, que es la promesa del producto.
  *
  * ── POR QUÉ EN BYTES Y NO EN ÍTEMS ─────────────────────────────────────────
- * Porque un ítem no dice nada de la factura. La pieza más pesada del camino de
- * descarga es un video profesional —500 MB, el techo de
- * `RESOURCE_UPLOAD_LIMITS[PROFESSIONAL_VIDEO].maxFileSize`—, el archivo de chat
- * es el segundo con 100 MB y una foto profesional pesa hasta 15 MB, así que el
- * mismo número de ítems puede ser un gigabyte o dos teras.
+ * Porque un ítem no dice cuánto cuesta. En este catálogo la pieza más pesada
+ * que puede entrar a una descarga son los 100 MB de un video —el techo de
+ * `RESOURCE_UPLOAD_LIMITS` para `GUEST_VIDEO`, `CHAT_VIDEO` y `VIDEO_STORY`— y
+ * una foto profesional pesa 15 MB. O sea que el MISMO tope de ítems del
+ * manifest ({@link DOWNLOAD_MANIFEST_MAX_ITEMS}) vale entre ~1 GiB y ~19,5 GiB
+ * según qué tenga adentro: veinte veces de diferencia por el mismo número de
+ * piezas. La factura la paga el byte, así que el freno se pone donde se paga.
  *
  * ── DE DÓNDE SALE EL 8, Y LA PREGUNTA QUE LO ELIGE ─────────────────────────
- * El número anterior —250 GiB— salió de una pregunta que no era la que había
- * que hacer: **«¿cuánto bajaría un usuario legítimo?»**. Con esa vara el techo
- * se acomoda al caso honesto más extremo que uno se pueda imaginar, y el
- * resultado fue un tope que no protege nada. La pregunta correcta es
- * **«¿cuánto se puede pagar?»**, y ésa se contesta con la factura, no con la
- * imaginación.
+ * La pregunta que importa NO es «¿cuánto bajaría un usuario legítimo?» —esa
+ * vara se acomoda al caso honesto más extremo que uno se pueda imaginar, y así
+ * es como un tope termina no topeando nada— sino **«¿cuánto se puede pagar?»**,
+ * y ésa la contesta la factura.
  *
  * La factura, mirada el 8 de septiembre de 2026: el plan del proveedor de media
- * es **Free, 25 créditos por mes**, y un crédito es aproximadamente **1 GB** de
- * tráfico. Contra eso:
- *
- *  · 250 GiB ≈ 250 créditos ≈ **diez veces el plan entero**, para UNA persona,
- *    en UNA ventana. O sea que el tope viejo no era un tope: quien lo chocara
- *    ya habría fundido el mes diez veces.
- *  · una entrega completa de boda —400 fotos × 15 MB— son **≈ 5,9 GiB**, que es
- *    el **≈ 24 %** del plan mensual.
- *  · o sea que el plan aguanta **≈ 4 descargas completas por mes ENTRE TODOS**.
+ * es **Free, 25 créditos por mes**, y un crédito es ≈ **1 GB** de tráfico.
+ * Contra eso:
+ *  · una entrega completa de boda —400 fotos × 15 MB— son **≈ 5,9 GiB**, o sea
+ *    el **≈ 24 %** del plan mensual;
+ *  · el plan aguanta **≈ 4 descargas completas por mes ENTRE TODOS**.
  *
  * **8 GiB deja pasar una entrega completa entera aunque todas sus fotos sean
- * del máximo**, y corta el desastre: un solo job de 5.000 piezas servidas tal
- * cual son ~25 GB —el mes entero en un toque—, y `MAX_ACTIVE_PER_USER` lo
- * multiplica por tres.
+ * del máximo**, y corta el desastre. El dueño confirmó el 10 sep 2026 que
+ * acepta este límite incluso si una persona legítima descarga dos entregas
+ * grandes dentro de la misma ventana; no es una promesa de uso ilimitado.
  *
- * ⚠️ **ES UN FRENO DE ABUSO, NO UN TECHO DE PRODUCTO, Y COMPRA TIEMPO EN VEZ
- * DE RESOLVER.** La cuenta honesta es que **el plan Free no sostiene la promesa
- * central del producto**: 40 invitados bajando el álbum de una boda son ~100 GB,
- * o sea 4× el plan. Ninguna constante arregla eso. **Lo que lo resuelve es subir
- * el plan del proveedor**, y es decisión del dueño para cuando entre gente;
- * hasta entonces este número evita que una sola cuenta se lleve el mes.
+ * ⚠️ **ES UN FRENO DE ABUSO, NO UN TECHO DE PRODUCTO, Y COMPRA TIEMPO EN VEZ DE
+ * RESOLVER.** El plan Free no sostiene la promesa central: 40 invitados bajando
+ * el álbum de una boda son ~100 GB, cuatro veces el plan. Lo que lo resuelve es
+ * subir el plan del proveedor, y es decisión del dueño.
  *
- * **CON QUÉ INSTRUMENTO SE RETUNEA**, que es lo único que hace honesto a un
- * número elegido contra una factura de hoy: con el contador que la ola 1 creó
- * (`download_byte_usages`), que es el primer lugar del repo donde los bytes
- * servidos por persona quedan registrados. Cuando el plan del proveedor suba,
- * el techo sube con él **contra esa tabla y contra la factura nueva** — no de
- * memoria, y no acá.
+ * **CON QUÉ INSTRUMENTO SE RETUNEA**: con el contador que crea la misma ola que
+ * este número —la tabla `download_byte_usages` del api—, que es el primer lugar
+ * del repo donde los bytes servidos por persona quedan registrados. Hasta que
+ * ese contador tenga historia, este 8 no se puede corregir contra nada medido, y
+ * se dice.
  *
- * ⚠️ **Y hay una segunda mitad que este número no arregla**: con el tope de
- * piezas por trabajo en 5.000, un job de puro video pide 2,4 TiB y lo rechaza
- * esta cuota, no aquél. El rechazo es correcto —el pre-check pesa la selección
- * ANTES de materializar nada— pero significa que el tope de PIEZAS dejó de ser
- * el que corta, y quien lo lea creyendo que acota el trabajo se va a equivocar.
+ * ⚠️ **Y HAY UNA SEGUNDA MITAD QUE ESTE NÚMERO NO ARREGLA.** El tope de PIEZAS
+ * dejó de ser el que corta: por el camino del job, {@link DOWNLOAD_JOB_MAX_PHOTOS}
+ * fotos profesionales son ≈ **73 GiB**, y por el del manifest,
+ * {@link DOWNLOAD_MANIFEST_MAX_ITEMS} videos son ≈ **19,5 GiB** — los dos pasan
+ * los 8 GiB por lejos, y {@link DOWNLOAD_JOB_MAX_ACTIVE_PER_USER} multiplica el
+ * primero por tres. Quien lea esos topes creyendo que acotan el trabajo se va a
+ * equivocar: el que acota es éste.
  */
 export declare const DOWNLOAD_QUOTA_MAX_BYTES_PER_WINDOW: number;
