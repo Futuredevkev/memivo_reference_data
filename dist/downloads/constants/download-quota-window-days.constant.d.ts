@@ -17,7 +17,12 @@
  * para no gastar más de lo que el plan aguanta: medir en otra ventana obligaría a
  * traducir entre dos plazos para saber si el número alcanza.
  *
- * Coincide con {@link ALBUM_QR_CODE_TTL_DAYS}, y no es casualidad: los dos miden
- * lo que dura un evento y su cola.
+ * ⚠️ **Coincide con {@link ALBUM_QR_CODE_TTL_DAYS} POR CASUALIDAD, y conviene
+ * saberlo antes de derivar uno del otro.** Los dos valen 30 por ejes DISTINTOS, y
+ * cada archivo declara el suyo: aquél mide lo que dura un evento y su cola de
+ * subidas; éste, el ciclo con el que factura el proveedor de media. El día que se
+ * cambie el plan del proveedor, este número se mueve y el del QR NO — y al revés.
+ * Escribir uno en función del otro ataría dos decisiones que no tienen nada que
+ * ver, que es la clase de acople que después nadie puede desarmar.
  */
 export declare const DOWNLOAD_QUOTA_WINDOW_DAYS = 30;
