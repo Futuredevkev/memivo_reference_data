@@ -1048,25 +1048,25 @@ const catalogosFueraDelCenso = new Map([
 const ES_CATALOGO_DE_ERRORES = /^(?:[A-Z][A-Za-z0-9]*)?ErrorCode$/;
 
 /**
- * El verbo de una llamada HTTP, en las DOS formas en las que este árbol lo
- * escribe.
+ * El verbo de una llamada HTTP, en las dos grafías con las que se escribe una
+ * clave de método en un objeto de opciones de request.
  *
  * `ModeratedContentType.POST` vale `'POST'`, que es además el método HTTP más
- * usado que existe, y el censo por VALOR no puede distinguirlos. La excusa
- * estaba escrita para una sola grafía —`httpMethod:`, la opción de la librería
- * de subidas del cliente— porque cuando se escribió ésa era la única ocurrencia
- * del árbol. El día que apareció la segunda —`method:` a secas, que es la forma
- * que toma el init de `fetch`— la excusa no la reconoció, y el auditor marcó un
- * verbo HTTP como un tipo de contenido moderado.
+ * usado que existe, y el censo por VALOR no puede distinguirlos. La excusa que
+ * resolvía ese choque reconocía UNA sola grafía —`httpMethod:`, la opción de la
+ * librería de subidas del cliente—, o sea que estaba escrita para el CALL-SITE
+ * que existía y no para la clase: es la forma de defecto que ORDEN §1 persigue.
+ * `method:` a secas —la forma que toma el init de `fetch`— es la MISMA clase y
+ * no habría recibido excusa, y el auditor habría marcado un verbo HTTP como un
+ * tipo de contenido moderado, poniéndose rojo por un falso positivo.
  *
- * Es la forma de defecto que ORDEN §1 persigue: la regla estaba escrita para el
- * CALL-SITE que existía en vez de para la clase. La clase es «una clave de
- * método en un objeto de opciones de request», y sus dos grafías son la
- * estándar y la de la librería.
+ * Se descartó agregar el archivo ofensor a una lista de exenciones: habría
+ * dejado el mismo agujero abierto para la grafía siguiente.
  *
  * Sigue cortando lo que importa: un `type: 'POST'` —un tipo de contenido
  * moderado escrito a mano en vez de importar el enum— no tiene la clave
- * `method` y no recibe excusa.
+ * `method` y no recibe excusa. Cuántas de las dos grafías escribe el árbol HOY
+ * lo contesta el grep, no este comentario.
  */
 const METODO_HTTP_POST = /\b(?:http)?[Mm]ethod\s*:\s*['"]POST['"]/;
 

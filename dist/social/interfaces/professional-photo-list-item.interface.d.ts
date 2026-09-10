@@ -6,16 +6,27 @@ export interface ProfessionalPhotoListItem<TTimestamp = string> {
     thumbnailUrl: string | null;
     created_at: TTimestamp;
     /**
-     * El archivo de la pieza. **Obligatorio, y antes era opcional.**
+     * El asset detrás de la foto. Requerido, y antes era opcional.
      *
      * ── POR QUÉ DEJÓ DE SER OPCIONAL ──────────────────────────────────────
-     * Porque `photos.fileId` es NOT NULL con clave foránea: no existe una pieza
-     * sin archivo, y el `?` describía un estado que la base no puede producir.
-     * El costo de esa opcionalidad dejó de ser teórico cuando una carpeta pasó a
-     * tener dos clases de pieza: quien dibuja la grilla tiene que saber si la
-     * celda es foto o video, ese dato vive acá adentro, y con la clave opcional
-     * el cliente terminaba adivinando por otro lado — mirando si la URL termina
-     * en `.mp4`, que funciona hasta el día que no.
+     * Su rama vacía no la podía alcanzar producción: `photos` declara `fileId` no
+     * nulo con FK a `file(id)`, y los dos únicos caminos que producen esta forma
+     * joinean la relación. O sea que el `undefined` sólo describía un `select`
+     * que nadie escribe — la clase de código muerto que ORDEN §7 llama la más
+     * peligrosa, porque ningún gate ve una rama muerta.
+     *
+     * ── Y EL COSTO DEJÓ DE SER TEÓRICO CUANDO LA CARPETA TUVO DOS CLASES ──
+     * Quien dibuja la grilla tiene que saber si la celda es foto o video, ese
+     * dato vive acá adentro, y con la clave opcional el cliente terminaba
+     * adivinando por otro lado — mirando si la URL termina en `.mp4`, que
+     * funciona hasta el día que no.
+     *
+     * ── Y PORQUE LO OPCIONAL SE PROPAGABA AL VEREDICTO ────────────────────
+     * `PhotoFile` compone `MediaAvailability`, así que este campo es por dónde
+     * llega «esta pieza ya no está». Con `file?`, el traductor del cliente
+     * tendría que aceptar `undefined` y contestar «no se sabe» — o sea que
+     * olvidarse de pasar la pieza volvería a compilar, que es exactamente el
+     * defecto que el campo requerido existe para cerrar, un nivel más arriba.
      */
     file: PhotoFile;
     /**

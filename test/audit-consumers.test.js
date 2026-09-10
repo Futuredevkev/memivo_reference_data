@@ -257,3 +257,44 @@ test('la cadena consumidor → barrel → shim también lo sostiene', () => {
     'el consumo por el barrel de la carpeta tiene que alcanzar al shim',
   );
 });
+
+test('la excusa del verbo HTTP mira la CLASE: excusa las dos grafías y sigue cortando lo demás', () => {
+  // EL DEFECTO QUE CIERRA. `ModeratedContentType.POST` vale 'POST', que es además
+  // el método HTTP más usado que existe, y el censo por VALOR no puede
+  // distinguirlos. La excusa que resolvía ese choque reconocía UNA sola grafía
+  // —`httpMethod:`, la opción de la librería de subidas— o sea que estaba escrita
+  // para el call-site que existía y no para la clase: `method:` a secas, que es la
+  // forma del init de `fetch`, no recibía excusa y el auditor se ponía rojo por un
+  // falso positivo. La excusa NO tenía cobertura: el commit que la generalizó
+  // afirmaba «verificado con las cinco formas» y no tocó ningún test.
+  //
+  // Es el control positivo del reconocedor: angostarlo de vuelta a `httpMethod`
+  // deja este caso en rojo aunque el árbol real esté limpio.
+  const report = runAudit({
+    api: [
+      "export async function conFetch() { await fetch('/x', { method: 'POST' }); }",
+      "export function conLibreria() { return { httpMethod: 'POST' }; }",
+      "export const tipoAMano = { type: 'POST' };",
+      "export const suelto = 'POST';",
+      '',
+    ].join('\n'),
+  });
+
+  const dePost = (lista) =>
+    (lista ?? []).filter((occurrence) => occurrence.value === 'POST').map((o) => o.line);
+
+  assert.deepEqual(
+    dePost(report.intentionalRawRuntimeLiterals),
+    [1, 2],
+    'las DOS grafías de un verbo HTTP tienen que quedar excusadas',
+  );
+  assert.deepEqual(
+    dePost(report.rawRuntimeLiterals),
+    [3, 4],
+    'un `type: \'POST\'` escrito a mano y un literal suelto NO reciben excusa',
+  );
+  for (const occurrence of report.intentionalRawRuntimeLiterals ?? []) {
+    if (occurrence.value !== 'POST') continue;
+    assert.equal(occurrence.reason, 'HTTP method, not a moderated-content type.');
+  }
+});

@@ -3,29 +3,27 @@ import type { StickerReference } from '../../stickers';
 import type { HighlightActor } from './internal/highlight-actor.interface';
 
 /**
- * El comentario que gana uno de los slots de destacados.
+ * El comentario que gana un slot de destacados.
  *
- * ── POR QUÉ NO LLEVA FECHA, Y NO ES UN OLVIDO ────────────────────────────────
- * Los tres slots de comentario —el más gracioso, el menos gracioso y el más
- * respondido— ganan por CONTEO. Para ellos el cuándo no contesta ninguna
- * pregunta: la tarjeta está ahí por el número, y la fecha se leía suelta debajo
- * del texto sin anclarse a nada. El campo había llegado por un slot distinto
- * —el primer post del álbum, que es el único que gana por cronología— y se
- * dibujó en las once cards porque estaba en el payload, no porque alguien lo
- * decidiera once veces.
+ * ── POR QUÉ NO TIENE FECHA, Y POR QUÉ LA PERDIÓ ───────────────────────────
+ * Llevaba un `created_at` que NINGUNA superficie dibujaba. Llegó cuando la
+ * antigüedad se pintaba en casi todas las cards de la pantalla, y se quedó
+ * cuando ese reloj se apagó en todas menos en la única que puede justificarlo
+ * —el primer post del álbum, que gana por cronología y no por conteo—. Esa card
+ * es un `HighlightPost`, no un comentario, así que acá la fecha no tenía
+ * lector: el que la mira es el ÚNICO eje por el que se decide si un dato viaja.
  *
- * Al sacar el reloj de las cards de comentario el campo se quedó sin un solo
- * lector, y un campo que viaja sin lector es exactamente lo que la casa
- * persigue: cuesta una columna en el `GROUP BY` y un alias en la query, en la
- * consulta que arma los once slots de una pantalla.
+ * Y no era gratis. La consulta del slot es AGRUPADA, así que toda columna
+ * seleccionada que no sea agregada tiene que estar además en el `GROUP BY` o
+ * Postgres rechaza la sentencia entera: se pagaba una columna más en el
+ * agrupamiento de la consulta más caliente de destacados para no dibujar nada.
  *
- * **Lo que NO hay que hacer**: devolverlo «por si alguna vista lo necesita». Si
- * un slot de comentario alguna vez rankea por fecha, lo que cambia primero es
- * `HIGHLIGHT_SLOT_RANKING` en el api —que es el dueño único de ese eje— y el
- * campo vuelve con ese slot, no antes.
- *
- * Por eso este tipo no es genérico sobre el timestamp: no le queda ninguno.
- * `HighlightUser` ya venía siendo así por el mismo motivo.
+ * ── POR QUÉ SE FUE TAMBIÉN EL PARÁMETRO DE TIMESTAMP ──────────────────────
+ * Era el único campo que lo usaba. Un parámetro genérico que ningún miembro
+ * consume compila igual y es superficie muerta: el que lea `HighlightComment<X>`
+ * después va a creer que `X` decide algo. Los slots que SÍ llevan fecha
+ * —`HighlightPost`, `HighlightStory`— lo conservan, así que `AlbumHighlights`
+ * sigue teniéndolo para ellos.
  */
 export interface HighlightComment<TRole extends string = AlbumMemberRole> {
   id: string;
