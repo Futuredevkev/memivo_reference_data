@@ -4,25 +4,23 @@ const { existsSync, readdirSync, statSync } = require('node:fs');
 const { relative, resolve, sep } = require('node:path');
 
 const root = resolve(__dirname, '..', 'src');
-const expectedDomains = [
-  'album',
-  'auth',
-  'chat',
-  'common',
-  'downloads',
-  'errors',
-  'highlights',
-  'media',
-  'notifications',
-  'polls',
-  'reactions',
-  'reference-data',
-  'reports',
-  'sockets',
-  'social',
-  'stories',
-  'validation',
-];
+
+/**
+ * LOS DOMINIOS SE MIDEN, NO SE LISTAN.
+ *
+ * ── EL DEFECTO QUE CIERRA ─────────────────────────────────────────────────
+ * Esta lista estaba escrita a mano y decía DIECISIETE cuando `src/` tiene
+ * DIECINUEVE carpetas: le faltaban `moderation` y `stickers`. Todo lo que este
+ * archivo afirma «para todos los dominios» —que cada uno tenga su barrel, entre
+ * otras— pasaba en verde sobre dos que nunca miró.
+ *
+ * Es la misma clase que ORDEN §4 nombra: un censo transcrito se pudre sin que
+ * nadie lo toque. La forma legítima es MEDIRLO, y acá el instrumento es el
+ * directorio mismo.
+ */
+const expectedDomains = readdirSync(root)
+  .filter((entry) => statSync(resolve(root, entry)).isDirectory())
+  .sort();
 
 test('todos los dominios tienen un barrel explícito', () => {
   for (const domain of expectedDomains) {
@@ -450,4 +448,48 @@ test('ningún dominio declarado plano tiene subcarpetas', () => {
     .sort();
 
   assert.deepEqual(contradicen, []);
+});
+
+/**
+ * EL BLOQUE `## Estructura` DEL README ES UN CENSO, Y SE CRUZA EN LOS DOS
+ * SENTIDOS.
+ *
+ * ── EL DEFECTO QUE CIERRA ─────────────────────────────────────────────────
+ * Es la única página que le dice a quien llega qué hay adentro del paquete, y
+ * estaba escrita a mano: listaba CATORCE dominios de los diecinueve que existen.
+ * Faltaban cinco —`downloads`, `moderation`, `polls`, `social`, `stickers`—,
+ * invisibles en la única página que describe el paquete.
+ *
+ * ORDEN §4 lo dice con todas las letras: si el censo ES el documento, vive donde
+ * un gate lo pueda leer y se cruza contra su fuente en los DOS sentidos. El
+ * primer sentido caza el dominio nuevo que nadie escribió; el segundo, la fila
+ * que sobrevivió a su carpeta.
+ *
+ * ── LO QUE NO MIDE ────────────────────────────────────────────────────────
+ * La DESCRIPCIÓN de cada fila —«enums + interfaces»—: que diga la verdad sobre
+ * lo que hay adentro es prosa contra conducta, y eso no es mecánico. Lo que este
+ * caso sostiene es que la LISTA sea el árbol.
+ */
+test('el bloque de estructura del README nombra exactamente los dominios de `src/`', () => {
+  const { readFileSync } = require('node:fs');
+  const readme = readFileSync(resolve(__dirname, '..', 'README.md'), 'utf8');
+
+  // `\r?\n` y no `\n`: el `.gitattributes` de este repo fija LF **sólo** para
+  // `dist/`, así que en una máquina con `core.autocrlf=true` —la de desarrollo
+  // lo tiene— el README se materializa con CRLF en cada checkout. Un detector
+  // anclado a `\n` no encuentra el bloque y el gate se cae por su propia causa,
+  // que es la forma en que un instrumento se degrada sin decir por qué.
+  const bloque = /## Estructura[\s\S]*?```text\r?\n([\s\S]*?)```/.exec(readme);
+  assert.ok(bloque, 'el README perdió su bloque `## Estructura`');
+
+  // Cada fila es `  <dominio>/  <descripción>`; la primera es `src/`.
+  const declarados = [...bloque[1].matchAll(/^\s{2}([a-z-]+)\/\s/gm)].map(
+    (fila) => fila[1],
+  );
+
+  assert.ok(
+    declarados.length > 5,
+    'el detector dejó de enganchar filas: el roto es el regex, no el README',
+  );
+  assert.deepEqual([...declarados].sort(), expectedDomains);
 });

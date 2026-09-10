@@ -64,14 +64,19 @@ src/
   auth/           constants + enums + interfaces
   chat/           constants + enums + interfaces
   common/         enums + interfaces
+  downloads/      constants + enums + interfaces
   errors/         un catálogo por dominio + consolidado
-  highlights/     interfaces
+  highlights/     constants + enums + interfaces + types
   media/          constants + enums + interfaces + types
+  moderation/     enums
   notifications/  enums + interfaces
+  polls/          enums + interfaces
   reactions/      constants + enums + interfaces
   reference-data/ catálogos estáticos + type guards
   reports/        enums + interfaces
+  social/         constants + enums + interfaces
   sockets/        constants + interfaces
+  stickers/       constants + enums + helpers + interfaces
   stories/        interfaces
   validation/     límites + patrones + contraseñas comunes
 ```
