@@ -171,10 +171,17 @@ const social = require('../dist/social/index.js');
 //     imagen no se puede leer y el otro cuando el contenido no coincide con el
 //     tipo declarado. Con la lista de formatos dicha en la frase, ahí se leería
 //     «se aceptan JPG, PNG…» sobre un archivo que ES un PNG.
-test('el catálogo consolidado expone 204 códigos de error únicos', () => {
+// v33.0.0: **+1**, y NO es del plan. `DOWNLOAD_QUOTA_EXCEEDED` es la cota de
+// bytes por ventana rodante, **ciega al plan**: la misma para el que paga y el
+// que no. Cierra un agujero de costo que existe hoy — la validación de un
+// trabajo de descarga mira ACCESO al álbum y no rol, y el throttler cuenta
+// requests, así que cualquier invitado pide el techo del sistema y lo repite.
+// Vive en el enum de descargas y no en uno de plan: el prefijo diría que se
+// vende, y no se vende.
+test('el catálogo consolidado expone 205 códigos de error únicos', () => {
   const values = Object.values(errors.ErrorCode);
 
-  assert.equal(values.length, 204);
+  assert.equal(values.length, 205);
   assert.equal(new Set(values).size, values.length);
 });
 

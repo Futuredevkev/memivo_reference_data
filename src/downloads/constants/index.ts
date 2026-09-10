@@ -3,4 +3,6 @@ export * from './download-job-max-active-per-user.constant';
 export * from './download-job-max-photos.constant';
 export * from './download-job-max-targets.constant';
 export * from './download-manifest-max-items.constant';
+export * from './download-quota-max-bytes-per-window.constant';
+export * from './download-quota-window-days.constant';
 export * from './mark-download-item-complete-allowed-statuses.constant';

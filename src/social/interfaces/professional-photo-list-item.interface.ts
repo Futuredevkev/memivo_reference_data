@@ -6,7 +6,24 @@ export interface ProfessionalPhotoListItem<TTimestamp = string> {
   url: string;
   thumbnailUrl: string | null;
   created_at: TTimestamp;
-  file?: PhotoFile;
+  /**
+   * El asset detrás de la foto. Requerido, y eso CAMBIÓ en esta ola.
+   *
+   * ── POR QUÉ DEJÓ DE SER OPCIONAL ──────────────────────────────────────
+   * Era opcional y su rama vacía no la podía alcanzar producción: `photos`
+   * declara `fileId` no nulo con FK a `file(id)`, y los dos únicos caminos que
+   * producen esta forma joinean la relación. O sea que el `undefined` sólo
+   * describía un `select` que nadie escribe — la clase de código muerto que
+   * ORDEN §7 llama la más peligrosa, porque ningún gate ve una rama muerta.
+   *
+   * ── Y PORQUE LO OPCIONAL SE PROPAGABA AL VEREDICTO ────────────────────
+   * `PhotoFile` compone `MediaAvailability`, así que este campo es por dónde
+   * llega «esta pieza ya no está». Con `file?`, el traductor del cliente
+   * tendría que aceptar `undefined` y contestar «no se sabe» — o sea que
+   * olvidarse de pasar la pieza volvería a compilar, que es exactamente el
+   * defecto que el campo requerido existe para cerrar, un nivel más arriba.
+   */
+  file: PhotoFile;
   /**
    * Quién subió la foto, o `null` si no se sabe.
    *

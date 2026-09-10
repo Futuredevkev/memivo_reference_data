@@ -1,7 +1,30 @@
 import type { AlbumMemberRole } from '../../album';
 import type { StickerReference } from '../../stickers';
 import type { HighlightActor } from './internal/highlight-actor.interface';
-export interface HighlightComment<TTimestamp = string, TRole extends string = AlbumMemberRole> {
+/**
+ * El comentario que gana un slot de destacados.
+ *
+ * ── POR QUÉ NO TIENE FECHA, Y POR QUÉ LA PERDIÓ ───────────────────────────
+ * Llevaba un `created_at` que NINGUNA superficie dibujaba. Llegó cuando la
+ * antigüedad se pintaba en casi todas las cards de la pantalla, y se quedó
+ * cuando ese reloj se apagó en todas menos en la única que puede justificarlo
+ * —el primer post del álbum, que gana por cronología y no por conteo—. Esa card
+ * es un `HighlightPost`, no un comentario, así que acá la fecha no tenía
+ * lector: el que la mira es el ÚNICO eje por el que se decide si un dato viaja.
+ *
+ * Y no era gratis. La consulta del slot es AGRUPADA, así que toda columna
+ * seleccionada que no sea agregada tiene que estar además en el `GROUP BY` o
+ * Postgres rechaza la sentencia entera: se pagaba una columna más en el
+ * agrupamiento de la consulta más caliente de destacados para no dibujar nada.
+ *
+ * ── POR QUÉ SE FUE TAMBIÉN EL PARÁMETRO DE TIMESTAMP ──────────────────────
+ * Era el único campo que lo usaba. Un parámetro genérico que ningún miembro
+ * consume compila igual y es superficie muerta: el que lea `HighlightComment<X>`
+ * después va a creer que `X` decide algo. Los slots que SÍ llevan fecha
+ * —`HighlightPost`, `HighlightStory`— lo conservan, así que `AlbumHighlights`
+ * sigue teniéndolo para ellos.
+ */
+export interface HighlightComment<TRole extends string = AlbumMemberRole> {
     id: string;
     /**
      * `null` cuando el comentario destacado es un sticker.
@@ -28,5 +51,4 @@ export interface HighlightComment<TTimestamp = string, TRole extends string = Al
      * respuestas, y el nombre viejo afirmaba lo contrario.
      */
     count: number;
-    created_at: TTimestamp;
 }
