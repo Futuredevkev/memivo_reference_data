@@ -19,6 +19,4 @@ __exportStar(require("./download-job-max-active-per-user.constant"), exports);
 __exportStar(require("./download-job-max-photos.constant"), exports);
 __exportStar(require("./download-job-max-targets.constant"), exports);
 __exportStar(require("./download-manifest-max-items.constant"), exports);
-__exportStar(require("./download-quota-max-bytes-per-window.constant"), exports);
-__exportStar(require("./download-quota-window-days.constant"), exports);
 __exportStar(require("./mark-download-item-complete-allowed-statuses.constant"), exports);

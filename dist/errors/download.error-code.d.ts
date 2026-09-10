@@ -13,15 +13,5 @@ export declare enum DownloadErrorCode {
     DOWNLOAD_JOB_NOT_FOUND = "DOWNLOAD_JOB_NOT_FOUND",
     DOWNLOAD_JOB_FORBIDDEN = "DOWNLOAD_JOB_FORBIDDEN",
     DOWNLOAD_JOB_CREATE_FAILED = "DOWNLOAD_JOB_CREATE_FAILED",
-    DOWNLOAD_JOB_CANCEL_FAILED = "DOWNLOAD_JOB_CANCEL_FAILED",
-    /**
-     * La cuota de BYTES servidos por ventana rodante, y es CIEGA AL PLAN: la
-     * misma para el que paga y el que no. No vende nada —existe para no vender a
-     * pérdida—, así que no lleva prefijo `PLAN_` ni habla de ningún plan.
-     *
-     * Cubre las DOS ramas de descarga —el job por lotes y el manifest suelto—
-     * contra la misma aserción, porque la factura no distingue por dónde salió el
-     * byte.
-     */
-    DOWNLOAD_QUOTA_EXCEEDED = "DOWNLOAD_QUOTA_EXCEEDED"
+    DOWNLOAD_JOB_CANCEL_FAILED = "DOWNLOAD_JOB_CANCEL_FAILED"
 }
