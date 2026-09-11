@@ -1,6 +1,7 @@
 import { formatPersonDisplayName } from '../../common/helpers';
 import { MENTION_TRIGGER } from '../constants';
 import type { MentionAnnotation } from '../interfaces';
+import { mentionTextOf } from './mention-text-of.helper';
 
 /**
  * LA INVARIANTE de una mención: el trozo del texto que la anotación señala dice
@@ -24,5 +25,5 @@ export const mentionMatchesText = (
   annotation: Pick<MentionAnnotation, 'start' | 'length'>,
   person: { readonly name?: string | null; readonly lastName?: string | null },
 ): boolean =>
-  text.slice(annotation.start, annotation.start + annotation.length) ===
+  mentionTextOf(text, annotation) ===
   MENTION_TRIGGER + formatPersonDisplayName(person);

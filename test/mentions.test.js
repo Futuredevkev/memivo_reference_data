@@ -129,6 +129,15 @@ test('el tope se pregunta PRIMERO y sale de la constante publicada', () => {
   assert.equal(mentions.findMentionAnnotationsDefect(text, tooMany), 'too-many');
 });
 
+test('el trozo de una anotación es el `slice` UTF-16, con el disparador incluido', () => {
+  const text = '🎉 hola @Ana López!';
+  const start = text.indexOf('@');
+  assert.equal(mentions.mentionTextOf(text, { start, length: 10 }), '@Ana López');
+  // Un offset fuera del texto no revienta: devuelve lo que hay, y la forma la
+  // rechaza `findMentionAnnotationsDefect` antes de que nadie lo use.
+  assert.equal(mentions.mentionTextOf('@a', { start: 0, length: 99 }), '@a');
+});
+
 test('el disparador publicado es el que la invariante compara', () => {
   assert.equal(mentions.MENTION_TRIGGER, '@');
 });

@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.mentionMatchesText = void 0;
 const helpers_1 = require("../../common/helpers");
 const constants_1 = require("../constants");
+const mention_text_of_helper_1 = require("./mention-text-of.helper");
 /**
  * LA INVARIANTE de una mención: el trozo del texto que la anotación señala dice
  * exactamente `@` + el nombre visible de la persona.
@@ -20,6 +21,6 @@ const constants_1 = require("../constants");
  * necesita a la persona. Y tampoco decide si la persona puede leer el texto:
  * la audiencia es del servidor, que es el único que la conoce.
  */
-const mentionMatchesText = (text, annotation, person) => text.slice(annotation.start, annotation.start + annotation.length) ===
+const mentionMatchesText = (text, annotation, person) => (0, mention_text_of_helper_1.mentionTextOf)(text, annotation) ===
     constants_1.MENTION_TRIGGER + (0, helpers_1.formatPersonDisplayName)(person);
 exports.mentionMatchesText = mentionMatchesText;
