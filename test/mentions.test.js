@@ -141,3 +141,14 @@ test('el trozo de una anotación es el `slice` UTF-16, con el disparador incluid
 test('el disparador publicado es el que la invariante compara', () => {
   assert.equal(mentions.MENTION_TRIGGER, '@');
 });
+
+test('la consulta de una mención tiene piso y techo coherentes', () => {
+  // El techo es el del término de búsqueda: la consulta viaja como `search`, y
+  // arriba de ese tope el servidor la rechaza.
+  assert.equal(mentions.MENTION_QUERY_MAX_LENGTH, validation.SEARCH_TERM_MAX);
+  assert.ok(mentions.MENTION_QUERY_MIN_LENGTH >= 1);
+  assert.ok(mentions.MENTION_QUERY_MIN_LENGTH <= mentions.MENTION_QUERY_MAX_LENGTH);
+  // Nombre y apellido tienen que caber: con menos de dos palabras no se podría
+  // escribir el apellido, que es la mitad de lo que se pidió.
+  assert.ok(mentions.MENTION_QUERY_MAX_WORDS >= 2);
+});
