@@ -1,3 +1,4 @@
+import type { MentionAnnotation } from '../../mentions';
 import type { StickerReference } from '../../stickers';
 import type { StoryCommentAuthor } from './story-comment-author.interface';
 
@@ -13,6 +14,8 @@ export interface StoryCommentResponse<TTimestamp = string> {
    * dibuja no tiene que contemplar el caso «ninguno».
    */
   text: string | null;
+  /** Las menciones de `text`. Ver `CommentResponse.mentions`. */
+  mentions: MentionAnnotation[];
   storyId: string;
   userId: string;
   user: StoryCommentAuthor;

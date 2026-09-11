@@ -8,6 +8,7 @@ export * from './downloads';
 export * from './errors';
 export * from './highlights';
 export * from './media';
+export * from './mentions';
 export * from './notifications';
 export * from './polls';
 export * from './reactions';

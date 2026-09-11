@@ -26,6 +26,7 @@ import { OAuthErrorCode } from './oauth.error-code';
 import { StickerErrorCode } from './sticker.error-code';
 import { PlanErrorCode } from './plan.error-code';
 import { BillingErrorCode } from './billing.error-code';
+import { MentionErrorCode } from './mention.error-code';
 
 // Re-export individual enums
 export {
@@ -52,6 +53,7 @@ export {
   StickerErrorCode,
   PlanErrorCode,
   BillingErrorCode,
+  MentionErrorCode,
 };
 
 export * from './error-code.constant';

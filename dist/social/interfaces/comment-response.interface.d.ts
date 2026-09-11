@@ -1,3 +1,4 @@
+import type { MentionAnnotation } from '../../mentions';
 import type { StickerReference } from '../../stickers';
 import type { ReactionCounts, ReactionType } from '../../reactions';
 import type { SocialAuthor } from './social-author.interface';
@@ -12,6 +13,15 @@ export interface CommentResponse<TTimestamp = string> {
      * dibuja no tiene que contemplar el caso «ninguno».
      */
     text: string | null;
+    /**
+     * Las menciones de `text`. Vacío cuando no hay ninguna, o cuando es un sticker.
+     *
+     * Requerido y nunca opcional: `JSON.stringify` descarta las claves
+     * `undefined`, y una superficie que recibiera `undefined` en vez de `[]`
+     * dibujaría bien por accidente hasta que alguien hiciera `.length`. El
+     * servidor normaliza la columna nula a `[]` en el mapper.
+     */
+    mentions: MentionAnnotation[];
     userId: string;
     guestPostId: string;
     user: SocialAuthor;

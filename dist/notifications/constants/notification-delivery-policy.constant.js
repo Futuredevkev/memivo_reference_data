@@ -117,6 +117,24 @@ exports.NOTIFICATION_DELIVERY_POLICY = {
         replacedBy: 'post-detail',
         anonymousActor: false,
     }),
+    // Las menciones en un post llevan la MISMA fila que el aviso al que
+    // reemplazan: la mención no es un canal privilegiado (decisión del dueño), así
+    // que se calla donde se callaría el comentario — con ese post abierto, el
+    // comentario ya está en pantalla.
+    [enums_1.NotificationType.MENTIONED_IN_COMMENT]: policy({
+        viewing: { key: 'postId', from: POST_ID_SOURCES },
+        foreground: 'none',
+        bellRow: true,
+        replacedBy: 'post-detail',
+        anonymousActor: false,
+    }),
+    [enums_1.NotificationType.MENTIONED_IN_REPLY]: policy({
+        viewing: { key: 'postId', from: POST_ID_SOURCES },
+        foreground: 'none',
+        bellRow: true,
+        replacedBy: 'post-detail',
+        anonymousActor: false,
+    }),
     // ───────────────────────────────────────────────────────────────────────
     // Chat. Redundantes con ESA sala abierta: el mensaje, la encuesta o la
     // reacción aparecen solos en el hilo.
@@ -150,6 +168,14 @@ exports.NOTIFICATION_DELIVERY_POLICY = {
         replacedBy: 'chat-room',
         anonymousActor: false,
     }),
+    // Misma fila que `NEW_CHAT_MESSAGE`, al que reemplaza para el mencionado.
+    [enums_1.NotificationType.MENTIONED_IN_CHAT_MESSAGE]: policy({
+        viewing: { key: 'chatGroupId', from: CHAT_ID_SOURCES },
+        foreground: 'none',
+        bellRow: true,
+        replacedBy: 'chat-room',
+        anonymousActor: false,
+    }),
     // ───────────────────────────────────────────────────────────────────────
     // Historias. Redundantes con ESA historia abierta en el visor.
     // ───────────────────────────────────────────────────────────────────────
@@ -161,6 +187,14 @@ exports.NOTIFICATION_DELIVERY_POLICY = {
         anonymousActor: false,
     }),
     [enums_1.NotificationType.STORY_COMMENT]: policy({
+        viewing: { key: 'storyId', from: STORY_ID_SOURCES },
+        foreground: 'none',
+        bellRow: true,
+        replacedBy: 'story-viewer',
+        anonymousActor: false,
+    }),
+    // Misma fila que `STORY_COMMENT`, al que reemplaza para el mencionado.
+    [enums_1.NotificationType.MENTIONED_IN_STORY_COMMENT]: policy({
         viewing: { key: 'storyId', from: STORY_ID_SOURCES },
         foreground: 'none',
         bellRow: true,

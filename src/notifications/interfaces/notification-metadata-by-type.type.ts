@@ -42,6 +42,12 @@ export type NotificationMetadataByType = {
   [NotificationType.TAGGED_IN_PHOTO]: PhotoNotificationMetadata;
   [NotificationType.COMMENT_PHOTO]: CommentNotificationMetadata;
   [NotificationType.REPLY_COMMENT]: CommentNotificationMetadata;
+  // La mención lleva la metadata del aviso al que reemplaza: el deep link, la
+  // limpieza al borrar y la supresión por pantalla leen las mismas claves.
+  [NotificationType.MENTIONED_IN_COMMENT]: CommentNotificationMetadata;
+  [NotificationType.MENTIONED_IN_REPLY]: CommentNotificationMetadata;
+  [NotificationType.MENTIONED_IN_STORY_COMMENT]: StoryCommentNotificationMetadata;
+  [NotificationType.MENTIONED_IN_CHAT_MESSAGE]: ChatMessageNotificationMetadata;
   [NotificationType.REACTION_COMMENT]: ReactionOnPhotoMetadata;
   [NotificationType.REACTION_RESPONSE]: ReactionOnPhotoMetadata;
   [NotificationType.CHAT_INVITATION]: ChatGroupNotificationMetadata;

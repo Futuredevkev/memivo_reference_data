@@ -1,4 +1,5 @@
 import type { AlbumMemberRole } from '../../album';
+import type { MentionAnnotation } from '../../mentions';
 import type { StickerReference } from '../../stickers';
 import type { HighlightActor } from './internal/highlight-actor.interface';
 /**
@@ -34,6 +35,15 @@ export interface HighlightComment<TRole extends string = AlbumMemberRole> {
      * decidir un recorte de producto adentro de una query.
      */
     text: string | null;
+    /**
+     * Las menciones de `text`. Ver `CommentResponse.mentions`.
+     *
+     * Viajan también acá porque la tarjeta del destacado dibuja el MISMO
+     * comentario que el hilo: sin ellas, «@Ana López» sería un chip en el post y
+     * texto plano en la tarjeta que lo cita — dos superficies equivalentes que se
+     * comportan distinto sin razón.
+     */
+    mentions: MentionAnnotation[];
     /**
      * El sticker del comentario destacado, `null` cuando lo que ganó fue texto.
      *

@@ -261,10 +261,28 @@ const social = require('../dist/social/index.js');
 //     pagar y éste DESPUÉS, con la tienda ya habiendo cobrado. Decirle «no
 //     pudimos abrir el pago» a alguien a quien ya le cobraron es decirle lo
 //     contrario de lo que pasó.
-test('el catálogo consolidado expone 217 códigos de error únicos', () => {
+//
+// ── LAS TRES ENTRADAS QUE SIGUEN LLEGARON CON EL MERGE DE LA VERSIONADA ──
+// Son la historia de la línea de producción, y se conservan porque el
+// ledger se barre contra `git log`. En ESTA línea la cuota de descarga no se
+// fue nunca —su emisor vivía acá—, así que v33/v34 no mueven el conteo de
+// pagos: lo único que suma el merge son las dos de menciones, 217 → 219.
+// v33.0.0: **+0 códigos**. La ola publicó `DOWNLOAD_QUOTA_EXCEEDED` y se lo
+// llevó de vuelta en la misma ola, porque su EMISOR no aterrizaba: la mitad del
+// api de la cuota de bytes necesita este paquete pineado, o sea el tag cortado
+// primero, y esta ola no lo corta. ORDEN §8 lo dice con todas las letras —«los
+// códigos nuevos se agregan en la MISMA ola que el código del api que los tira,
+// nunca antes»— y el auditor de consumidores lo cortó: `apiUnusedErrorCodes`
+// devolvía ese código. El análisis de costo que lo justifica sigue vivo en la
+// línea de pagos, donde el emisor existe.
+// v34.0.0: vuelve la cuota con emisor y consumidores en la misma ola.
+// v35.0.0: **+2**, las menciones. `MENTIONS_TOO_MANY` es una regla que la
+// persona puede cumplir y su frase dice el tope; `MENTION_ANNOTATION_INVALID`
+// es un cuerpo que la app no produce. Los dos entran con su emisor en el api.
+test('el catálogo consolidado expone 219 códigos de error únicos', () => {
   const values = Object.values(errors.ErrorCode);
 
-  assert.equal(values.length, 217);
+  assert.equal(values.length, 219);
   assert.equal(new Set(values).size, values.length);
 });
 
@@ -329,6 +347,7 @@ test('el catálogo de notificaciones de chat solo contiene los tipos de mensajer
   assert.deepEqual([...CHAT_NOTIFICATION_TYPES], [
     NotificationType.NEW_CHAT_MESSAGE,
     NotificationType.CHAT_MESSAGE_REPLY,
+    NotificationType.MENTIONED_IN_CHAT_MESSAGE,
   ]);
   assert.equal(CHAT_NOTIFICATION_TYPES, contracts.CHAT_NOTIFICATION_TYPES);
 });

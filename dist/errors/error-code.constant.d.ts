@@ -21,6 +21,7 @@ import { OAuthErrorCode } from './oauth.error-code';
 import { StickerErrorCode } from './sticker.error-code';
 import { PlanErrorCode } from './plan.error-code';
 import { BillingErrorCode } from './billing.error-code';
+import { MentionErrorCode } from './mention.error-code';
 /**
  * Enum consolidado para retrocompatibilidad
  * Combina todos los códigos de error en un solo objeto
@@ -39,6 +40,8 @@ import { BillingErrorCode } from './billing.error-code';
  * tampoco.
  */
 export declare const ErrorCode: {
+    readonly MENTIONS_TOO_MANY: MentionErrorCode.MENTIONS_TOO_MANY;
+    readonly MENTION_ANNOTATION_INVALID: MentionErrorCode.MENTION_ANNOTATION_INVALID;
     readonly BILLING_CHECKOUT_UNAVAILABLE: BillingErrorCode.BILLING_CHECKOUT_UNAVAILABLE;
     readonly BILLING_STORE_PURCHASE_INVALID: BillingErrorCode.BILLING_STORE_PURCHASE_INVALID;
     readonly BILLING_STORE_PURCHASE_ALREADY_CLAIMED: BillingErrorCode.BILLING_STORE_PURCHASE_ALREADY_CLAIMED;
