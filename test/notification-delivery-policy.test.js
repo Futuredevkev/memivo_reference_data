@@ -171,7 +171,7 @@ test('las push-only silenciadas en foreground son exactamente las esperadas', ()
   ].sort());
 });
 
-test('los tipos que dejan fila en la campanita son 31 de 43', () => {
+test('los tipos que dejan fila en la campanita son 35 de 47', () => {
   const withBellRow = entries().filter(([, policy]) => policy.persistsBellRow);
 
   // El número de la izquierda importa más que el de la derecha: un tipo nuevo
@@ -186,8 +186,13 @@ test('los tipos que dejan fila en la campanita son 31 de 43', () => {
   // callar la push perdería el hecho entero. Y en los tres el aviso es lo único
   // que le dice a la persona a dónde escribir para pedir la revisión que el
   // corpus legal ya le promete.
-  assert.equal(entries().length, 43);
-  assert.equal(withBellRow.length, 31);
+  //
+  // v35.0.0: **los dos suben en CUATRO**, las menciones. Dejan fila porque
+  // reemplazan a avisos que dejan fila (`COMMENT_PHOTO`, `REPLY_COMMENT`,
+  // `STORY_COMMENT`, `NEW_CHAT_MESSAGE`): si no, colapsar el aviso genérico en
+  // la mención le borraría a esa persona la fila que antes tenía.
+  assert.equal(entries().length, 47);
+  assert.equal(withBellRow.length, 35);
 });
 
 test('getNotificationDeliveryPolicy devuelve null ante un tipo desconocido', () => {

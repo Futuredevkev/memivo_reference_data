@@ -251,6 +251,7 @@ test('el catálogo de notificaciones de chat solo contiene los tipos de mensajer
   assert.deepEqual([...CHAT_NOTIFICATION_TYPES], [
     NotificationType.NEW_CHAT_MESSAGE,
     NotificationType.CHAT_MESSAGE_REPLY,
+    NotificationType.MENTIONED_IN_CHAT_MESSAGE,
   ]);
   assert.equal(CHAT_NOTIFICATION_TYPES, contracts.CHAT_NOTIFICATION_TYPES);
 });

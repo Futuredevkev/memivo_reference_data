@@ -97,4 +97,34 @@ export enum NotificationType {
    * Y sin advertencia no hay reincidencia: no queda registro de la primera vez.
    */
   WARNING_ISSUED_BY_MEMIVO = 'WARNING_ISSUED_BY_MEMIVO',
+  /**
+   * Te mencionaron en un comentario de un post.
+   *
+   * ── POR QUÉ UN TIPO POR SUPERFICIE Y NO UN `MENTION` ÚNICO ────────────────
+   * Porque la política de entrega se llavea por tipo y cada superficie la
+   * decide distinto: qué pantalla vuelve redundante al aviso (el post, el visor
+   * de historias, la sala), y si cuenta en la campanita o en el globo del chat.
+   * Un tipo único obligaría a mirar la metadata para decidir la fila, que es la
+   * tabla partida en dos lugares. Es la misma partición que ya tienen
+   * `COMMENT_PHOTO`, `STORY_COMMENT` y `NEW_CHAT_MESSAGE`.
+   *
+   * ── LA MENCIÓN NO ES UN CANAL PRIVILEGIADO ────────────────────────────────
+   * Decisión del dueño: respeta el silenciado como cualquier aviso del hilo.
+   * Y cuando el mismo hecho te dispararía también el aviso propio de la
+   * superficie (comentaron tu post), recibís UNO solo, el de la mención, que es
+   * el más específico. El colapso lo hace el servidor al elegir destinatarios.
+   */
+  MENTIONED_IN_COMMENT = 'MENTIONED_IN_COMMENT',
+  /** Te mencionaron en una respuesta a un comentario. Ver `MENTIONED_IN_COMMENT`. */
+  MENTIONED_IN_REPLY = 'MENTIONED_IN_REPLY',
+  /** Te mencionaron en un comentario de una historia. Ver `MENTIONED_IN_COMMENT`. */
+  MENTIONED_IN_STORY_COMMENT = 'MENTIONED_IN_STORY_COMMENT',
+  /**
+   * Te mencionaron en un mensaje de un grupo de chat. Ver `MENTIONED_IN_COMMENT`.
+   *
+   * Cuenta en el globo del CHAT y no en la campanita —está en
+   * `CHAT_NOTIFICATION_TYPES`—, porque para esa persona reemplaza al aviso
+   * genérico del mensaje, que también cuenta ahí.
+   */
+  MENTIONED_IN_CHAT_MESSAGE = 'MENTIONED_IN_CHAT_MESSAGE',
 }
