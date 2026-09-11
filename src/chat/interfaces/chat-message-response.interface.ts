@@ -1,3 +1,4 @@
+import type { MentionAnnotation } from '../../mentions';
 import type { StickerReference } from '../../stickers';
 import type { ChatMessageType, SystemMessageAction } from '../enums';
 import type { ChatLocationPoint } from './chat-location-point.interface';
@@ -24,6 +25,15 @@ export interface ChatMessageResponse<TTimestamp = string> {
   chatGroupId: string;
   senderId: string | null;
   content: string | null;
+  /**
+   * Las menciones de `content`. Vacío en todo mensaje que no las lleva.
+   *
+   * REQUERIDO aunque casi todo lo de este archivo sea opcional, y a propósito:
+   * los opcionales de acá describen campos que sólo existen para un tipo de
+   * mensaje, mientras que «no menciona a nadie» es un valor —`[]`— que todo
+   * mensaje tiene. Ver `CommentResponse.mentions` por qué `undefined` no sirve.
+   */
+  mentions: MentionAnnotation[];
   type: ChatMessageType;
   isEdited: boolean;
   /**

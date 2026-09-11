@@ -68,6 +68,7 @@ src/
   errors/         un catálogo por dominio + consolidado
   highlights/     constants + enums + interfaces + types
   media/          constants + enums + interfaces + types
+  mentions/       constants + helpers + interfaces + types
   moderation/     enums
   notifications/  enums + interfaces
   polls/          enums + interfaces

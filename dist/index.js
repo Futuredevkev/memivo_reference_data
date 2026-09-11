@@ -23,6 +23,7 @@ __exportStar(require("./downloads"), exports);
 __exportStar(require("./errors"), exports);
 __exportStar(require("./highlights"), exports);
 __exportStar(require("./media"), exports);
+__exportStar(require("./mentions"), exports);
 __exportStar(require("./notifications"), exports);
 __exportStar(require("./polls"), exports);
 __exportStar(require("./reactions"), exports);

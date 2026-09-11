@@ -14,5 +14,6 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+__exportStar(require("./format-person-display-name.helper"), exports);
 __exportStar(require("./timed-operation.interface"), exports);
 __exportStar(require("./with-timeout.helper"), exports);

@@ -1,3 +1,4 @@
+import type { MentionAnnotation } from '../../mentions';
 import type { StickerReference } from '../../stickers';
 import type { ReactionCounts, ReactionType } from '../../reactions';
 import type { SocialAuthor } from './social-author.interface';
@@ -13,6 +14,8 @@ export interface ResponseData<TTimestamp = string> {
    * dibuja no tiene que contemplar el caso «ninguno».
    */
   text: string | null;
+  /** Las menciones de `text`. Ver `CommentResponse.mentions`. */
+  mentions: MentionAnnotation[];
   commentId: string;
   userId: string;
   user: SocialAuthor;

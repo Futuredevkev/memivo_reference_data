@@ -15,6 +15,7 @@ export * from './group-name-max.constant';
 export * from './guest-post-tags-max-items.constant';
 export * from './idempotency-key-header.constant';
 export * from './idempotency-key-max-length.constant';
+export * from './mentions-max-items.constant';
 export * from './min-age-years.constant';
 export * from './multi-file-upload-limit.constant';
 export * from './organizer-photo-upload-limit.constant';

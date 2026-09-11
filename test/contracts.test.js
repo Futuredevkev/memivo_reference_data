@@ -180,10 +180,13 @@ const social = require('../dist/social/index.js');
 // devolvía ese código. El análisis de costo que lo justifica sigue vivo en la
 // línea de pagos, donde el emisor existe.
 // v34.0.0: vuelve la cuota con emisor y consumidores en la misma ola.
-test('el catálogo consolidado expone 205 códigos de error únicos', () => {
+// v35.0.0: **+2**, las menciones. `MENTIONS_TOO_MANY` es una regla que la
+// persona puede cumplir y su frase dice el tope; `MENTION_ANNOTATION_INVALID`
+// es un cuerpo que la app no produce. Los dos entran con su emisor en el api.
+test('el catálogo consolidado expone 207 códigos de error únicos', () => {
   const values = Object.values(errors.ErrorCode);
 
-  assert.equal(values.length, 205);
+  assert.equal(values.length, 207);
   assert.equal(new Set(values).size, values.length);
 });
 

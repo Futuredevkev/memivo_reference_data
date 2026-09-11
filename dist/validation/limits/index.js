@@ -31,6 +31,7 @@ __exportStar(require("./group-name-max.constant"), exports);
 __exportStar(require("./guest-post-tags-max-items.constant"), exports);
 __exportStar(require("./idempotency-key-header.constant"), exports);
 __exportStar(require("./idempotency-key-max-length.constant"), exports);
+__exportStar(require("./mentions-max-items.constant"), exports);
 __exportStar(require("./min-age-years.constant"), exports);
 __exportStar(require("./multi-file-upload-limit.constant"), exports);
 __exportStar(require("./organizer-photo-upload-limit.constant"), exports);

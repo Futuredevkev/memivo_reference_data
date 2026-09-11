@@ -1,3 +1,4 @@
+import type { MentionAnnotation } from '../../mentions';
 /**
  * EL CUERPO de un alta social: texto O un sticker, nunca los dos ni ninguno.
  *
@@ -40,4 +41,10 @@ export interface TextOrStickerRequest {
      * nadie.
      */
     readonly stickerExternalId?: string;
+    /**
+     * Las menciones de `text`. Sólo tienen sentido con texto: un sticker no tiene
+     * dónde apuntarlas, y el servidor lo rechaza como anotación inválida (queda
+     * fuera del texto).
+     */
+    readonly mentions?: MentionAnnotation[];
 }

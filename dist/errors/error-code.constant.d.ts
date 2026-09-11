@@ -19,6 +19,7 @@ import { DownloadErrorCode } from './download.error-code';
 import { LikeErrorCode } from './like.error-code';
 import { OAuthErrorCode } from './oauth.error-code';
 import { StickerErrorCode } from './sticker.error-code';
+import { MentionErrorCode } from './mention.error-code';
 /**
  * Enum consolidado para retrocompatibilidad
  * Combina todos los códigos de error en un solo objeto
@@ -37,6 +38,8 @@ import { StickerErrorCode } from './sticker.error-code';
  * tampoco.
  */
 export declare const ErrorCode: {
+    readonly MENTIONS_TOO_MANY: MentionErrorCode.MENTIONS_TOO_MANY;
+    readonly MENTION_ANNOTATION_INVALID: MentionErrorCode.MENTION_ANNOTATION_INVALID;
     readonly STICKER_CATALOG_UNAVAILABLE: StickerErrorCode.STICKER_CATALOG_UNAVAILABLE;
     readonly STICKER_CATALOG_QUOTA_EXCEEDED: StickerErrorCode.STICKER_CATALOG_QUOTA_EXCEEDED;
     readonly STICKER_NOT_FOUND: StickerErrorCode.STICKER_NOT_FOUND;

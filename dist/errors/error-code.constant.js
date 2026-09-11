@@ -22,6 +22,7 @@ const download_error_code_1 = require("./download.error-code");
 const like_error_code_1 = require("./like.error-code");
 const oauth_error_code_1 = require("./oauth.error-code");
 const sticker_error_code_1 = require("./sticker.error-code");
+const mention_error_code_1 = require("./mention.error-code");
 /**
  * Enum consolidado para retrocompatibilidad
  * Combina todos los códigos de error en un solo objeto
@@ -82,4 +83,6 @@ exports.ErrorCode = {
     ...oauth_error_code_1.OAuthErrorCode,
     // Stickers
     ...sticker_error_code_1.StickerErrorCode,
+    // Mentions
+    ...mention_error_code_1.MentionErrorCode,
 };
