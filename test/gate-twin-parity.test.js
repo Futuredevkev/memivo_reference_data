@@ -89,7 +89,7 @@ const REPOS = [
  * sin dejar rastro. Con él, hay que bajarlo — y bajarlo es una decisión escrita
  * en el diff, no un olvido.
  */
-const PAREJAS_DECLARADAS = 23;
+const PAREJAS_DECLARADAS = 24;
 
 const clave = (absoluto) => relative(ROOT, absoluto).split(sep).join('/');
 
