@@ -12,7 +12,6 @@ export * from './chat-member-mutation-response.interface';
 export * from './chat-member-response.interface';
 export * from './chat-members-response.type';
 export * from './chat-message-content-rule.interface';
-export * from './chat-message-context-meta.interface';
 export * from './chat-message-context-response.interface';
 export * from './chat-message-mutation-rule.interface';
 export * from './chat-message-mutation-viewer.interface';

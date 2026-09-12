@@ -52,6 +52,14 @@ export interface ChatMessageResponse<TTimestamp = string> {
     created_at: TTimestamp;
     sender?: ChatUserSummary | null;
     files?: ChatMessageFileResponse[];
+    /**
+     * El id del mensaje citado, SÓLO si viaja la cita: los dos se mueven juntos.
+     *
+     * `null` —con `replyToMessage` también en `null`— cuando el mensaje no cita,
+     * cuando la cita se borró y cuando su autor está oculto para quien mira. Nada
+     * en el cable distingue esas causas, a propósito: un id sin cita decía
+     * «existe, pero no la ves», o sea que hay un bloqueo de por medio.
+     */
     replyToMessageId?: string | null;
     replyToMessage?: ChatReplyMessageResponse | null;
     systemAction?: SystemMessageAction | null;

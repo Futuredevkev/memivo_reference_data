@@ -1,6 +1,7 @@
 import type { MentionAnnotation } from '../../mentions';
 import type { StickerReference } from '../../stickers';
 import type { ReactionCounts, ReactionType } from '../../reactions';
+import type { ResponseReplyTarget } from './response-reply-target.interface';
 import type { SocialAuthor } from './social-author.interface';
 
 export interface ResponseData<TTimestamp = string> {
@@ -17,6 +18,23 @@ export interface ResponseData<TTimestamp = string> {
   /** Las menciones de `text`. Ver `CommentResponse.mentions`. */
   mentions: MentionAnnotation[];
   commentId: string;
+  /**
+   * La respuesta del mismo hilo a la que ésta contesta, o `null` si contesta
+   * al comentario.
+   *
+   * REQUERIDO y no opcional, por el mismo criterio que `mentions`: «no contesta
+   * a ninguna respuesta» es un valor, no la ausencia del campo.
+   *
+   * También es `null` cuando la citada ya no está —se borró y la base dejó la
+   * referencia en `NULL`— o cuando su autor está oculto para quien mira
+   * (bloqueo en cualquier sentido, o cuenta suspendida). Y NADA en el cable
+   * distingue esas causas: un campo que dijera «oculta» frente a «borrada»
+   * delataría el bloqueo. La respuesta se lee entonces como respuesta al
+   * comentario, igual que un mensaje del chat cuya cita no se ve.
+   *
+   * No hay un `replyToResponseId` aparte: sería el mismo dato dos veces.
+   */
+  replyToResponse: ResponseReplyTarget | null;
   userId: string;
   user: SocialAuthor;
   created_at: TTimestamp;

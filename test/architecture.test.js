@@ -164,7 +164,7 @@ const SORTED_BARRELS = [
  *   album/interfaces   línea  1  `album-access-response-album` antes que `album-access-password-response`
  *   auth/interfaces    línea 24  `register-push-device-request` antes que `regenerate-backup-codes-response`
  *   index.ts           línea  1  `reference-data` primero, delante de `album`
- *   social/interfaces  línea  2  `comment-created-response` antes que `comment-context-meta`
+ *   social/interfaces  línea  2  `comment-created-response` antes que `comment-context-response`
  *   sockets/interfaces línea 26  `hidden-ids-changed-payload` antes que `group-created-payload`
  *   stories/interfaces línea  4  `story-overlay-position` antes que `story-author`
  */

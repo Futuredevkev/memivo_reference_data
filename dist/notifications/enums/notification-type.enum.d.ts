@@ -126,5 +126,49 @@ export declare enum NotificationType {
      * `CHAT_NOTIFICATION_TYPES`—, porque para esa persona reemplaza al aviso
      * genérico del mensaje, que también cuenta ahí.
      */
-    MENTIONED_IN_CHAT_MESSAGE = "MENTIONED_IN_CHAT_MESSAGE"
+    MENTIONED_IN_CHAT_MESSAGE = "MENTIONED_IN_CHAT_MESSAGE",
+    /**
+     * Respondieron a TU respuesta: alguien eligió «Responder» sobre una respuesta
+     * tuya adentro de un hilo de comentarios.
+     *
+     * ── POR QUÉ NO REUSA `REPLY_COMMENT` ─────────────────────────────────────
+     * Porque aquel dice «respondió a tu comentario», y para el autor de una
+     * RESPUESTA eso es falso: el comentario es de otro. Es la regla que este enum
+     * ya dejó escrita en `CONTENT_REMOVED_BY_MEMIVO` —no se reusa un tipo cuyo
+     * texto le miente a quien lo recibe— y la misma partición que el chat tiene
+     * entre `CHAT_MESSAGE_REPLY` y `NEW_CHAT_MESSAGE`.
+     *
+     * ── UN AVISO POR PERSONA Y POR HECHO ─────────────────────────────────────
+     * Si además te mencionan en esa respuesta gana `MENTIONED_IN_REPLY`, y si sos
+     * a la vez el citado y el dueño del comentario recibís éste y no
+     * `REPLY_COMMENT`: el más específico. El colapso lo hace el servidor al elegir
+     * destinatarios.
+     *
+     * Lleva la metadata de `REPLY_COMMENT`, con `responseId` = la respuesta NUEVA:
+     * el toque lleva a lo que se escribió, no a lo que se citó.
+     */
+    REPLY_RESPONSE = "REPLY_RESPONSE",
+    /**
+     * Alguien comentó una publicación ajena en la que vos ya habías comentado.
+     *
+     * ── EL DEFECTO QUE CIERRA ────────────────────────────────────────────────
+     * Ese aviso ya existía, pero viajaba como `COMMENT_PHOTO`, cuyo texto dice
+     * «comentó tu publicación»: a quien sólo había comentado le afirmaba que el
+     * post era suyo. A quién se le avisa es una decisión escrita del servidor —a
+     * los que ya participan del hilo, mientras sigan en el álbum— y no cambió; lo
+     * que cambió es la voz, que ahora es verdadera.
+     *
+     * Es el último de la precedencia: el dueño del post recibe `COMMENT_PHOTO`, y
+     * el mencionado, la mención.
+     */
+    COMMENT_ON_COMMENTED_POST = "COMMENT_ON_COMMENTED_POST",
+    /**
+     * Alguien respondió en una publicación en la que vos comentaste, sin
+     * responderte a vos ni a tu comentario.
+     *
+     * Es el mismo defecto que `COMMENT_ON_COMMENTED_POST`, del lado de las
+     * respuestas: viajaba como `REPLY_COMMENT` y le decía «respondió a tu
+     * comentario» a quien no era el dueño del comentario respondido.
+     */
+    REPLY_ON_COMMENTED_POST = "REPLY_ON_COMMENTED_POST"
 }

@@ -1,5 +1,6 @@
 export * from './blocked-user-summary.interface';
 export * from './blocked-users-list-response.type';
+export * from './context-window-meta.interface';
 export * from './hidden-user-ids-response.interface';
 export * from './message-response.interface';
 export * from './normalize-transport-timestamps.type';

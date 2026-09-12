@@ -160,6 +160,31 @@ export const NOTIFICATION_DELIVERY_POLICY: Readonly<
     replacedBy: 'post-detail',
     anonymousActor: false,
   }),
+  // Los avisos del hilo con voz propia —a quien le respondieron la respuesta, y
+  // a quien sólo había comentado el post— llevan la fila de `REPLY_COMMENT` y
+  // `COMMENT_PHOTO`: son el mismo hecho sobre el mismo post, con un texto
+  // verdadero para quien lo recibe.
+  [NotificationType.REPLY_RESPONSE]: policy({
+    viewing: { key: 'postId', from: POST_ID_SOURCES },
+    foreground: 'none',
+    bellRow: true,
+    replacedBy: 'post-detail',
+    anonymousActor: false,
+  }),
+  [NotificationType.COMMENT_ON_COMMENTED_POST]: policy({
+    viewing: { key: 'postId', from: POST_ID_SOURCES },
+    foreground: 'none',
+    bellRow: true,
+    replacedBy: 'post-detail',
+    anonymousActor: false,
+  }),
+  [NotificationType.REPLY_ON_COMMENTED_POST]: policy({
+    viewing: { key: 'postId', from: POST_ID_SOURCES },
+    foreground: 'none',
+    bellRow: true,
+    replacedBy: 'post-detail',
+    anonymousActor: false,
+  }),
 
   // ───────────────────────────────────────────────────────────────────────
   // Chat. Redundantes con ESA sala abierta: el mensaje, la encuesta o la

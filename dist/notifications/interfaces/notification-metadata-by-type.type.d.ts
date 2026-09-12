@@ -43,6 +43,9 @@ export type NotificationMetadataByType = {
     [NotificationType.REPLY_COMMENT]: CommentNotificationMetadata;
     [NotificationType.MENTIONED_IN_COMMENT]: CommentNotificationMetadata;
     [NotificationType.MENTIONED_IN_REPLY]: CommentNotificationMetadata;
+    [NotificationType.REPLY_RESPONSE]: CommentNotificationMetadata;
+    [NotificationType.COMMENT_ON_COMMENTED_POST]: CommentNotificationMetadata;
+    [NotificationType.REPLY_ON_COMMENTED_POST]: CommentNotificationMetadata;
     [NotificationType.MENTIONED_IN_STORY_COMMENT]: StoryCommentNotificationMetadata;
     [NotificationType.MENTIONED_IN_CHAT_MESSAGE]: ChatMessageNotificationMetadata;
     [NotificationType.REACTION_COMMENT]: ReactionOnPhotoMetadata;
