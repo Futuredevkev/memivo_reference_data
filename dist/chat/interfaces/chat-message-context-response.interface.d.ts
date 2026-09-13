@@ -1,6 +1,6 @@
-import type { ChatMessageContextMeta } from './chat-message-context-meta.interface';
+import type { ContextWindowMeta } from '../../common';
 export interface ChatMessageContextResponse<TMessage> {
     data: TMessage[];
     targetMessageId: string;
-    meta: ChatMessageContextMeta;
+    meta: ContextWindowMeta;
 }

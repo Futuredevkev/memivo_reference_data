@@ -171,7 +171,7 @@ test('las push-only silenciadas en foreground son exactamente las esperadas', ()
   ].sort());
 });
 
-test('los tipos que dejan fila en la campanita son 36 de 48', () => {
+test('los tipos que dejan fila en la campanita son 39 de 51', () => {
   const withBellRow = entries().filter(([, policy]) => policy.persistsBellRow);
 
   // El número de la izquierda importa más que el de la derecha: un tipo nuevo
@@ -199,8 +199,15 @@ test('los tipos que dejan fila en la campanita son 36 de 48', () => {
   // reemplazan a avisos que dejan fila (`COMMENT_PHOTO`, `REPLY_COMMENT`,
   // `STORY_COMMENT`, `NEW_CHAT_MESSAGE`): si no, colapsar el aviso genérico en
   // la mención le borraría a esa persona la fila que antes tenía.
-  assert.equal(entries().length, 48);
-  assert.equal(withBellRow.length, 36);
+  //
+  // v37.0.0 (línea versionada) y v38.0.0 (su merge a esta línea): **los dos
+  // suben en TRES**, los avisos del hilo con voz propia (`REPLY_RESPONSE`,
+  // `COMMENT_ON_COMMENTED_POST`, `REPLY_ON_COMMENTED_POST`). Dejan fila porque
+  // los dos últimos son avisos que ya dejaban fila con otro tipo —se les
+  // corrigió la voz, no la entrega— y el primero parte en dos a
+  // `REPLY_COMMENT`, que la deja.
+  assert.equal(entries().length, 51);
+  assert.equal(withBellRow.length, 39);
 });
 
 test('getNotificationDeliveryPolicy devuelve null ante un tipo desconocido', () => {
