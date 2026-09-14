@@ -152,3 +152,51 @@ test('la consulta de una mención tiene piso y techo coherentes', () => {
   // escribir el apellido, que es la mitad de lo que se pidió.
   assert.ok(mentions.MENTION_QUERY_MAX_WORDS >= 2);
 });
+
+/**
+ * «¿ESTA EDICIÓN CAMBIÓ ALGO?», contestado igual en las dos puntas: el servidor
+ * no marca editado lo que no cambió y la app no ofrece guardarlo. Los casos que
+ * importan son los que una comparación a mano escribiría mal: el mismo texto
+ * con la mención movida, la misma posición con otra persona, y listas iguales
+ * pero en otro orden.
+ */
+test('el mismo texto con las mismas menciones es la misma edición', () => {
+  const ana = { userId: 'u-ana', start: 5, length: 10 };
+  assert.equal(
+    mentions.isSameMentionedText(
+      { text: 'hola @Ana López', mentions: [ana] },
+      { text: 'hola @Ana López', mentions: [{ ...ana }] },
+    ),
+    true,
+  );
+  assert.equal(
+    mentions.isSameMentionedText({ text: 'sin nadie', mentions: [] }, { text: 'sin nadie', mentions: [] }),
+    true,
+  );
+});
+
+test('cambia la edición si cambia el texto, la persona o el lugar de una mención', () => {
+  const ana = { userId: 'u-ana', start: 5, length: 10 };
+  const base = { text: 'hola @Ana López', mentions: [ana] };
+  assert.equal(mentions.isSameMentionedText(base, { ...base, text: 'hola @Ana López!' }), false);
+  assert.equal(
+    mentions.isSameMentionedText(base, { ...base, mentions: [{ ...ana, userId: 'u-otra' }] }),
+    false,
+  );
+  assert.equal(mentions.isSameMentionedText(base, { ...base, mentions: [{ ...ana, start: 4 }] }), false);
+  // Quitar la mención y dejar el nombre escrito también es una edición: la
+  // persona deja de estar enlazada aunque el texto sea idéntico.
+  assert.equal(mentions.isSameMentionedText(base, { ...base, mentions: [] }), false);
+});
+
+test('el orden de las menciones es parte de la edición', () => {
+  const ana = { userId: 'u-ana', start: 0, length: 4 };
+  const beto = { userId: 'u-beto', start: 5, length: 5 };
+  assert.equal(
+    mentions.isSameMentionedText(
+      { text: '@Ana @Beto', mentions: [ana, beto] },
+      { text: '@Ana @Beto', mentions: [beto, ana] },
+    ),
+    false,
+  );
+});

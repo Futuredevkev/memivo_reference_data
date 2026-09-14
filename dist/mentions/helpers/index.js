@@ -15,5 +15,6 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./find-mention-annotations-defect.helper"), exports);
+__exportStar(require("./is-same-mentioned-text.helper"), exports);
 __exportStar(require("./mention-matches-text.helper"), exports);
 __exportStar(require("./mention-text-of.helper"), exports);
