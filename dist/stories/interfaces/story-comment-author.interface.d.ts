@@ -1,5 +1,6 @@
 import type { AlbumMemberRole } from '../../album';
-export interface StoryCommentAuthor {
+import type { UserPlanTier } from '../../billing';
+export interface StoryCommentAuthor extends UserPlanTier {
     id: string;
     name: string;
     lastName: string;

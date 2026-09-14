@@ -59,7 +59,15 @@ const intentionalBoundaries = new Map([
   ['const:SENTRY_TRACES_SAMPLE_RATE_DEFAULT', 'Configuración operativa independiente por runtime.'],
   ['type:CloudinaryTransformResourceType', 'Unión primitiva local; no representa el mismo contrato de dominio que los tipos visuales.'],
   ['class:MemivoMoment', 'Entidad ORM del ranking persistido; el ítem que viaja al cliente es la unión MemivoMoment.'],
-  ['interface:AlbumGuest', 'Modelo de UI normalizado del cliente; el shape HTTP compartido lo valida el servicio.'],
+  // SE FUE `interface:AlbumGuest` (14 sep 2026), por el mismo motivo que
+  // `class:Album` más arriba: la frontera sigue siendo verdadera —el modelo del
+  // cliente normaliza el invitado y el servicio valida la forma del cable— pero el
+  // par dejó de EXISTIR para este auditor. Al entrar el plan de la persona (el
+  // tick de quien paga), las dos formas pasaron a extender `UserPlanTier` y el
+  // solape de miembros cambió; el reporte la marcó en `resolvedBoundaries`.
+  // Dejarla sería una excusa en blanco con clave `kind:name`: taparía cualquier
+  // duplicación futura de `AlbumGuest`. Si los dos vuelven a parecerse, el par se
+  // reporta como riesgo y alguien lo vuelve a decidir.
   ['const:EMAIL_REGEX', 'Redacción de PII en Sentry (global, sin anclas) vs validación de un email completo.'],
   // Acá vivía `const:CACHE_GENERATION_TTL_MS`, y la excusa se PAGÓ: los dos
   // lados valían una hora en ms por coincidencia —el TTL de un contador de

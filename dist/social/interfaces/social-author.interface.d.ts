@@ -1,4 +1,5 @@
 import type { AlbumMemberRole } from '../../album';
+import type { UserPlanTier } from '../../billing';
 /**
  * El autor de un post, comentario o respuesta, tal como viaja al cliente.
  *
@@ -9,8 +10,13 @@ import type { AlbumMemberRole } from '../../album';
  * plataforma de cada autor, que es exactamente lo que ya se había sacado de
  * `AlbumGuest`. El rol que SÍ importa acá es el del ÁLBUM (`albumRole`), que es
  * el que pinta la corona y el escudo.
+ *
+ * El PLAN sí viaja (`planTier`, por {@link UserPlanTier}), y no repite ninguno de
+ * los dos defectos del rol de plataforma: se dibuja —es el tick de quien paga— y
+ * no cuesta una consulta aparte, porque el servidor lo lee dentro de la misma
+ * consulta que trae al autor.
  */
-export interface SocialAuthor {
+export interface SocialAuthor extends UserPlanTier {
     id: string;
     name: string;
     lastName: string;

@@ -1,3 +1,4 @@
+import type { UserPlanTier } from '../../billing';
 import type { AlbumMemberRole } from '../enums';
 
 /**
@@ -27,7 +28,7 @@ import type { AlbumMemberRole } from '../enums';
  * banderas de la vista de gestión— y se pagina por cursor. Esto es quién
  * aparece en un filtro, y su corte lo confiesa {@link AlbumPeopleResponse}.
  */
-export interface AlbumPerson {
+export interface AlbumPerson extends UserPlanTier {
   id: string;
   name: string;
   lastName: string;

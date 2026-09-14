@@ -1,8 +1,9 @@
+import type { UserPlanTier } from '../../billing';
 import type { IsoCountryCode } from '../../reference-data';
 import type { UserAvatarFile } from './user-avatar-file.interface';
 import type { UserRole } from './user-role.interface';
 
-export interface PublicUserResponse<TTimestamp = string> {
+export interface PublicUserResponse<TTimestamp = string> extends UserPlanTier {
   id: string;
   name: string;
   lastName: string;

@@ -1,5 +1,6 @@
 import type { AlbumMemberRole } from '../../../album';
-export interface HighlightActor<TRole extends string = AlbumMemberRole> {
+import type { UserPlanTier } from '../../../billing';
+export interface HighlightActor<TRole extends string = AlbumMemberRole> extends UserPlanTier {
     id: string;
     name: string;
     lastName: string;
