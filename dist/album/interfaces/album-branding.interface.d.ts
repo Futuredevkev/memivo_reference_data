@@ -26,6 +26,28 @@
 export interface AlbumBranding {
     /** La URL del logo, ya resuelta. Si hay marca, hay logo. */
     logoUrl: string;
+    /**
+     * QUIÉN está acreditado, por su id — no por su nombre.
+     *
+     * ── EL DEFECTO QUE CIERRA ────────────────────────────────────────────
+     * La marca se LEE con un nombre y se ESCRIBE con un id
+     * (`SetAlbumBrandingRequest.brandingUserId`, que el api valida como UUID).
+     * Con sólo el nombre, la hoja que gestiona la marca no podía saber cuál de
+     * las filas de su lista de organizadores era la persona ya acreditada: abría
+     * sin nadie tildado —como si el álbum no tuviera crédito— y con Guardar
+     * apagado, así que **cambiar sólo el logo obligaba a volver a elegir a la
+     * persona**.
+     *
+     * ── POR QUÉ NO SE EMPAREJA POR NOMBRE ────────────────────────────────
+     * Porque el nombre no identifica: dos organizadores homónimos tildarían la
+     * fila equivocada, y el id que después se escribe sería el de otra persona.
+     * Es la clase de decisión llaveada por el eje equivocado que esta base ya
+     * pagó caro.
+     *
+     * No cuesta ninguna consulta nueva: `selectAlbumBranding` ya proyectaba el
+     * `id` de la persona acreditada para poder joinearla.
+     */
+    deliveredByUserId: string;
     /** El nombre completo de la persona acreditada, ya armado por el servidor. */
     deliveredByName: string;
 }
