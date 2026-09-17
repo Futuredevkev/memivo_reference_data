@@ -35,6 +35,8 @@ export interface OrganizerAlbumListItemResponse<TTimestamp = string> extends Alb
     isVisible: boolean;
     coverPhoto: string | null;
     coverPhotoThumbnailUrl: string | null;
+    /** Total de membresías activas, independiente de bloqueos del viewer. */
+    participantCount: number;
     creatorId: string;
     /** Whether new joins are protected. The hash is never part of the wire contract. */
     hasAccessPassword: boolean;

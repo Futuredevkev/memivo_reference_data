@@ -22,6 +22,12 @@ export interface AlbumListItemResponse<TTimestamp = string>
   scannedAt: TTimestamp;
   coverPhoto: string | null;
   coverPhotoThumbnailUrl: string | null;
+  /**
+   * Total de membresías activas del álbum. Es una agregación del conjunto y
+   * no se reduce por bloqueos entre identidades; las listas de nombres sí
+   * aplican su filtro de visibilidad por separado.
+   */
+  participantCount: number;
   creatorName: string;
   /**
    * La marca del álbum: el logo de quien lo entrega y su nombre. `null` cuando
