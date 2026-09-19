@@ -35,7 +35,17 @@ const declarationRoots = { ...roots, package: packageSrc };
 const intentionalBoundaries = new Map([
   ['class:Album', 'Server ORM entity and normalized client model are different layers.'],
   ['class:Folder', 'Server ORM entity and normalized client model are different layers.'],
-  ['class:Notification', 'Server ORM entity and transport model have different timestamps and relations.'],
+  // SE FUE `class:Notification` (19 sep 2026). La frontera sigue siendo
+  // VERDADERA —la entidad del ORM y el modelo normalizado del cliente son dos
+  // capas— pero el PAR dejó de formarse para este auditor: el cliente dejó de
+  // escribir a mano los miembros del actor y los deriva del contrato
+  // (`NotificationResponse['actor']`), así que su declaración perdió `name`,
+  // `lastName` y `avatar`, y el solape de nombres cayó por debajo del umbral de
+  // `evaluatePair`. Medido en los DOS sentidos el 19 sep 2026: con el actor
+  // escrito a mano `resolvedBoundaries` da vacío; derivado del contrato, da
+  // esta entrada. Una excusa que ya no matchea nada no es inocua —queda
+  // esperando a que alguien declare otra cosa con ese nombre— y por eso el gate
+  // falla con ella en vez de ignorarla.
   ['class:PhotoTag', 'Server ORM entity and normalized client model are different layers.'],
   ['const:SENTRY_PROFILES_SAMPLE_RATE_DEFAULT', 'Configuración operativa independiente por runtime.'],
   ['const:SENTRY_TRACES_SAMPLE_RATE_DEFAULT', 'Configuración operativa independiente por runtime.'],
