@@ -53,14 +53,19 @@ const declarationRoots = { ...roots, package: packageSrc };
 // vuelve a decidir — que es exactamente lo que este mapa quiere que pase.
 const intentionalBoundaries = new Map([
   ['class:Folder', 'Server ORM entity and normalized client model are different layers.'],
-  // SE FUE `class:Notification` (14 sep 2026), por el mismo motivo que
-  // `interface:AlbumGuest` más abajo: la frontera sigue siendo verdadera —la
-  // entidad del servidor y el modelo normalizado del cliente son capas
-  // distintas— pero el par dejó de EXISTIR para este auditor. Con el v42 el actor
-  // de una notificación suma el plan (el tick de la campanita) y el modelo del
-  // cliente pasó a derivar su actor del contrato; el solape de miembros cambió y
-  // el reporte la marcó en `resolvedBoundaries`. Si los dos vuelven a parecerse,
-  // el par se reporta como riesgo y alguien lo vuelve a decidir.
+  // SE FUE `class:Notification`, y las DOS líneas llegaron a lo mismo por
+  // caminos distintos. Acá se fue el 14 sep 2026, cuando el actor de una
+  // notificación sumó el plan —el tick de la campanita— y el modelo del cliente
+  // pasó a derivar su actor del contrato. En la línea de producción se fue el
+  // 19 sep 2026 por la segunda mitad de eso: el cliente dejó de escribir a mano
+  // `name`, `lastName` y `avatar`, y el solape de nombres con la entidad del ORM
+  // cayó por debajo del umbral de `evaluatePair`.
+  //
+  // La frontera sigue siendo VERDADERA —son dos capas— pero el PAR ya no se
+  // forma, y una excusa que no matchea nada no es inocua: queda esperando a que
+  // alguien declare otra cosa con ese nombre. Por eso el gate falla con ella en
+  // vez de ignorarla. Si los dos vuelven a parecerse, el par se reporta como
+  // riesgo y alguien lo vuelve a decidir.
   ['class:PhotoTag', 'Server ORM entity and normalized client model are different layers.'],
   ['const:SENTRY_PROFILES_SAMPLE_RATE_DEFAULT', 'Configuración operativa independiente por runtime.'],
   ['const:SENTRY_TRACES_SAMPLE_RATE_DEFAULT', 'Configuración operativa independiente por runtime.'],
