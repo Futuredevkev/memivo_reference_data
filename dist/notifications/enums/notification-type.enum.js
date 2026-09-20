@@ -43,6 +43,30 @@ var NotificationType;
     NotificationType["CONTENT_REMOVED_BY_ORGANIZER"] = "CONTENT_REMOVED_BY_ORGANIZER";
     NotificationType["ALBUM_QR_CODE_EXPIRING"] = "ALBUM_QR_CODE_EXPIRING";
     /**
+     * La ventana de publicación del álbum se abrió: ya se puede subir.
+     *
+     * ── POR QUÉ EXISTE, SI LA VENTANA NO NECESITA AVISO ──────────────────────
+     * Porque la ventana se EVALÚA sola y no depende de esto: a las 20:00 se
+     * publica aunque este aviso nunca salga. Pero una ventana programada que no
+     * avisa sólo le sirve a quien justo está mirando la app a las 20:00 de un
+     * sábado, que es casi nadie. El aviso es lo que vuelve útil el horario; no es
+     * la autoridad, es la cortesía.
+     *
+     * ── A QUIÉN, Y POR QUÉ NO A TODOS ────────────────────────────────────────
+     * Sólo a los miembros que NO organizan. Quien organiza publica siempre, así
+     * que avisarle que «ya puede» es ruido sobre algo que nunca dejó de poder —
+     * el mismo argumento que el aviso del código por vencer escribe para mandarle
+     * sólo al dueño.
+     *
+     * ── NO DEJA FILA EN LA CAMPANITA, A PROPÓSITO ────────────────────────────
+     * Un álbum con ventana diaria lo dispara TODOS LOS DÍAS. Con fila, la
+     * campanita de quien está en tres álbumes así se vuelve un calendario que
+     * nadie pidió, y encima con filas que envejecen solas: «ya podés publicar»
+     * leído a la mañana siguiente es falso. El hecho vive mientras la ventana
+     * está abierta, y la superficie donde vive es el feed.
+     */
+    NotificationType["ALBUM_POSTING_OPENED"] = "ALBUM_POSTING_OPENED";
+    /**
      * Memivo retiró una pieza tuya, por su propia autoridad.
      *
      * ── POR QUÉ NO REUSA `CONTENT_REMOVED_BY_ORGANIZER` ─────────────────────

@@ -195,6 +195,7 @@ export declare const ErrorCode: {
     readonly ALBUM_NOT_SCANNED: AlbumErrorCode.ALBUM_NOT_SCANNED;
     readonly ALBUM_SUSPENDED: AlbumErrorCode.ALBUM_SUSPENDED;
     readonly PARTICIPANT_NOT_FOUND: AlbumErrorCode.PARTICIPANT_NOT_FOUND;
+    readonly ALBUM_POSTING_CLOSED: AlbumErrorCode.ALBUM_POSTING_CLOSED;
     readonly USER_NOT_FOUND: UserErrorCode.USER_NOT_FOUND;
     readonly USER_BANNED: UserErrorCode.USER_BANNED;
     readonly USER_NO_CHANGES: UserErrorCode.USER_NO_CHANGES;

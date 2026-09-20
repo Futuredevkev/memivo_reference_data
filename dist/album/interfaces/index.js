@@ -23,6 +23,9 @@ __exportStar(require("./album-guest.interface"), exports);
 __exportStar(require("./album-people-query-request.interface"), exports);
 __exportStar(require("./album-people-response.interface"), exports);
 __exportStar(require("./album-person.interface"), exports);
+__exportStar(require("./album-posting-resolution.interface"), exports);
+__exportStar(require("./album-posting-schedule.type"), exports);
+__exportStar(require("./album-posting-state.interface"), exports);
 __exportStar(require("./album-access-reset-response.interface"), exports);
 __exportStar(require("./album-qr-code-extension-response.interface"), exports);
 __exportStar(require("./album-access-password-response.interface"), exports);
@@ -54,6 +57,7 @@ __exportStar(require("./organizer-album-list-item-response.interface"), exports)
 __exportStar(require("./organizer-album-response.interface"), exports);
 __exportStar(require("./redeem-album-invite-request.interface"), exports);
 __exportStar(require("./set-album-access-password-request.interface"), exports);
+__exportStar(require("./set-album-posting-request.interface"), exports);
 __exportStar(require("./set-folder-cover-request.interface"), exports);
 __exportStar(require("./update-album-request.interface"), exports);
 __exportStar(require("./update-folder-request.interface"), exports);
