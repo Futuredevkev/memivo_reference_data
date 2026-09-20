@@ -19,6 +19,7 @@ __exportStar(require("./active-view.interface"), exports);
 __exportStar(require("./album-chat-access-revoked-payload.interface"), exports);
 __exportStar(require("./album-deleted-payload.interface"), exports);
 __exportStar(require("./album-member-role-changed-payload.interface"), exports);
+__exportStar(require("./album-posting-changed-payload.interface"), exports);
 __exportStar(require("./album-room-payload.interface"), exports);
 __exportStar(require("./album-updated-payload.interface"), exports);
 __exportStar(require("./album-visibility-changed-payload.interface"), exports);

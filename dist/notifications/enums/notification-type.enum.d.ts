@@ -63,6 +63,29 @@ export declare enum NotificationType {
      */
     ALBUM_POSTING_OPENED = "ALBUM_POSTING_OPENED",
     /**
+     * La ventana de publicación del álbum está por cerrarse.
+     *
+     * ── POR QUÉ ESTE SÍ Y EL DEL CIERRE NO ───────────────────────────────────
+     * Porque un aviso vale lo que vale la ACCIÓN que habilita. «Ya no podés
+     * publicar» no habilita nada: llega cuando ya no hay nada que hacer, y con
+     * ventana diaria duplicaría las push de cada álbum todos los días para no
+     * ofrecer nada. Éste llega mientras todavía se puede subir, que es el único
+     * momento en que la información sirve.
+     *
+     * Y a quien lo agarra el cierre a mitad de una subida ya se lo dice el
+     * propio intento: el rechazo del finalize, con su motivo. Ése es el canal
+     * del cierre; éste es el de la anticipación.
+     *
+     * ── SÓLO LOS MODOS CON HORARIO, Y NO ES UNA LIMITACIÓN ───────────────────
+     * El interruptor manual no tiene cierre programado: nadie sabe cuándo lo va
+     * a mover quien organiza, así que no hay nada que anticipar. Los dos modos
+     * que sí tienen un instante de cierre son los mismos que el barrido ya mira.
+     *
+     * Donde más vale es en la ventana ÚNICA: cuando ésa cierra, no vuelve a
+     * abrir.
+     */
+    ALBUM_POSTING_CLOSING_SOON = "ALBUM_POSTING_CLOSING_SOON",
+    /**
      * Memivo retiró una pieza tuya, por su propia autoridad.
      *
      * ── POR QUÉ NO REUSA `CONTENT_REMOVED_BY_ORGANIZER` ─────────────────────

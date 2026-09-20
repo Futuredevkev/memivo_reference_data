@@ -37,4 +37,24 @@ export interface AlbumPostingResolution {
    * ventana válida—: ahí lo que se pierde es el temporizador, no el veredicto.
    */
   readonly nextChangeAt: Date | null;
+  /**
+   * El instante en que empezó la ventana ABIERTA ahora, o `null` si está
+   * cerrado.
+   *
+   * ── PARA QUÉ EXISTE: PARA QUE EL AVISO NO REESCRIBA LA REGLA ────────────
+   * El aviso de apertura necesita dos cosas: saber que el álbum abrió recién,
+   * y tener una LLAVE de esa apertura para no repetirse. Las dos son este
+   * instante. Sin él, el cron tendría que ubicar el borde por su cuenta —en
+   * SQL, contra el reloj— y ahí habría dos lugares decidiendo dónde empieza
+   * una ventana, que es exactamente lo que esta regla existe para que no pase.
+   *
+   * Es el MISMO cálculo que ya hizo para contestar si está abierto, así que no
+   * cuesta nada; pedirlo aparte sería recorrer la ventana dos veces.
+   *
+   * En los dos modos sin horario, una ventana abierta no tiene comienzo que
+   * nombrar: quien publica hoy podía publicar desde siempre. Ahí contesta
+   * `null` aunque `closedReason` también lo sea, y esa combinación significa
+   * «abierto, y no por una apertura».
+   */
+  readonly openedAt: Date | null;
 }

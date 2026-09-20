@@ -3,6 +3,7 @@ export * from './active-view.interface';
 export * from './album-chat-access-revoked-payload.interface';
 export * from './album-deleted-payload.interface';
 export * from './album-member-role-changed-payload.interface';
+export * from './album-posting-changed-payload.interface';
 export * from './album-room-payload.interface';
 export * from './album-updated-payload.interface';
 export * from './album-visibility-changed-payload.interface';

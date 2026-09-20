@@ -33,7 +33,24 @@ const declarationRoots = { ...roots, package: packageSrc };
  * entrada acá tiene que estar ganándose el lugar en cada corrida.
  */
 const intentionalBoundaries = new Map([
-  ['class:Album', 'Server ORM entity and normalized client model are different layers.'],
+  // SE FUE `class:Album` (20 sep 2026), y la causa es distinta a la de su
+  // hermana de abajo: acá el par no se deshizo por una firma que se encogió,
+  // sino porque la ENTIDAD pasó a consumir el contrato. `postingMode:
+  // AlbumPostingMode` importa el enum de `@memivo/contracts`, y `declarations`
+  // saltea toda declaración respaldada por el paquete —`isSharedBacked`— por
+  // la razón de siempre: lo que deriva del contrato no es una redefinición
+  // propia. O sea que `Album` dejó de colectarse del lado del api, y una
+  // excusa que ya no matchea nada es una excusa EN BLANCO esperando a que
+  // alguien declare otra cosa con ese nombre.
+  //
+  // Medido en los DOS sentidos: con `album.entity.ts` en su version anterior a
+  // la ola del horario de publicación, el colector devuelve `class Album`; con
+  // la de hoy, no devuelve ninguna declaración con ese nombre en ninguno de los
+  // tres lados. No fue el decorador `@Index` con su template —se probó
+  // sacándolo y la declaración siguió sin aparecer— ni las columnas nuevas.
+  //
+  // `class:Folder` se queda porque su entidad NO consume el contrato y su par
+  // sigue formándose; el día que lo consuma, este auditor va a pedir lo mismo.
   ['class:Folder', 'Server ORM entity and normalized client model are different layers.'],
   // SE FUE `class:Notification` (19 sep 2026). La frontera sigue siendo
   // VERDADERA —la entidad del ORM y el modelo normalizado del cliente son dos

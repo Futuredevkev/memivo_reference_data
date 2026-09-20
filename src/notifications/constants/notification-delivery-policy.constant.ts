@@ -309,6 +309,16 @@ export const NOTIFICATION_DELIVERY_POLICY: Readonly<
     replacedBy: 'album-feed',
     anonymousActor: false,
   }),
+  [NotificationType.ALBUM_POSTING_CLOSING_SOON]: policy({
+    // Mismo eje y mismo sustituto que su hermano de apertura, con una
+    // diferencia que importa: quien está adentro del álbum ve el temporizador
+    // correr hacia el borde, así que la push le sobra igual.
+    viewing: { key: 'albumId', from: ALBUM_ID_SOURCES },
+    foreground: 'none',
+    bellRow: false,
+    replacedBy: 'album-feed',
+    anonymousActor: false,
+  }),
 
   // ───────────────────────────────────────────────────────────────────────
   // Auto-confirmación. El destinatario ES quien hizo la acción y la app ya le

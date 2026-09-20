@@ -30,6 +30,8 @@ export type NotificationMetadataByType = {
   [NotificationType.STORY_UPLOAD_FAILED]: AlbumNotificationMetadata;
   [NotificationType.HIGHLIGHTS_REMINDER]: AlbumNotificationMetadata;
   [NotificationType.ALBUM_QR_CODE_EXPIRING]: AlbumNotificationMetadata;
+  [NotificationType.ALBUM_POSTING_OPENED]: AlbumNotificationMetadata;
+  [NotificationType.ALBUM_POSTING_CLOSING_SOON]: AlbumNotificationMetadata;
   [NotificationType.ALBUM_MODERATION_ALERT]: AlbumModerationAlertMetadata;
   [NotificationType.CONTENT_REMOVED_BY_ORGANIZER]: ContentRemovalMetadata;
   [NotificationType.CONTENT_REMOVED_BY_MEMIVO]: ContentRemovalMetadata;

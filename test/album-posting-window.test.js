@@ -50,12 +50,14 @@ test('los dos modos sin horario contestan sin próximo borde', () => {
   assert.deepEqual(resolveAlbumPosting({ mode: AlbumPostingMode.EVERYONE }, now), {
     closedReason: null,
     nextChangeAt: null,
+    openedAt: null,
   });
   assert.deepEqual(
     resolveAlbumPosting({ mode: AlbumPostingMode.ORGANIZERS_ONLY }, now),
     {
       closedReason: AlbumPostingClosedReason.ORGANIZERS_ONLY,
       nextChangeAt: null,
+      openedAt: null,
     },
   );
 });
@@ -296,6 +298,63 @@ test('la ventana que cae entera en el hueco del adelanto se saltea ese día', ()
   assert.equal(resolution.nextChangeAt.toISOString(), '2026-03-09T06:00:00.000Z');
   assert.equal(openFor(schedule, '2026-03-08T07:00:00.000Z'), false);
   assert.equal(openFor(schedule, resolution.nextChangeAt.toISOString()), true);
+});
+
+/**
+ * **LA APERTURA QUE FECHA LA VENTANA VIGENTE ES LA QUE LA EMPEZÓ, NO LA DE HOY.**
+ *
+ * Es la llave con la que el aviso de apertura se de-duplica, así que si
+ * contestara la apertura de HOY para una ventana que empezó AYER, el aviso
+ * saldría dos veces: una ahora con una llave del futuro y otra cuando esa
+ * apertura llegue de verdad.
+ */
+test('la apertura que se fecha es la que empezó la ventana vigente', () => {
+  const schedule = daily(at(20), at(2), BA);
+
+  // A la 01:00 del día 20, la ventana abierta empezó a las 20:00 del 19.
+  assert.equal(
+    resolveAlbumPosting(schedule, new Date('2026-09-20T01:00:00-03:00')).openedAt.toISOString(),
+    new Date('2026-09-19T20:00:00-03:00').toISOString(),
+  );
+  // A las 23:00 del 19, la misma ventana: la apertura es la de ese mismo día.
+  assert.equal(
+    resolveAlbumPosting(schedule, new Date('2026-09-19T23:00:00-03:00')).openedAt.toISOString(),
+    new Date('2026-09-19T20:00:00-03:00').toISOString(),
+  );
+  // Cerrada: no hay ventana vigente que fechar.
+  assert.equal(
+    resolveAlbumPosting(schedule, new Date('2026-09-20T10:00:00-03:00')).openedAt,
+    null,
+  );
+});
+
+/**
+ * Los dos modos sin horario contestan `openedAt: null` aunque estén abiertos, y
+ * eso NO es una contradicción: quien publica hoy podía publicar desde siempre,
+ * así que no hay apertura que nombrar. El aviso lee ese `null` como «acá no hay
+ * nada que anunciar», que es lo correcto.
+ */
+test('un álbum sin horario está abierto sin haber abierto', () => {
+  const now = new Date('2026-09-19T12:00:00Z');
+  const abierto = resolveAlbumPosting({ mode: AlbumPostingMode.EVERYONE }, now);
+
+  assert.equal(abierto.closedReason, null);
+  assert.equal(abierto.openedAt, null);
+});
+
+/** La ventana única se fecha con su propio instante de apertura. */
+test('la ventana única abierta se fecha con su instante de apertura', () => {
+  const opensAt = new Date('2026-09-19T18:00:00Z');
+  const resolution = resolveAlbumPosting(
+    {
+      mode: AlbumPostingMode.ONE_SHOT,
+      opensAt,
+      closesAt: new Date('2026-09-20T04:00:00Z'),
+    },
+    new Date('2026-09-19T20:00:00Z'),
+  );
+
+  assert.equal(resolution.openedAt.getTime(), opensAt.getTime());
 });
 
 /**

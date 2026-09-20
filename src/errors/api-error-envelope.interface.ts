@@ -1,3 +1,4 @@
+import type { AlbumPostingClosedReason } from '../album/enums/album-posting-closed-reason.enum';
 import type { ModerationReason } from '../moderation';
 
 import type { ResourceType } from '../media/enums';
@@ -66,6 +67,30 @@ export interface ApiErrorEnvelope {
    * para todos.
    */
   reasonCategory?: ModerationReason;
+  /**
+   * POR QUÉ el álbum no admite publicaciones ahora. Sólo con
+   * `ALBUM_POSTING_CLOSED`.
+   *
+   * Viaja la LLAVE y no la frase, por lo mismo que la categoría de arriba: una
+   * frase armada en el servidor sale en el idioma del servidor. Y el motivo
+   * hace falta porque el mismo código cubre tres estados que se le cuentan
+   * distinto a la persona —«sólo publican los organizadores», «abre a las
+   * 20:00» y «se cerró el domingo»—, y sin él la app tendría que adivinar cuál
+   * es mirando si vino un próximo borde.
+   */
+  postingClosedReason?: AlbumPostingClosedReason;
+  /**
+   * Cuándo vuelve a abrir, en instante absoluto. Sólo con
+   * `ALBUM_POSTING_CLOSED`, y `null` cuando no va a abrir solo.
+   *
+   * Va en el sobre y no se resuelve pidiendo el álbum de nuevo porque el
+   * rechazo llega justo cuando el estado que la app tenía quedó viejo: con el
+   * dato adentro del error, la pantalla se corrige sin un viaje más.
+   *
+   * ISO, resuelto por el servidor. El cliente lo compara contra su reloj; no
+   * convierte zonas.
+   */
+  postingNextChangeAt?: string | null;
   /**
    * Sólo presente cuando errorCode === AUTH_NOT_VERIFIED: es lo que el cliente
    * canjea por un reenvío del código de verificación.

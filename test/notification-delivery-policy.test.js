@@ -171,7 +171,7 @@ test('las push-only silenciadas en foreground son exactamente las esperadas', ()
   ].sort());
 });
 
-test('los tipos que dejan fila en la campanita son 38 de 51', () => {
+test('los tipos que dejan fila en la campanita son 38 de 52', () => {
   const withBellRow = entries().filter(([, policy]) => policy.persistsBellRow);
 
   // El número de la izquierda importa más que el de la derecha: un tipo nuevo
@@ -205,7 +205,11 @@ test('los tipos que dejan fila en la campanita son 38 de 51', () => {
   // envejecen solas, porque «ya podés publicar» leído a la mañana siguiente es
   // falso. El hecho vive mientras la ventana está abierta y su superficie es el
   // feed, que es lo que la fila declara en `replacedBy`.
-  assert.equal(entries().length, 51);
+  //
+  // v46.0.0, segunda mitad: **sube SOLO el total otra vez**, con el aviso de
+  // que la ventana está por cerrarse. Tampoco deja fila, y por lo mismo que su
+  // hermano: vive mientras dura la ventana, y leído después es falso.
+  assert.equal(entries().length, 52);
   assert.equal(withBellRow.length, 38);
 });
 

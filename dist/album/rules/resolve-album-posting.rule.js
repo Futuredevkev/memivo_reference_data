@@ -51,11 +51,12 @@ const album_posting_mode_enum_1 = require("../enums/album-posting-mode.enum");
 const resolveAlbumPosting = (schedule, now) => {
     switch (schedule.mode) {
         case album_posting_mode_enum_1.AlbumPostingMode.EVERYONE:
-            return { closedReason: null, nextChangeAt: null };
+            return { closedReason: null, nextChangeAt: null, openedAt: null };
         case album_posting_mode_enum_1.AlbumPostingMode.ORGANIZERS_ONLY:
             return {
                 closedReason: album_posting_closed_reason_enum_1.AlbumPostingClosedReason.ORGANIZERS_ONLY,
                 nextChangeAt: null,
+                openedAt: null,
             };
         case album_posting_mode_enum_1.AlbumPostingMode.ONE_SHOT: {
             const at = now.getTime();
@@ -63,17 +64,23 @@ const resolveAlbumPosting = (schedule, now) => {
                 return {
                     closedReason: album_posting_closed_reason_enum_1.AlbumPostingClosedReason.NOT_OPEN_YET,
                     nextChangeAt: schedule.opensAt,
+                    openedAt: null,
                 };
             }
             // El intervalo es `[opensAt, closesAt)`: a las `closesAt` en punto ya
             // está cerrado. El porqué de esa convención está en el docblock de la
             // unión, que es donde vive la forma.
             if (at < schedule.closesAt.getTime()) {
-                return { closedReason: null, nextChangeAt: schedule.closesAt };
+                return {
+                    closedReason: null,
+                    nextChangeAt: schedule.closesAt,
+                    openedAt: schedule.opensAt,
+                };
             }
             return {
                 closedReason: album_posting_closed_reason_enum_1.AlbumPostingClosedReason.ALREADY_CLOSED,
                 nextChangeAt: null,
+                openedAt: null,
             };
         }
         case album_posting_mode_enum_1.AlbumPostingMode.DAILY: {
@@ -83,6 +90,10 @@ const resolveAlbumPosting = (schedule, now) => {
             return {
                 closedReason: isOpen ? null : album_posting_closed_reason_enum_1.AlbumPostingClosedReason.NOT_OPEN_YET,
                 nextChangeAt: nextDailyStateChange(schedule, now, today, isOpen),
+                // La apertura que dio comienzo a la ventana vigente: la última vez que
+                // el reloj de pared marcó el minuto de apertura. Sólo se busca cuando
+                // está abierto — cerrado no hay ventana vigente que fechar.
+                openedAt: isOpen ? lastDailyOpening(schedule, now, today) : null,
             };
         }
     }
@@ -238,6 +249,40 @@ const MAX_DAYS_LOOKING_FOR_THE_NEXT_CHANGE = 3;
  * que algo la refresque. Degradar a no saber cuándo cambia es peor que saberlo
  * y mucho mejor que un 500.
  */
+/**
+ * La ÚLTIMA vez que el reloj de pared de la zona marcó el minuto de apertura,
+ * mirando hacia atrás desde el instante dado.
+ *
+ * ── POR QUÉ HAY QUE BUSCARLA HACIA ATRÁS Y NO ALCANZA CON «HOY» ──────────
+ * Porque una ventana que cruza la medianoche está abierta a la 01:00 por una
+ * apertura que fue AYER a las 20:00. Tomar la de hoy daría un instante en el
+ * futuro, y el aviso se llavearía por una apertura que todavía no ocurrió — o
+ * sea que se mandaría dos veces: una ahora con la llave equivocada y otra
+ * cuando esa apertura llegue de verdad.
+ *
+ * Se recorre el calendario hacia atrás y se toma el primer candidato que ya
+ * pasó, con el mismo techo de días que su hermana: el día del adelanto de hora
+ * puede no tener ese minuto.
+ */
+const lastDailyOpening = (window, now, today) => {
+    let day = today;
+    for (let back = 0; back < MAX_DAYS_LOOKING_FOR_THE_NEXT_CHANGE; back++) {
+        const candidate = instantOfWallMinute(window.timezone, day, window.opensAtMinute);
+        if (candidate.getTime() <= now.getTime())
+            return candidate;
+        const previousDay = new Date(Date.UTC(day.year, day.month - 1, day.day - 1));
+        day = {
+            year: previousDay.getUTCFullYear(),
+            month: previousDay.getUTCMonth() + 1,
+            day: previousDay.getUTCDate(),
+        };
+    }
+    // Inalcanzable con una ventana válida: un minuto del día ocurre cada 24 h,
+    // así que en tres días hacia atrás siempre hay uno. Degrada a `null` en vez
+    // de tirar por lo mismo que su hermana: lo que se pierde es el aviso, no el
+    // veredicto.
+    return null;
+};
 const nextDailyStateChange = (window, now, today, isOpenNow) => {
     const { timezone } = window;
     const targetMinute = isOpenNow ? window.closesAtMinute : window.opensAtMinute;
