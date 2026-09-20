@@ -2,13 +2,7 @@ import { HTTP_SCHEME_REGEX } from '../patterns/http-scheme-regex.constant';
 import { FQDN_HOST_REGEX } from '../patterns/fqdn-host-regex.constant';
 import { PROFILE_URL_MAX } from '../limits';
 import { normalizeProfileUrl } from './normalize-profile-url.rule';
-
-/**
- * Cualquier prefijo `esquema://` explícito (ftp://, file://, ws://, …). Sirve
- * para rechazar un esquema que no es http(s) ANTES de que la normalización lo
- * tape agregándole `https://` adelante.
- */
-const URL_SCHEME_REGEX = /^[a-z][a-z0-9+.-]*:\/\//i;
+import { URL_SCHEME_REGEX } from '../patterns/url-scheme-regex.constant';
 
 /**
  * ¿ES UNA URL DE PERFIL VÁLIDA? La misma respuesta para las dos puntas.

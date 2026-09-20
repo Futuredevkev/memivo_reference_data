@@ -5,12 +5,7 @@ const http_scheme_regex_constant_1 = require("../patterns/http-scheme-regex.cons
 const fqdn_host_regex_constant_1 = require("../patterns/fqdn-host-regex.constant");
 const limits_1 = require("../limits");
 const normalize_profile_url_rule_1 = require("./normalize-profile-url.rule");
-/**
- * Cualquier prefijo `esquema://` explícito (ftp://, file://, ws://, …). Sirve
- * para rechazar un esquema que no es http(s) ANTES de que la normalización lo
- * tape agregándole `https://` adelante.
- */
-const URL_SCHEME_REGEX = /^[a-z][a-z0-9+.-]*:\/\//i;
+const url_scheme_regex_constant_1 = require("../patterns/url-scheme-regex.constant");
 /**
  * ¿ES UNA URL DE PERFIL VÁLIDA? La misma respuesta para las dos puntas.
  *
@@ -31,7 +26,7 @@ const isProfileUrlValid = (value) => {
     const trimmed = value.trim();
     if (!trimmed)
         return true;
-    if (URL_SCHEME_REGEX.test(trimmed) && !http_scheme_regex_constant_1.HTTP_SCHEME_REGEX.test(trimmed)) {
+    if (url_scheme_regex_constant_1.URL_SCHEME_REGEX.test(trimmed) && !http_scheme_regex_constant_1.HTTP_SCHEME_REGEX.test(trimmed)) {
         return false;
     }
     const normalized = (0, normalize_profile_url_rule_1.normalizeProfileUrl)(trimmed);

@@ -23,3 +23,4 @@ __exportStar(require("./international-phone-regex.constant"), exports);
 __exportStar(require("./password-digit-regex.constant"), exports);
 __exportStar(require("./password-special-char-regex.constant"), exports);
 __exportStar(require("./password-uppercase-regex.constant"), exports);
+__exportStar(require("./url-scheme-regex.constant"), exports);
