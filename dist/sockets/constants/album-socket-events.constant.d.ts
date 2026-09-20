@@ -29,5 +29,6 @@ export declare const ALBUM_SOCKET_EVENTS: {
         readonly STORY_COMMENT_CREATED: "story-comment.created";
         readonly STORY_POLL_RESULTS: "story-poll.results";
         readonly STORY_POLL_CLOSED: "story-poll.closed";
+        readonly ALBUM_POSTING_CHANGED: "album-posting-changed";
     };
 };

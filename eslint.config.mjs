@@ -73,6 +73,7 @@ export default [
     },
     rules: {
       'shared/one-exported-symbol-per-file': ['error', { inventory: MULTI_EXPORT_INVENTORY }],
+      'shared/one-import-per-module': 'error',
     },
   },
 ];

@@ -51,6 +51,23 @@ export declare enum AlbumActionType {
      * distinguir cosas que el propio registro ya distingue.
      */
     ALBUM_BRANDING_CHANGED = "ALBUM_BRANDING_CHANGED",
+    /**
+     * Alguien que organiza cambió quién puede publicar: movió el interruptor o
+     * tocó la ventana horaria.
+     *
+     * ── POR QUÉ DEJA RASTRO ───────────────────────────────────────────────────
+     * Porque el interruptor lo mueven el dueño Y los organizadores, igual que el
+     * de visibilidad, y eso hace posible que un organizador reabra lo que el
+     * dueño cerró. Se decidió que sea aceptable **precisamente porque queda acá
+     * con su nombre**: sin la fila, el dueño vería su álbum abierto otra vez y no
+     * tendría cómo saber quién lo abrió. El registro es lo que vuelve aceptable
+     * la autoridad compartida, no un detalle al lado.
+     *
+     * Es una sola acción para los cuatro modos: lo que cambió es el horario, y
+     * cuál quedó lo dice el detalle de la fila. Una acción por modo obligaría a
+     * decidir de nuevo cada vez que entre un modo nuevo.
+     */
+    ALBUM_POSTING_CHANGED = "ALBUM_POSTING_CHANGED",
     FOLDER_CREATED = "FOLDER_CREATED",
     FOLDER_RENAMED = "FOLDER_RENAMED",
     FOLDER_COVER_SET = "FOLDER_COVER_SET",

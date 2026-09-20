@@ -66,4 +66,27 @@ export enum AlbumErrorCode {
    * logo—, y ésa es exactamente la ventana que este código cierra.
    */
   ALBUM_BRANDING_LOGO_REQUIRED = 'ALBUM_BRANDING_LOGO_REQUIRED',
+  /**
+   * El álbum existe, la persona es miembro, y AHORA MISMO no admite
+   * publicaciones suyas: o el interruptor está en «sólo organizadores», o hay
+   * una ventana horaria y estamos afuera.
+   *
+   * ── POR QUÉ VIAJA CON 409 Y NO CON 403 ────────────────────────────────────
+   * Porque el status no es decoración: el cliente colapsa **cualquier 403** en
+   * «este contenido ya no está» y de ahí deriva SALIR DE LA PANTALLA. Con un
+   * 403, intentar publicar con el feed cerrado echaría del álbum a quien lo
+   * intentó — no un texto feo, otra conducta. Y el 409 además dice la verdad:
+   * no es que falte autoridad sobre el recurso, es que el recurso está en un
+   * estado que ahora no admite esto.
+   *
+   * ── EL SOBRE LLEVA LA LLAVE, NO LA FRASE ──────────────────────────────────
+   * Viaja con el motivo y, si lo hay, el próximo borde en instante absoluto. La
+   * frase la arma el cliente contra el contrato. Nada de fechas interpoladas en
+   * el mensaje del servidor: una fecha formateada en el servidor sale en el
+   * idioma del servidor y en la zona del servidor.
+   *
+   * NO entra a la tabla de voz de ausencia del cliente: esto no es contenido
+   * que falta, y todos los miembros ven el mismo estado del álbum.
+   */
+  ALBUM_POSTING_CLOSED = 'ALBUM_POSTING_CLOSED',
 }

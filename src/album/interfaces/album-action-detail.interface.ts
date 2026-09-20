@@ -1,4 +1,5 @@
 import type { AlbumAccessPasswordChangeKind } from '../enums/album-access-password-change-kind.type';
+import type { AlbumPostingMode } from '../enums/album-posting-mode.enum';
 /**
  * Payload por acción del audit-log del álbum.
  *
@@ -118,4 +119,22 @@ export interface AlbumActionDetail {
    * que la marca deja de existir de todos modos.
    */
   brandingCleared?: boolean;
+  /**
+   * QUIÉN quedó pudiendo publicar después del cambio.
+   *
+   * ── POR QUÉ SÓLO EL MODO Y NO EL HORARIO ENTERO ───────────────────────
+   * Porque es lo que el renglón del registro dibuja: «cerró el feed», «lo
+   * abrió para todos», «programó una ventana». Guardar también los instantes
+   * y los minutos dejaría el horario duplicado en un JSONB que nadie consulta
+   * —el horario VIGENTE vive en la tabla del álbum— y la pregunta forense que
+   * este log existe para contestar es quién lo movió y hacia qué, no con qué
+   * números exactos.
+   *
+   * Y por qué se registra: el interruptor lo mueven el dueño Y los
+   * organizadores, así que un organizador puede reabrir lo que el dueño cerró.
+   * Eso se decidió aceptable **porque queda acá con su nombre**; sin la fila,
+   * el dueño vería su álbum abierto otra vez y no tendría cómo saber quién lo
+   * abrió.
+   */
+  postingMode?: AlbumPostingMode;
 }

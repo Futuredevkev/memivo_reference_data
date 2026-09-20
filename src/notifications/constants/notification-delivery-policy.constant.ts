@@ -293,6 +293,32 @@ export const NOTIFICATION_DELIVERY_POLICY: Readonly<
     replacedBy: 'album-feed',
     anonymousActor: false,
   }),
+  [NotificationType.ALBUM_POSTING_OPENED]: policy({
+    // Mismo eje que su hermano de arriba —lo dispara un cron y es de un álbum—
+    // y el sustituto es real, no nominal: a quien está adentro de ese álbum el
+    // composer se le habilita solo cuando el timer llega al borde, sin
+    // refrescar. Esa es exactamente la información que la push traía.
+    viewing: { key: 'albumId', from: ALBUM_ID_SOURCES },
+    // Y acá SÍ se separa del reminder de highlights, que se declara
+    // `re-engagement`: esto no existe sólo para traerte de vuelta. Con la app
+    // abierta en OTRO álbum, nada te dice que el de tu prima acaba de abrir, y
+    // callarlo sería perder el dato — que es lo que `re-engagement` promete que
+    // no pasa. El eje de pantalla ya cubre el caso en que sí hay sustituto.
+    foreground: 'none',
+    bellRow: false,
+    replacedBy: 'album-feed',
+    anonymousActor: false,
+  }),
+  [NotificationType.ALBUM_POSTING_CLOSING_SOON]: policy({
+    // Mismo eje y mismo sustituto que su hermano de apertura, con una
+    // diferencia que importa: quien está adentro del álbum ve el temporizador
+    // correr hacia el borde, así que la push le sobra igual.
+    viewing: { key: 'albumId', from: ALBUM_ID_SOURCES },
+    foreground: 'none',
+    bellRow: false,
+    replacedBy: 'album-feed',
+    anonymousActor: false,
+  }),
 
   // ───────────────────────────────────────────────────────────────────────
   // Auto-confirmación. El destinatario ES quien hizo la acción y la app ya le

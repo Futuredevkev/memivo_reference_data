@@ -14,9 +14,11 @@
  * porque no tienen segundo consumidor.
  */
 const oneExportedSymbolPerFile = require('./one-exported-symbol-per-file');
+const oneImportPerModule = require('./one-import-per-module');
 
 module.exports = {
   rules: {
     'one-exported-symbol-per-file': oneExportedSymbolPerFile,
+    'one-import-per-module': oneImportPerModule,
   },
 };

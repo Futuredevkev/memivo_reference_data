@@ -279,10 +279,16 @@ const social = require('../dist/social/index.js');
 // v35.0.0: **+2**, las menciones. `MENTIONS_TOO_MANY` es una regla que la
 // persona puede cumplir y su frase dice el tope; `MENTION_ANNOTATION_INVALID`
 // es un cuerpo que la app no produce. Los dos entran con su emisor en el api.
-test('el catálogo consolidado expone 219 códigos de error únicos', () => {
+// v46.0.0: **+1**, `ALBUM_POSTING_CLOSED`. Es el rechazo de publicar cuando el
+// álbum tiene el feed cerrado —por el interruptor o por la ventana horaria— y
+// entra con su emisor en la misma ola, como manda ORDEN §8. Lo que tiene de
+// propio: viaja con **409 y no con 403**, porque el cliente colapsa cualquier
+// 403 en «este contenido ya no está» y de ahí saca SALIR DE LA PANTALLA. Con
+// 403, intentar publicar con el feed cerrado te echaría del álbum.
+test('el catálogo consolidado expone 220 códigos de error únicos', () => {
   const values = Object.values(errors.ErrorCode);
 
-  assert.equal(values.length, 219);
+  assert.equal(values.length, 220);
   assert.equal(new Set(values).size, values.length);
 });
 

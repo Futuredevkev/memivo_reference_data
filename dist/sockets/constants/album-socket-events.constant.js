@@ -32,5 +32,6 @@ exports.ALBUM_SOCKET_EVENTS = {
         STORY_COMMENT_CREATED: 'story-comment.created',
         STORY_POLL_RESULTS: 'story-poll.results',
         STORY_POLL_CLOSED: 'story-poll.closed',
+        ALBUM_POSTING_CHANGED: 'album-posting-changed',
     },
 };

@@ -209,6 +209,7 @@ export declare const ErrorCode: {
     readonly PARTICIPANT_NOT_FOUND: AlbumErrorCode.PARTICIPANT_NOT_FOUND;
     readonly ALBUM_BRANDING_USER_NOT_ORGANIZER: AlbumErrorCode.ALBUM_BRANDING_USER_NOT_ORGANIZER;
     readonly ALBUM_BRANDING_LOGO_REQUIRED: AlbumErrorCode.ALBUM_BRANDING_LOGO_REQUIRED;
+    readonly ALBUM_POSTING_CLOSED: AlbumErrorCode.ALBUM_POSTING_CLOSED;
     readonly USER_NOT_FOUND: UserErrorCode.USER_NOT_FOUND;
     readonly USER_BANNED: UserErrorCode.USER_BANNED;
     readonly USER_NO_CHANGES: UserErrorCode.USER_NO_CHANGES;

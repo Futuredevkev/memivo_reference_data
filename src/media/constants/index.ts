@@ -14,6 +14,7 @@ export * from './guest-post-video-max-duration-ms.constant';
 export * from './guest-post-video-max-file-size-bytes.constant';
 export * from './max-upload-image-dimension-px.constant';
 export * from './mb.constant';
+export * from './media-availability-by-resource.constant';
 export * from './media-composition-backgrounds.constant';
 export * from './media-composition-max-offset.constant';
 export * from './media-composition-max-scale.constant';

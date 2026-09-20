@@ -171,7 +171,7 @@ test('las push-only silenciadas en foreground son exactamente las esperadas', ()
   ].sort());
 });
 
-test('los tipos que dejan fila en la campanita son 39 de 51', () => {
+test('los tipos que dejan fila en la campanita son 39 de 53', () => {
   const withBellRow = entries().filter(([, policy]) => policy.persistsBellRow);
 
   // El número de la izquierda importa más que el de la derecha: un tipo nuevo
@@ -206,7 +206,19 @@ test('los tipos que dejan fila en la campanita son 39 de 51', () => {
   // los dos últimos son avisos que ya dejaban fila con otro tipo —se les
   // corrigió la voz, no la entrega— y el primero parte en dos a
   // `REPLY_COMMENT`, que la deja.
-  assert.equal(entries().length, 51);
+  //
+  // v46.0.0: **sube SOLO el total**, y por eso lleva su párrafo. El tipo nuevo
+  // es el aviso de que se abrió la ventana de publicación del álbum, y NO deja
+  // fila a propósito: con ventana diaria se dispara todos los días, así que la
+  // fila convertiría la campanita en un calendario — y encima con filas que
+  // envejecen solas, porque «ya podés publicar» leído a la mañana siguiente es
+  // falso. El hecho vive mientras la ventana está abierta y su superficie es el
+  // feed, que es lo que la fila declara en `replacedBy`.
+  //
+  // v46.0.0, segunda mitad: **sube SOLO el total otra vez**, con el aviso de
+  // que la ventana está por cerrarse. Tampoco deja fila, y por lo mismo que su
+  // hermano: vive mientras dura la ventana, y leído después es falso.
+  assert.equal(entries().length, 53);
   assert.equal(withBellRow.length, 39);
 });
 

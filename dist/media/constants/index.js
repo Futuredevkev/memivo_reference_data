@@ -30,6 +30,7 @@ __exportStar(require("./guest-post-video-max-duration-ms.constant"), exports);
 __exportStar(require("./guest-post-video-max-file-size-bytes.constant"), exports);
 __exportStar(require("./max-upload-image-dimension-px.constant"), exports);
 __exportStar(require("./mb.constant"), exports);
+__exportStar(require("./media-availability-by-resource.constant"), exports);
 __exportStar(require("./media-composition-backgrounds.constant"), exports);
 __exportStar(require("./media-composition-max-offset.constant"), exports);
 __exportStar(require("./media-composition-max-scale.constant"), exports);
