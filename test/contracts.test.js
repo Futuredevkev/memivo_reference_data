@@ -285,10 +285,10 @@ const social = require('../dist/social/index.js');
 // propio: viaja con **409 y no con 403**, porque el cliente colapsa cualquier
 // 403 en «este contenido ya no está» y de ahí saca SALIR DE LA PANTALLA. Con
 // 403, intentar publicar con el feed cerrado te echaría del álbum.
-test('el catálogo consolidado expone 220 códigos de error únicos', () => {
+test('el catálogo consolidado expone 221 códigos de error únicos', () => {
   const values = Object.values(errors.ErrorCode);
 
-  assert.equal(values.length, 220);
+  assert.equal(values.length, 221);
   assert.equal(new Set(values).size, values.length);
 });
 
