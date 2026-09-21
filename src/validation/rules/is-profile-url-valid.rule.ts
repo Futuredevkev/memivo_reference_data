@@ -1,8 +1,8 @@
 import { HTTP_SCHEME_REGEX } from '../patterns/http-scheme-regex.constant';
+import { URL_SCHEME_REGEX } from '../patterns/url-scheme-regex.constant';
 import { FQDN_HOST_REGEX } from '../patterns/fqdn-host-regex.constant';
 import { PROFILE_URL_MAX } from '../limits';
 import { normalizeProfileUrl } from './normalize-profile-url.rule';
-import { URL_SCHEME_REGEX } from '../patterns/url-scheme-regex.constant';
 
 /**
  * ¿ES UNA URL DE PERFIL VÁLIDA? La misma respuesta para las dos puntas.

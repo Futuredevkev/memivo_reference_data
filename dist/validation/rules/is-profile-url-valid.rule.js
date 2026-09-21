@@ -2,10 +2,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.isProfileUrlValid = void 0;
 const http_scheme_regex_constant_1 = require("../patterns/http-scheme-regex.constant");
+const url_scheme_regex_constant_1 = require("../patterns/url-scheme-regex.constant");
 const fqdn_host_regex_constant_1 = require("../patterns/fqdn-host-regex.constant");
 const limits_1 = require("../limits");
 const normalize_profile_url_rule_1 = require("./normalize-profile-url.rule");
-const url_scheme_regex_constant_1 = require("../patterns/url-scheme-regex.constant");
 /**
  * ¿ES UNA URL DE PERFIL VÁLIDA? La misma respuesta para las dos puntas.
  *
