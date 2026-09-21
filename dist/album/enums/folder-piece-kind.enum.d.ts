@@ -31,9 +31,8 @@
  * chat (`MediaGalleryFilter`). Un tercer `…Filter` sobre media habría entrado
  * justo en el medio de esos dos. «Pieza» es la palabra con la que el registro
  * de esta ola nombra lo que vive en una carpeta, y no la usa nadie más.
- */
-/**
- * ⚠️ **LOS VALORES LLEVAN EL PREFIJO DE SU DOMINIO, Y NO ES DECORACIÓN.**
+ *
+ * ── ⚠️ LOS VALORES LLEVAN EL PREFIJO DE SU DOMINIO, Y NO ES DECORACIÓN ────
  * Nacieron como `'photo'` y `'video'` a secas, y el auditor de literales crudos
  * del paquete lo puso rojo con **123 sitios**: `'video'` es una de las cadenas
  * más comunes del árbol —el `type` de un asset del selector, la clase de un
