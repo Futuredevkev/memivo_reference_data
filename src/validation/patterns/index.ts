@@ -7,3 +7,4 @@ export * from './international-phone-regex.constant';
 export * from './password-digit-regex.constant';
 export * from './password-special-char-regex.constant';
 export * from './password-uppercase-regex.constant';
+export * from './url-scheme-regex.constant';
