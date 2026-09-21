@@ -279,32 +279,6 @@ const instantOfWallMinute = (
 const MAX_DAYS_LOOKING_FOR_THE_NEXT_CHANGE = 3;
 
 /**
- * El primer instante ESTRICTAMENTE posterior al dado en que la ventana diaria
- * cambia de estado.
- *
- * ── POR QUÉ NO ALCANZA CON «LA PRÓXIMA VEZ QUE EL RELOJ MARQUE ESE MINUTO» ─
- * Porque ese minuto puede NO EXISTIR. Una ventana de 02:00 a 03:00 en una zona
- * que adelanta a las 02:00 no ocurre ese día: el borde de apertura se corre al
- * salto, y en ese instante el reloj ya marca 03:00, que está afuera. O sea que
- * el borde calculado a ciegas promete un cambio que no pasa.
- *
- * Y acá eso no es cosmético: **la app no puede re-evaluar**. No tiene ICU
- * completo, así que confía en este instante para habilitar el composer sola. Un
- * borde que miente le hace dibujar abierto un álbum que el servidor rechaza —
- * exactamente el desacuerdo que esta regla existe para evitar. Por eso se
- * verifica que en el candidato el estado SEA el otro, y si no, se sigue
- * buscando.
- *
- * ── POR QUÉ DEGRADA A `null` EN VEZ DE TIRAR ──────────────────────────────
- * Si en tres días no encontró un cambio —lo que con una ventana válida no puede
- * pasar, porque los dos minutos son distintos—, contesta `null` en vez de
- * romper. Tirar acá voltearía la lectura del álbum entera por un dato de
- * horario, y el veredicto de ESTE instante ya está bien calculado: lo único que
- * se pierde es el temporizador, y sin él la app dibuja el estado vigente hasta
- * que algo la refresque. Degradar a no saber cuándo cambia es peor que saberlo
- * y mucho mejor que un 500.
- */
-/**
  * La ÚLTIMA vez que el reloj de pared de la zona marcó el minuto de apertura,
  * mirando hacia atrás desde el instante dado.
  *
@@ -354,6 +328,32 @@ const lastDailyOpening = (
   return null;
 };
 
+/**
+ * El primer instante ESTRICTAMENTE posterior al dado en que la ventana diaria
+ * cambia de estado.
+ *
+ * ── POR QUÉ NO ALCANZA CON «LA PRÓXIMA VEZ QUE EL RELOJ MARQUE ESE MINUTO» ─
+ * Porque ese minuto puede NO EXISTIR. Una ventana de 02:00 a 03:00 en una zona
+ * que adelanta a las 02:00 no ocurre ese día: el borde de apertura se corre al
+ * salto, y en ese instante el reloj ya marca 03:00, que está afuera. O sea que
+ * el borde calculado a ciegas promete un cambio que no pasa.
+ *
+ * Y acá eso no es cosmético: **la app no puede re-evaluar**. No tiene ICU
+ * completo, así que confía en este instante para habilitar el composer sola. Un
+ * borde que miente le hace dibujar abierto un álbum que el servidor rechaza —
+ * exactamente el desacuerdo que esta regla existe para evitar. Por eso se
+ * verifica que en el candidato el estado SEA el otro, y si no, se sigue
+ * buscando.
+ *
+ * ── POR QUÉ DEGRADA A `null` EN VEZ DE TIRAR ──────────────────────────────
+ * Si en tres días no encontró un cambio —lo que con una ventana válida no puede
+ * pasar, porque los dos minutos son distintos—, contesta `null` en vez de
+ * romper. Tirar acá voltearía la lectura del álbum entera por un dato de
+ * horario, y el veredicto de ESTE instante ya está bien calculado: lo único que
+ * se pierde es el temporizador, y sin él la app dibuja el estado vigente hasta
+ * que algo la refresque. Degradar a no saber cuándo cambia es peor que saberlo
+ * y mucho mejor que un 500.
+ */
 const nextDailyStateChange = (
   window: {
     readonly opensAtMinute: number;
