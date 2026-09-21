@@ -57,14 +57,16 @@ export enum ModeratedContentType {
    *
    * ── LO QUE ESTE PUNTERO NO GARANTIZA, DICHO ──────────────────────────────
    * Que el MEDIO siga existiendo. Un mensaje de una sola vez borra sus archivos
-   * al cerrarse el visor, así que una denuncia posterior señala una fila que ya
-   * no tiene qué mostrar. Se apunta igual —prueba quién mandó qué clase de cosa
-   * y cuándo— y quien denuncia puede adjuntar capturas, que es el camino de
-   * evidencia que ya existía. Fijar el archivo al denunciar era la mitad que
-   * faltaba cuando esto se escribió, y se pagó en la misma línea versionada: hoy
-   * el reporte congela el texto y RETIENE los archivos contra el borrado. Lo que
-   * sigue sin tener remedio es la pieza que ya se quemó ANTES de que existiera
-   * el reporte.
+   * al cerrarse el visor, así que una denuncia hecha DESPUÉS señala una fila que
+   * ya no tiene qué mostrar. Se apunta igual —prueba quién mandó qué clase de
+   * cosa y cuándo— y quien denuncia puede adjuntar capturas.
+   *
+   * Las dos mitades que faltaban cuando esto se escribió se pagaron en la misma
+   * línea versionada: el reporte congela el texto y RETIENE los archivos contra
+   * el borrado, y la app dejó de ofrecer esa denuncia tardía —una pieza de una
+   * sola vez se denuncia desde SU visor, con el archivo todavía vivo—. Queda sin
+   * remedio lo que un cliente viejo o un pedido armado a mano todavía pueden
+   * producir: el puntero a una pieza que se quemó antes de existir el reporte.
    */
   CHAT_MESSAGE = 'CHAT_MESSAGE',
 }
