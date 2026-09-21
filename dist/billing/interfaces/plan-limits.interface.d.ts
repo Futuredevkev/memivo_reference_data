@@ -57,6 +57,25 @@ export interface PlanLimits {
      */
     readonly albumStats: boolean;
     /**
+     * ¿Se puede GOBERNAR quién publica en el álbum?
+     *
+     * Cubre la feature entera —el interruptor de «sólo organizadores» y las dos
+     * ventanas programadas—, no una parte. Partirla obligaría a explicar con una
+     * tabla qué entra y qué no, y una capacidad que hay que explicar con tabla no
+     * se entiende ni se vende; entera se dice en una frase.
+     *
+     * Es lo que el modelo llama «la capacidad de trabajo del organizador», que es
+     * exactamente lo que se cobra: decidir cuándo y quién sube es trabajo de
+     * organizar un evento. El álbum gratis sigue siendo 100% usable — abierto a
+     * todos, que es el default sano.
+     *
+     * ── GOBIERNA LO QUE SE ESCRIBE, NO LO QUE YA EXISTE ─────────────────────
+     * Un álbum que ya tiene horario configurado lo sigue corriendo, cron
+     * incluido: los topes gobiernan lo que se CREA. Lo que esto cierra es volver
+     * a guardarlo.
+     */
+    readonly albumPosting: boolean;
+    /**
      * Si en los álbumes de este plan se puede subir VIDEO profesional.
      *
      * Es una CAPACIDAD y no un tope: en el plan gratis el video profesional no

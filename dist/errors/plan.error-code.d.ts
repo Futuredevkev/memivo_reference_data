@@ -47,6 +47,28 @@ export declare enum PlanErrorCode {
      */
     PLAN_ALBUM_STATS_REQUIRED = "PLAN_ALBUM_STATS_REQUIRED",
     /**
+     * Gobernar quién puede publicar en el álbum es del plan pago.
+     *
+     * Misma forma que sus hermanos de estadísticas y marca, y por el mismo
+     * motivo: no anuncia ningún número que se pueda decir y no significa «esto no
+     * está», así que no lleva sufijo de regla ni de ausencia.
+     *
+     * ── SE MIRA AL ESCRIBIR, NUNCA AL LEER ──────────────────────────────────
+     * Sólo puede salir de la puerta que GUARDA el horario. Leer el estado no lo
+     * emite jamás: el feed tiene que seguir diciéndole a todo el mundo que está
+     * cerrado y a qué hora abre, tenga el plan que tenga quien mira. Gatear la
+     * lectura rompería la feature para la gente que ya la está usando, y encima
+     * degradaría hacia atrás un álbum ya configurado, que el modelo prohíbe.
+     *
+     * ── EL EJE ES EL PLAN DEL ÁLBUM ─────────────────────────────────────────
+     * No el de quien pide. Un fotógrafo con plan invitado a administrar un álbum
+     * de una cuenta gratis NO puede programar horarios ahí, y un organizador sin
+     * plan invitado a uno pago SÍ. Es la decisión 3 del modelo —el plan lo
+     * imprime quien crea el álbum— y el eje equivocado ya costó un defecto en la
+     * pantalla de estadísticas.
+     */
+    PLAN_ALBUM_POSTING_REQUIRED = "PLAN_ALBUM_POSTING_REQUIRED",
+    /**
      * La marca del álbum es del plan pago.
      *
      * Misma forma que su hermano de estadísticas y por el mismo motivo: no
