@@ -60,8 +60,11 @@ export enum ModeratedContentType {
    * al cerrarse el visor, así que una denuncia posterior señala una fila que ya
    * no tiene qué mostrar. Se apunta igual —prueba quién mandó qué clase de cosa
    * y cuándo— y quien denuncia puede adjuntar capturas, que es el camino de
-   * evidencia que ya existía. Fijar el archivo en el momento de denunciar es la
-   * mitad que falta, y va aparte porque toca el borrado de archivos.
+   * evidencia que ya existía. Fijar el archivo al denunciar era la mitad que
+   * faltaba cuando esto se escribió, y se pagó en la misma línea versionada: hoy
+   * el reporte congela el texto y RETIENE los archivos contra el borrado. Lo que
+   * sigue sin tener remedio es la pieza que ya se quemó ANTES de que existiera
+   * el reporte.
    */
   CHAT_MESSAGE = 'CHAT_MESSAGE',
 }
