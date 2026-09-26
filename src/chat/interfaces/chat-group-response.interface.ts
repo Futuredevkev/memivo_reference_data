@@ -17,4 +17,6 @@ export interface ChatGroupResponse<TTimestamp = string> {
   status: ChatMemberStatus;
   joinedAt: TTimestamp;
   isMuted: boolean;
+  /** Conveniencia visual; la autorización siempre vuelve a validar el rol del álbum. */
+  isAlbumModerator: boolean;
 }
