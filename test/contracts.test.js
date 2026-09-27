@@ -189,10 +189,15 @@ const social = require('../dist/social/index.js');
 // propio: viaja con **409 y no con 403**, porque el cliente colapsa cualquier
 // 403 en «este contenido ya no está» y de ahí saca SALIR DE LA PANTALLA. Con
 // 403, intentar publicar con el feed cerrado te echaría del álbum.
-test('el catálogo consolidado expone 208 códigos de error únicos', () => {
+// v56.0.0: **+1**, `CHAT_MEMBER_IS_ALBUM_MODERATOR`. Quien administra el álbum
+// está en todos sus grupos por ese rol, y las tres puertas que lo protegen
+// —salir, sacarlo, bajarle el rol— salían con `CHAT_ADMIN_REQUIRED`, cuya frase
+// («hace falta ser admin») era falsa en los tres casos. Entra con su emisor en
+// el api y, por el mismo motivo que el de arriba, viaja con 409.
+test('el catálogo consolidado expone 209 códigos de error únicos', () => {
   const values = Object.values(errors.ErrorCode);
 
-  assert.equal(values.length, 208);
+  assert.equal(values.length, 209);
   assert.equal(new Set(values).size, values.length);
 });
 

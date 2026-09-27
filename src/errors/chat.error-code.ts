@@ -52,6 +52,31 @@ export enum ChatErrorCode {
   CHAT_ADMIN_REQUIRED = 'CHAT_ADMIN_REQUIRED',
   CHAT_MEMBER_ALREADY_ADMIN = 'CHAT_MEMBER_ALREADY_ADMIN',
   CHAT_MEMBER_NOT_ADMIN = 'CHAT_MEMBER_NOT_ADMIN',
+  /**
+   * La persona está en el grupo porque administra el ÁLBUM —es su dueña o lo
+   * organiza—, y ese acceso no se deja ni se quita desde el grupo: no puede
+   * salir, nadie la puede sacar y nadie le puede bajar el rol de admin. Se
+   * mueve sólo con su rol en el álbum.
+   *
+   * ── EL DEFECTO QUE CIERRA ──────────────────────────────────────────────
+   * Las tres puertas salían con `CHAT_ADMIN_REQUIRED`, y el cliente traduce ese
+   * código como «hace falta ser admin». En los tres casos era FALSO: quien
+   * intentaba salir o sacar a alguien ya era admin. El código es contrato de
+   * UI (el cliente elige la frase por él), así que un rechazo con otra causa
+   * necesita su propio código y no el de una causa parecida.
+   *
+   * ── POR QUÉ 409 Y NO 403 ───────────────────────────────────────────────
+   * El cliente colapsa todo 403 en «este contenido ya no está», que en una
+   * pantalla abierta significa SALIR de ella. Esto no es una ausencia: el
+   * grupo y la persona siguen ahí, y lo que choca es el estado de su rol.
+   *
+   * ── POR QUÉ ESTE NOMBRE ────────────────────────────────────────────────
+   * Nombra el ESTADO de la persona, como sus hermanos `CHAT_MEMBER_ALREADY_ADMIN`
+   * y `CHAT_MEMBER_NOT_ADMIN`, y a propósito no termina en ninguno de los
+   * sufijos con forma (`_NOT_FOUND`, `_EXPIRED`, `_EXCEEDED`, …): no es una
+   * ausencia ni un tope, y un sufijo de esos le cambiaría la frase.
+   */
+  CHAT_MEMBER_IS_ALBUM_MODERATOR = 'CHAT_MEMBER_IS_ALBUM_MODERATOR',
   CHAT_CANNOT_KICK_SELF = 'CHAT_CANNOT_KICK_SELF',
   CHAT_GROUP_NOT_FOUND = 'CHAT_GROUP_NOT_FOUND',
   CHAT_GROUP_ALBUM_MISMATCH = 'CHAT_GROUP_ALBUM_MISMATCH',
