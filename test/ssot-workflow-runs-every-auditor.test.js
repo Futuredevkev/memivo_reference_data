@@ -29,7 +29,7 @@ const { join, resolve } = require('node:path');
  * ── LA ÚNICA EXENCIÓN, CON SU MOTIVO Y CON SU CONDICIÓN ──────────────────
  * `audit:installed-version` compara el pin instalado de un CONSUMIDOR contra
  * el manifiesto de este paquete, así que necesita el `node_modules` de ese
- * consumidor. `ssot.yml` hace checkout de los tres repos pero sólo le corre
+ * consumidor. `ssot.yml` trae el workspace pero solo le corre
  * `npm ci` a éste: allá no hay `node_modules` que leer. La exención vale
  * MIENTRAS eso sea cierto, y el caso de abajo lo mide contra el archivo — el
  * día que el workflow le instale dependencias a un consumidor, la exención se
@@ -195,9 +195,15 @@ const reposQueElCorpusPide = () => {
   return [...fuente.matchAll(/repo:\s*'([^']+)'/g)].map((match) => match[1]);
 };
 
-/** `path: <repo>` en un paso de checkout del workflow. */
-const haceCheckout = (texto, repo) =>
-  new RegExp(String.raw`path:\s*${repo}\s*$`, 'm').test(texto);
+/** Sigue la accion y su inventario JSON; no confunde nombrar con adquirir. */
+const haceCheckout = (texto, repo) => {
+  if (new RegExp(String.raw`path:\s*${repo}\s*$`, 'm').test(texto)) return true;
+  if (!/^\s*- uses: Futuredevkev\/memivo_reference_data\/\.github\/actions\/checkout-workspace@v[\d.]+\s*$/m.test(texto)) return false;
+  const owner = join(ROOT, '.github/actions/checkout-workspace');
+  const action = readFileSync(join(owner, 'action.yml'), 'utf8');
+  const inventory = JSON.parse(readFileSync(join(owner, 'repositories.json'), 'utf8'));
+  return Object.entries(inventory).some(([key, entry]) => entry.path === repo && action.includes(`path: \${{ fromJSON(steps.inventory.outputs.repositories).${key}.path }}`));
+};
 
 test('el workflow hace checkout de todos los hermanos que un gate necesita', () => {
   const pedidos = reposQueElCorpusPide();

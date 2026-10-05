@@ -1,57 +1,16 @@
 name: SSOT gates
 
-# Los tres gates que protegen el SSOT entre repos —`audit:consumers`,
-# `audit:transport` y la suite de `node --test`— eran los ÚNICOS capaces de ver
-# que el api y el cliente digan lo mismo, y no tenían ningún workflow: dependían
-# enteramente de que alguien se acordara de correrlos a mano en una tercera
-# consola.
-#
-# Los dos auditores resuelven a los consumidores como directorios HERMANOS en
-# disco (`audit-consumers.js:5-18`, `audit-transport-surfaces.js:6-9`), cosa que
-# un runner con un solo checkout no puede darles. Por eso los tres checkouts van
-# a `path:` hermanos bajo `github.workspace`: así el layout que los scripts
-# esperan se reproduce tal cual y no hace falta ninguna variable de entorno.
-# (`audit-consumers.js` además acepta `MEMIVO_AUDIT_API_SRC` /
-# `MEMIVO_AUDIT_CLIENT_SRC`, pero `audit-transport-surfaces.js` NO, así que la
-# costura por env no sirve para los dos.)
-#
-# REQUISITO PARA QUE ESTO CORRA: un secret `MEMIVO_REPOS_TOKEN` en este repo,
-# con permiso de lectura sobre `Futuredevkev/memivo_api` y
-# `Futuredevkev/memivo_client`. Sin ese secret los dos checkouts fallan.
-# Mientras el secret no exista, este workflow va a estar en rojo — es
-# deliberado: un gate cross-repo que no puede leer los otros dos repos no
-# está pasando, está ciego.
-#
-# COBERTURA EN LAS DOS DIRECCIONES (H-169): el `push:` de abajo sólo reacciona
-# cuando el que se mueve es CONTRATOS. Un push a una branch de `memivo_api` o
-# `memivo_client` no dispara nada acá por sí solo, así que un cambio que rompa
-# el SSOT en cualquiera de los dos consumidores viajaría sin gate hasta que
-# alguien volviera a tocar contratos — que es la dirección que MENOS se mueve.
-# El `workflow_dispatch` de abajo cierra ese círculo, y desde 2026-08-02 los dos
-# consumidores lo usan: el último paso de `quality.yml` en api y en cliente
-# corre `gh workflow run ssot.yml -f audit_ref=<su rama>` y después espera el
-# resultado con `gh run watch --exit-status`, así que un SSOT roto por el lado
-# del consumidor pone en rojo la CI DEL CONSUMIDOR, que es donde se está
-# mirando en ese momento.
-#
-# Ese paso reemplazó a un `npm --prefix ../memivo-reference-data run
-# audit:consumers` encadenado al script `quality` de los dos repos: andaba en la
-# máquina de desarrollo, donde los tres son hermanos en disco, y fallaba con
-# exit 127 en TODA corrida de CI porque ese directorio no existe en un runner
-# con un solo checkout. Además cubría 1 de los 4 auditores.
-
+# Los consumidores disparan esta auditoria aunque falle su calidad local.
+# Los repos son privados: sin MEMIVO_REPOS_TOKEN se falla, no se audita un
+# corpus vacio. El layout y la alineacion viven en checkout-workspace.
 on:
   pull_request:
   push:
     branches: [main, 'v*', 'resolucion-*']
-  # Input para que `memivo_api`/`memivo_client` disparen este gate desde SU
-  # propio `quality.yml` cuando ellos son los que se movieron (ver nota de
-  # arriba). Si no llega `audit_ref`, el paso de abajo usa `github.ref_name`
-  # de este repo, igual que el disparo por `push`.
   workflow_dispatch:
     inputs:
       audit_ref:
-        description: 'Branch del repo consumidor que disparó este gate (api o cliente).'
+        description: 'Branch del repo consumidor que disparó este gate.'
         required: false
         type: string
 
@@ -62,97 +21,34 @@ jobs:
   ssot:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: memivo-reference-data
     steps:
-      - name: Checkout contracts
-        uses: actions/checkout@v4
+      - uses: Futuredevkev/memivo_reference_data/.github/actions/checkout-workspace@v1.158.25
         with:
-          path: memivo-reference-data
-
-      - name: Checkout api
-        uses: actions/checkout@v4
-        with:
-          repository: Futuredevkev/memivo_api
           token: ${{ secrets.MEMIVO_REPOS_TOKEN }}
-          path: memivo_api
-
-      - name: Checkout client
-        uses: actions/checkout@v4
-        with:
-          repository: Futuredevkev/memivo_client
-          token: ${{ secrets.MEMIVO_REPOS_TOKEN }}
-          path: memivo_client
-
-      # EL CUARTO HERMANO. No lo pide ningún auditor —los seis comparan
-      # contrato↔api↔cliente— sino el `npm test` de este mismo repo:
-      # `gate-corpus-control-positive-ratio` recorre los gates de los CUATRO
-      # repos y **falla fuerte** cuando le falta uno, con su motivo escrito
-      # («un gate cross-repo que no puede leer a los otros no está pasando,
-      # está ciego»). Sin este checkout, el único gate que cruza los cuatro no
-      # podía pasar acá: el workflow nombraba tres.
-      - name: Checkout landing
-        uses: actions/checkout@v4
-        with:
-          repository: Futuredevkev/memivo_landing
-          token: ${{ secrets.MEMIVO_REPOS_TOKEN }}
-          path: memivo_landing
-
-      - name: Align consumers to the audited branch when available
-        env:
-          AUDIT_REF: ${{ inputs.audit_ref || github.head_ref || github.ref_name }}
-        run: |
-          for repository in memivo_api memivo_client memivo_landing; do
-            if git -C "$repository" ls-remote --exit-code origin "refs/heads/$AUDIT_REF"; then
-              git -C "$repository" fetch --depth=1 origin "$AUDIT_REF"
-              git -C "$repository" checkout --detach FETCH_HEAD
-            else
-              echo "::notice::$repository has no $AUDIT_REF branch; auditing its default branch"
-            fi
-          done
-
+          candidate: ${{ inputs.audit_ref || github.head_ref || github.ref_name }}
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
-
+          node-version-file: memivo-reference-data/.node-version
       - name: Install
-        working-directory: memivo-reference-data
         run: npm ci
 
-      # Los auditores, EN SERIE. Nunca dos a la vez. Cuántos son NO se escribe
-      # acá: que este workflow corra todos los `audit:*` del `package.json`
-      # —con la única exención escrita llevando su motivo— lo exige
-      # `test/ssot-workflow-runs-every-auditor.test.js`.
+      # Se ejecutan en serie. El gate deriva del package.json la lista de
+      # auditores exigidos; installed-version necesita node_modules de los
+      # consumidores, que este job no instala.
       - name: audit:consumers
-        working-directory: memivo-reference-data
         run: npm run audit:consumers
-
       - name: audit:transport
-        working-directory: memivo-reference-data
         run: npm run audit:transport
-
       - name: audit:response-fields
-        working-directory: memivo-reference-data
         run: npm run audit:response-fields
-
       - name: audit:endpoints
-        working-directory: memivo-reference-data
         run: npm run audit:endpoints
-
-      # El ÚNICO que aparea api y cliente por RUTA. Faltaba acá, así que su
-      # único disparador era el `pre-push` local del api: se salteaba con
-      # `--no-verify` y no existía en ninguna CI, que es exactamente la
-      # condición que este workflow vino a cerrar para sus tres hermanos.
       - name: audit:route-parity
-        working-directory: memivo-reference-data
         run: npm run audit:route-parity
-
-      # Mide sobre los `package.json` y los `package-lock.json`, que estan
-      # VERSIONADOS, asi que corre entero aca sin un solo `npm ci` en los
-      # hermanos. Es lo que lo distingue de `audit:installed-version`, que si
-      # necesita su `node_modules` y por eso esta exento de este workflow.
       - name: audit:shared-tooling
-        working-directory: memivo-reference-data
         run: npm run audit:shared-tooling
-
       - name: test
-        working-directory: memivo-reference-data
         run: npm test

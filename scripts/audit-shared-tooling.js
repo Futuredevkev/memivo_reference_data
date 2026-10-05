@@ -21,7 +21,7 @@
  * ── POR QUÉ EL RANGO NO ALCANZA, Y POR QUÉ EL PIN ES EXACTO ──────────────
  * Los cuatro rangos ya decían `^6.4.1` cuando la divergencia estaba viva: un
  * caret admite treinta minors, así que gatear el rango no cierra nada. Por eso
- * el pin es EXACTO (`"knip": "6.4.1"`): con el caret, el rango y lo instalado
+ * el pin es EXACTO: con el caret, el rango y lo instalado
  * pueden decir cosas distintas sin mentir ninguno de los dos.
  *
  * ── LAS DOS COMPARACIONES, Y POR QUÉ LA SEGUNDA NO PIDE `node_modules` ───
