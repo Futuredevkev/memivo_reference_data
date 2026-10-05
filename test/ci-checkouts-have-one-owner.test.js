@@ -4,7 +4,7 @@ const { readFileSync, readdirSync, mkdtempSync, mkdirSync, rmSync } = require('n
 const { join, resolve, dirname, basename } = require('node:path');
 const { tmpdir } = require('node:os');
 const { spawnSync } = require('node:child_process');
-const { prepareWorkspace } = require('../.github/actions/checkout-workspace/workspace.cjs');
+const { prepareWorkspace, foreignGitEnvironment } = require('../.github/actions/checkout-workspace/workspace.cjs');
 const inventory = require('../.github/actions/checkout-workspace/repositories.json');
 
 /**
@@ -160,6 +160,7 @@ const runAlignment = (status, sourceRemote) => {
       assert.equal(args.some((arg) => arg.includes('TOKEN-DE-PRUEBA')), false);
       calls.push({ args, env: options.env });
       assert.notEqual(args[0], 'clone', 'la adquisicion pertenece a actions/checkout');
+      if (args.includes('--local-env-vars')) return { status: 0, stdout: 'GIT_DIR\nGIT_WORK_TREE\nGIT_CONFIG_COUNT\n' };
       if (args.includes('remote')) {
         const path = basename(args[1]);
         const repo = Object.values(inventory).find((entry) => entry.path === path);
@@ -200,7 +201,7 @@ test('un checkout ausente o un repositorio propio ajeno no habilitan clonados ma
     const options = { workspace: directory, candidate: 'v1.158.22', sourceRepository: inventory.client.repository };
     const execute = (_command, args) => {
       assert.notEqual(args[0], 'clone');
-      return { status: 0, stdout: '' };
+      return { status: 0, stdout: args.includes('--local-env-vars') ? 'GIT_DIR\nGIT_WORK_TREE\n' : '' };
     };
     assert.throws(() => prepareWorkspace(options, execute), /Falta el checkout esperado/);
     assert.throws(() => prepareWorkspace({ ...options, sourceRepository: 'otro/repo' }, execute), /no pertenece al inventario/);
@@ -216,6 +217,30 @@ test('el origin SSH y diferencias de mayusculas identifican el mismo checkout pr
   assert.throws(() => runAlignment(0, 'https://github.com/otro/cliente.git\n'), /Origin desviado/);
 });
 
+test('la frontera Git quita contexto local y conserva el transporte sin tocar al padre', () => {
+  const base = { ...process.env, GIT_DIR: '/checkout-ajeno', GIT_WORK_TREE: '/arbol-ajeno', GIT_INDEX_FILE: '/indice-ajeno', GIT_CONFIG_COUNT: '1', GIT_CONFIG_KEY_0: 'clave', GIT_CONFIG_VALUE_0: 'valor', GIT_SSH_COMMAND: 'ssh', GIT_TERMINAL_PROMPT: '0' };
+  const env = foreignGitEnvironment(base);
+  for (const name of ['GIT_DIR', 'GIT_WORK_TREE', 'GIT_INDEX_FILE', 'GIT_CONFIG_COUNT', 'GIT_CONFIG_KEY_0', 'GIT_CONFIG_VALUE_0']) assert.equal(env[name], undefined);
+  assert.equal(env.GIT_SSH_COMMAND, 'ssh');
+  assert.equal(base.GIT_DIR, '/checkout-ajeno');
+  assert.throws(() => foreignGitEnvironment(base, () => ({ status: 128, stdout: '' })), /aislar/);
+});
+
+const clearsGitContextBeforeGates = (source) => {
+  const discovery = source.indexOf('git_local_env=$(git rev-parse --local-env-vars)');
+  const clear = source.indexOf('unset $git_local_env');
+  const gates = source.indexOf('\nnpm ');
+  return discovery >= 0 && clear > discovery && gates > clear;
+};
+
+test('los cuatro hooks limpian el contexto Git antes de invocar cualquier gate', () => {
+  for (const repo of Object.values(inventory)) {
+    const hook = readFileSync(join(WORKSPACE, repo.path, '.githooks/pre-push'), 'utf8');
+    assert.equal(clearsGitContextBeforeGates(hook), true, repo.path);
+    assert.equal(clearsGitContextBeforeGates(hook.replace('unset $git_local_env', '')), false);
+  }
+});
+
 test('Git real: rama presente y ausente conservan el SHA propio sin clonados manuales', () => {
   const root = mkdtempSync(join(tmpdir(), 'memivo-checkout-'));
   try {
@@ -223,8 +248,9 @@ test('Git real: rama presente y ausente conservan el SHA propio sin clonados man
     const workspace = join(root, 'workspace');
     const seed = join(root, 'seed');
     mkdirSync(workspace);
+    const fixtureEnv = foreignGitEnvironment();
     const git = (args, options = {}) => {
-      const result = spawnSync('git', args, { encoding: 'utf8', timeout: 15000, ...options });
+      const result = spawnSync('git', args, { env: fixtureEnv, encoding: 'utf8', timeout: 15000, ...options });
       assert.equal(result.status, 0, result.stderr);
       return result.stdout.trim();
     };
@@ -242,7 +268,7 @@ test('Git real: rama presente y ausente conservan el SHA propio sin clonados man
       git(['clone', '--bare', seed, remote]);
     }
     const rewrite = `url.${remotes.replace(/\\/g, '/')}/.insteadOf`;
-    const env = { ...process.env, GIT_CONFIG_COUNT: '1', GIT_CONFIG_KEY_0: rewrite, GIT_CONFIG_VALUE_0: 'https://github.com/' };
+    const env = { ...fixtureEnv, GIT_CONFIG_COUNT: '1', GIT_CONFIG_KEY_0: rewrite, GIT_CONFIG_VALUE_0: 'https://github.com/' };
     const source = join(workspace, inventory.client.path);
     for (const repo of Object.values(inventory)) {
       git(['clone', `https://github.com/${repo.repository}.git`, join(workspace, repo.path)], { env });

@@ -3,6 +3,15 @@ const { existsSync, appendFileSync } = require('node:fs');
 const { resolve, dirname } = require('node:path');
 const repositories = require('./repositories.json');
 
+function foreignGitEnvironment(base = process.env, execute = spawnSync) {
+  const result = execute('git', ['rev-parse', '--local-env-vars'], { env: base, encoding: 'utf8', timeout: 15000 });
+  if (result.error || result.status !== 0 || !result.stdout.trim()) throw new Error('No se pudo aislar el entorno local de Git');
+  const env = { ...base };
+  for (const name of result.stdout.trim().split(/\r?\n/)) delete env[name];
+  for (const name of Object.keys(env)) if (/^GIT_CONFIG_(KEY|VALUE)_\d+$/.test(name)) delete env[name];
+  return env;
+}
+
 /**
  * Inventario y alineacion compartidos por los jobs de Actions. Sus checkouts
  * nativos son dueños de las credenciales y de su limpieza. Solo exit 2 significa
@@ -13,7 +22,7 @@ function prepareWorkspace(options, execute = spawnSync) {
   const { candidate, sourceRepository } = options;
   if (!options.workspace || !candidate || !sourceRepository) throw new Error('Faltan workspace, candidate o sourceRepository');
   const workspace = resolve(options.workspace);
-  const env = { ...process.env, GIT_TERMINAL_PROMPT: '0' };
+  const env = { ...foreignGitEnvironment(process.env, execute), GIT_TERMINAL_PROMPT: '0' };
   // Las trazas de curl pueden volcar cabeceras de autenticacion.
   for (const key of Object.keys(env)) if (key.startsWith('GIT_TRACE')) delete env[key];
   delete env.GIT_CURL_VERBOSE;
@@ -69,4 +78,4 @@ if (require.main === module) {
   }
 }
 
-module.exports = { prepareWorkspace };
+module.exports = { prepareWorkspace, foreignGitEnvironment };
