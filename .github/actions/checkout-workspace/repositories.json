@@ -1,0 +1,6 @@
+{
+  "api": { "repository": "Futuredevkev/memivo_api", "path": "memivo_api" },
+  "client": { "repository": "Futuredevkev/memivo_client", "path": "memivo_client" },
+  "landing": { "repository": "Futuredevkev/memivo_landing", "path": "memivo_landing" },
+  "contracts": { "repository": "Futuredevkev/memivo_reference_data", "path": "memivo-reference-data" }
+}

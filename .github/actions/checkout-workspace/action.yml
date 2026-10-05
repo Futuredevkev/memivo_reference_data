@@ -1,0 +1,54 @@
+name: Memivo workspace
+description: Checkouts hermanos y alineacion compartida por los jobs de CI.
+
+inputs:
+  token:
+    description: Credencial de CI con lectura de los repos privados.
+    required: true
+  candidate:
+    description: Rama auditada; un hermano sin ella conserva su rama por default.
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Inventario compartido
+      id: inventory
+      shell: bash
+      run: node "$GITHUB_ACTION_PATH/workspace.cjs" metadata
+    - name: Checkout api
+      uses: actions/checkout@v4
+      with:
+        repository: ${{ fromJSON(steps.inventory.outputs.repositories).api.repository }}
+        token: ${{ inputs.token }}
+        ref: ${{ github.repository == fromJSON(steps.inventory.outputs.repositories).api.repository && github.sha || '' }}
+        path: ${{ fromJSON(steps.inventory.outputs.repositories).api.path }}
+    - name: Checkout client
+      uses: actions/checkout@v4
+      with:
+        repository: ${{ fromJSON(steps.inventory.outputs.repositories).client.repository }}
+        token: ${{ inputs.token }}
+        ref: ${{ github.repository == fromJSON(steps.inventory.outputs.repositories).client.repository && github.sha || '' }}
+        path: ${{ fromJSON(steps.inventory.outputs.repositories).client.path }}
+    - name: Checkout landing
+      uses: actions/checkout@v4
+      with:
+        repository: ${{ fromJSON(steps.inventory.outputs.repositories).landing.repository }}
+        token: ${{ inputs.token }}
+        ref: ${{ github.repository == fromJSON(steps.inventory.outputs.repositories).landing.repository && github.sha || '' }}
+        path: ${{ fromJSON(steps.inventory.outputs.repositories).landing.path }}
+    - name: Checkout contracts
+      uses: actions/checkout@v4
+      with:
+        repository: ${{ fromJSON(steps.inventory.outputs.repositories).contracts.repository }}
+        token: ${{ inputs.token }}
+        ref: ${{ github.repository == fromJSON(steps.inventory.outputs.repositories).contracts.repository && github.sha || '' }}
+        path: ${{ fromJSON(steps.inventory.outputs.repositories).contracts.path }}
+
+    - name: Align sibling branches
+      shell: bash
+      env:
+        MEMIVO_WORKSPACE: ${{ github.workspace }}
+        CANDIDATE: ${{ inputs.candidate }}
+        SOURCE_REPOSITORY: ${{ github.repository }}
+      run: node "$GITHUB_ACTION_PATH/workspace.cjs" align

@@ -1,0 +1,24 @@
+name: Memivo SSOT dispatch
+description: Dispara y espera la corrida exacta de SSOT, sin buscarla por fecha.
+
+inputs:
+  token:
+    description: Credencial de CI con actions write sobre contratos.
+    required: true
+  audit-ref:
+    description: Rama de consumidores que debe auditarse.
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v4
+      with:
+        node-version-file: ${{ github.action_path }}/../../../.node-version
+    - name: Disparar y esperar SSOT
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.token }}
+        AUDIT_REF: ${{ inputs.audit-ref }}
+        WORKFLOW_REF: ${{ github.action_ref }}
+      run: node "$GITHUB_ACTION_PATH/dispatch.cjs"
