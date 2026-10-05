@@ -24,5 +24,9 @@
 
 set -e
 
+# Los hijos descubren su checkout por cwd, no por el contexto del hook.
+git_local_env=$(git rev-parse --local-env-vars)
+unset $git_local_env
+
 echo "pre-push: npm run quality"
 npm run quality
