@@ -12,9 +12,19 @@ inputs:
 runs:
   using: composite
   steps:
+    # setup-node resuelve node-version-file desde el workspace, incluso si
+    # recibe una ruta absoluta. Leer la fuente de la accion, no copiarla.
+    - name: Leer la version de Node del dueño
+      id: runtime
+      shell: bash
+      run: |
+        set -euo pipefail
+        version="$(tr -d '\r\n' < "$GITHUB_ACTION_PATH/../../../.node-version")"
+        [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]
+        printf 'version=%s\n' "$version" >> "$GITHUB_OUTPUT"
     - uses: actions/setup-node@v4
       with:
-        node-version-file: ${{ github.action_path }}/../../../.node-version
+        node-version: ${{ steps.runtime.outputs.version }}
     - name: Disparar y esperar SSOT
       shell: bash
       env:

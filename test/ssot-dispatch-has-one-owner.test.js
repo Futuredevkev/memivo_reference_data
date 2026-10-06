@@ -57,7 +57,11 @@ test('la accion ejecuta su dueño y el workflow versionado, no main por default'
   assert.ok(source.includes('WORKFLOW_REF: ${{ github.action_ref }}'));
   assert.ok(source.includes('AUDIT_REF: ${{ inputs.audit-ref }}'));
   assert.ok(source.includes('GH_TOKEN: ${{ inputs.token }}'));
-  assert.ok(source.includes('node-version-file: ${{ github.action_path }}/../../../.node-version'));
+  assert.ok(source.includes('"$GITHUB_ACTION_PATH/../../../.node-version"'));
+  assert.ok(source.includes('node-version: ${{ steps.runtime.outputs.version }}'));
+  assert.equal(source.includes('node-version-file:'), false);
+  assert.ok(source.includes('[[ "$version" =~ ^[0-9]+\\.[0-9]+\\.[0-9]+$ ]]'));
+  assert.ok(source.indexOf('id: runtime') < source.indexOf('uses: actions/setup-node@v4'));
   assert.ok(source.indexOf('uses: actions/setup-node@v4') < source.indexOf('node "$GITHUB_ACTION_PATH/dispatch.cjs"'));
 });
 
