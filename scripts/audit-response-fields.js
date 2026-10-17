@@ -204,11 +204,16 @@ const collectFiles = (directory, extensions) => {
 };
 
 // --- Lo que el cliente escribe --------------------------------------------
-const clientText = collectFiles(clientSrc, ['.ts', '.tsx'])
-  .map((file) => readFileSync(file, 'utf8'))
-  .join('\n');
+// Por archivo y no sólo concatenado: la caducidad de una excusa se decide
+// adentro de UN archivo (ver `staleExcuses`).
+const clientSources = collectFiles(clientSrc, ['.ts', '.tsx']).map((file) =>
+  readFileSync(file, 'utf8'),
+);
+const clientText = clientSources.join('\n');
 
-const clientReads = (field) => new RegExp(`\\b${field}\\b`).test(clientText);
+const names = (text, identifier) => new RegExp(`\\b${identifier}\\b`).test(text);
+
+const clientReads = (field) => names(clientText, field);
 
 // --- Todas las declaraciones del paquete, por nombre -----------------------
 const declarations = new Map();
@@ -401,10 +406,26 @@ for (const name of [...auditable].sort()) {
  * disimula—: no distingue dos tipos que compartan nombre de campo si el cliente
  * usa los dos. Cierra la forma en que el falso positivo apareció, no la totalidad
  * del espacio.
+ *
+ * LA SEGUNDA FORMA, medida el 17 de octubre de 2026. Las dos mitades se buscaban
+ * en el cliente ENTERO, así que alcanzaba con que aparecieran en archivos que no
+ * tienen nada que ver entre sí. `StickerReference.isAnimated` salió rancia cuando
+ * la preparación de una subida empezó a leer el `isAnimated` de la imagen que
+ * decodifica `expo-image` (`image-processing.service.ts`, un archivo que no nombra
+ * stickers), mientras el tipo seguía nombrado en los componentes del sticker,
+ * que no leen la bandera. Y la salida que el rojo ofrecía era la mala: borrar la
+ * excusa dejaba el campo «vivo» por un homónimo.
+ *
+ * Por eso las dos mitades tienen que estar en el MISMO archivo, que es donde
+ * escribe un lector de verdad: el que lee el campo de un tipo lo recibe con ese
+ * tipo a la vista. Lo que eso deja de ver, dicho: un lector que llega al campo
+ * sin nombrar el tipo en su archivo —por inferencia, `mensaje.sticker.isAnimated`—
+ * no vuelve rancia la excusa. El costo es una excusa que sobrevive a su motivo,
+ * no un campo borrado que la app leía: la misma asimetría del selector de arriba.
  */
 const staleExcuses = [...INTENTIONAL_WITHOUT_READER.keys()].filter((qualified) => {
   const [type, field] = qualified.split('.');
-  return clientReads(type) && clientReads(field);
+  return clientSources.some((source) => names(source, type) && names(source, field));
 });
 
 const phantomExcuses = [...INTENTIONAL_WITHOUT_READER.keys()].filter(

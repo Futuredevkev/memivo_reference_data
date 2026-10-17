@@ -1,7 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { spawnSync } = require('node:child_process');
-const { mkdtempSync, mkdirSync, writeFileSync } = require('node:fs');
+const { mkdtempSync, mkdirSync, readFileSync, writeFileSync } = require('node:fs');
 const { tmpdir } = require('node:os');
 const { dirname, resolve, join } = require('node:path');
 
@@ -261,6 +261,65 @@ test('POLÍTICA: el nombre escrito sobre OTRO tipo alcanza para darlo por vivo',
   });
 
   assert.deepEqual(huerfanos(reporte), []);
+});
+
+/**
+ * LA CADUCIDAD DE UNA EXCUSA SE DECIDE ADENTRO DE UN ARCHIVO.
+ *
+ * Una excusa está rancia cuando el cliente empezó a leer el campo que excusa, y
+ * un lector de verdad nombra el tipo y lee el campo en el mismo archivo. Los dos
+ * casos van juntos: el control positivo prueba que la rama sigue enganchando, y
+ * el del homónimo prueba que no vuelve la segunda forma del falso positivo —la
+ * del 17 de octubre de 2026: el `isAnimated` de `expo-image` leído en un archivo
+ * que no nombra stickers—.
+ *
+ * La excusa sale de la tabla REAL, leída del auditor: el arnés no tiene cómo
+ * plantarle una propia, y una escrita a mano acá dejaría de probar algo el día
+ * que esa entrada saliera de la tabla.
+ */
+const primeraExcusa = () => {
+  const fuente = readFileSync(auditor, 'utf8');
+  const tabla = fuente.slice(fuente.indexOf('const INTENTIONAL_WITHOUT_READER'));
+  const [, tipo, campo] = tabla.match(/\['(\w+)\.(\w+)'/);
+  return { tipo, campo };
+};
+
+const RANCIA = /Excusas de INTENTIONAL_WITHOUT_READER que ya no aplican/;
+
+const PAQUETE_MINIMO = {
+  'album/album-detail-response.interface.ts':
+    'export interface AlbumDetailResponse { titulo: string; }',
+};
+
+test('CONTROL POSITIVO: la excusa caduca cuando UN archivo nombra el tipo y lee el campo', () => {
+  const { tipo, campo } = primeraExcusa();
+  const reporte = runAudit({
+    packageFiles: PAQUETE_MINIMO,
+    clientFiles: {
+      'AlbumScreen.tsx': 'const x = album.titulo;',
+      'Lector.tsx': `const leer = (fila: ${tipo}) => fila.${campo};`,
+    },
+  });
+
+  assert.match(reporte.error, RANCIA);
+  assert.match(reporte.error, new RegExp(`✗ ${tipo}\\.${campo}`));
+});
+
+test('un HOMÓNIMO del campo en otro archivo no vuelve rancia la excusa', () => {
+  const { tipo, campo } = primeraExcusa();
+  const reporte = runAudit({
+    packageFiles: PAQUETE_MINIMO,
+    clientFiles: {
+      'AlbumScreen.tsx': 'const x = album.titulo;',
+      'Tipado.tsx': `export type Fila = ${tipo};`,
+      'Homonimo.ts': `const y = imagenDecodificada.${campo};`,
+    },
+  });
+
+  assert.doesNotMatch(reporte.error, RANCIA);
+  // Y que el auditor pasó de largo esa rama: sobre el paquete sintético la que
+  // habla después es la de las excusas fantasma (ver el docblock de arriba).
+  assert.match(reporte.error, /campos que ya no existen/);
 });
 
 /**
