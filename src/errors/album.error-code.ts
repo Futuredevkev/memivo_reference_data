@@ -66,4 +66,51 @@ export enum AlbumErrorCode {
    * que falta, y todos los miembros ven el mismo estado del álbum.
    */
   ALBUM_POSTING_CLOSED = 'ALBUM_POSTING_CLOSED',
+  /**
+   * Quien pide no puede avisarle a todo el álbum ahora: no organiza, el álbum
+   * está oculto, hubo un aviso hace poco, se llegó al máximo del día, o esta
+   * publicación ya avisó.
+   *
+   * ── 409 Y NO 403, POR LO MISMO QUE `ALBUM_POSTING_CLOSED` ─────────────────
+   * El cliente colapsa cualquier 403 en «este contenido ya no está» y sale de
+   * la pantalla: con un 403, tocar «Avisar a todos» en el menú de un post
+   * echaría del álbum a quien lo tocó. Y el 409 dice la verdad: el recurso
+   * existe y está en un estado que ahora no admite esto.
+   *
+   * ── EL SOBRE LLEVA LA LLAVE Y EL INSTANTE ─────────────────────────────────
+   * `announcementUnavailableReason` y `announcementNextAvailableAt`, nunca la
+   * frase: el cliente la arma con su vocabulario de tiempo. Sólo lo emite la
+   * puerta explícita; al crear una publicación el aviso que no sale no es un
+   * error —la publicación se crea igual— y viaja en la respuesta.
+   */
+  ALBUM_ANNOUNCEMENT_UNAVAILABLE = 'ALBUM_ANNOUNCEMENT_UNAVAILABLE',
+
+  // ── LA OPERACIÓN QUE PIDIÓ LA PERSONA FALLÓ POR ALGO INESPERADO ──────────
+  // Una familia por operación, con el sufijo `_FAILED` y status 500: la base
+  // que no contesta, un timeout. Antes las quince caían en
+  // `INTERNAL_SERVER_ERROR` y quien creaba un álbum o entraba a uno leía
+  // «Error interno del servidor» en vez de qué fue lo que no se pudo hacer.
+  // Cada código nombra la operación del BORDE —lo que la persona pidió—, no un
+  // paso de adentro: un colaborador no acuña código.
+  ALBUM_ENTRY_FAILED = 'ALBUM_ENTRY_FAILED',
+  ALBUM_LEAVE_FAILED = 'ALBUM_LEAVE_FAILED',
+  ALBUM_CREATE_FAILED = 'ALBUM_CREATE_FAILED',
+  ALBUM_UPDATE_FAILED = 'ALBUM_UPDATE_FAILED',
+  ALBUM_DELETE_FAILED = 'ALBUM_DELETE_FAILED',
+  ALBUM_VISIBILITY_UPDATE_FAILED = 'ALBUM_VISIBILITY_UPDATE_FAILED',
+  ALBUM_POSTING_UPDATE_FAILED = 'ALBUM_POSTING_UPDATE_FAILED',
+  /**
+   * Renovar el acceso o extender el vencimiento del código: las dos puertas
+   * mueven el MISMO eje —quién puede entrar con lo que ya se repartió— y una
+   * persona que las usa no distingue una de la otra al fallar. Dos códigos para
+   * el mismo eje serían el duplicado que este catálogo persigue.
+   */
+  ALBUM_ACCESS_UPDATE_FAILED = 'ALBUM_ACCESS_UPDATE_FAILED',
+  ALBUM_SHARE_INVITE_CREATE_FAILED = 'ALBUM_SHARE_INVITE_CREATE_FAILED',
+  ALBUM_POST_SHARE_INVITE_CREATE_FAILED = 'ALBUM_POST_SHARE_INVITE_CREATE_FAILED',
+  ALBUM_INVITE_PREVIEW_FAILED = 'ALBUM_INVITE_PREVIEW_FAILED',
+  ALBUM_INVITE_REDEEM_FAILED = 'ALBUM_INVITE_REDEEM_FAILED',
+  ALBUM_ORGANIZER_PROMOTE_FAILED = 'ALBUM_ORGANIZER_PROMOTE_FAILED',
+  ALBUM_ORGANIZER_DEMOTE_FAILED = 'ALBUM_ORGANIZER_DEMOTE_FAILED',
+  ALBUM_PARTICIPANT_REMOVE_FAILED = 'ALBUM_PARTICIPANT_REMOVE_FAILED',
 }

@@ -41,6 +41,7 @@ export type NotificationMetadataByType = {
     [NotificationType.MEMIVO_MOMENTS]: CountedAlbumMetadata;
     [NotificationType.LIKE_PHOTO]: PhotoNotificationMetadata;
     [NotificationType.TAGGED_IN_PHOTO]: PhotoNotificationMetadata;
+    [NotificationType.ALBUM_ANNOUNCEMENT]: PhotoNotificationMetadata;
     [NotificationType.COMMENT_PHOTO]: CommentNotificationMetadata;
     [NotificationType.REPLY_COMMENT]: CommentNotificationMetadata;
     [NotificationType.MENTIONED_IN_COMMENT]: CommentNotificationMetadata;

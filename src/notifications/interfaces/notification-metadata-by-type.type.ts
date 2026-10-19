@@ -42,6 +42,9 @@ export type NotificationMetadataByType = {
   [NotificationType.MEMIVO_MOMENTS]: CountedAlbumMetadata;
   [NotificationType.LIKE_PHOTO]: PhotoNotificationMetadata;
   [NotificationType.TAGGED_IN_PHOTO]: PhotoNotificationMetadata;
+  // El aviso apunta a una publicación: la misma forma que el like, sin una
+  // forma nueva que dijera lo mismo con otro nombre.
+  [NotificationType.ALBUM_ANNOUNCEMENT]: PhotoNotificationMetadata;
   [NotificationType.COMMENT_PHOTO]: CommentNotificationMetadata;
   [NotificationType.REPLY_COMMENT]: CommentNotificationMetadata;
   // La mención lleva la metadata del aviso al que reemplaza: el deep link, la

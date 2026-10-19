@@ -105,4 +105,23 @@ var ChatErrorCode;
      * código prestado es peor que el genérico — el genérico no afirma nada.
      */
     ChatErrorCode["CHAT_VIEW_ONCE_OPEN_FAILED"] = "CHAT_VIEW_ONCE_OPEN_FAILED";
+    // ── LA OPERACIÓN QUE PIDIÓ LA PERSONA FALLÓ POR ALGO INESPERADO ──────────
+    // Status 500 y sufijo `_FAILED`. Cada código nombra la operación del BORDE
+    // —lo que la persona pidió—, no un paso de adentro. Antes caían en
+    // `INTERNAL_SERVER_ERROR` y la app decía «Error interno del servidor» en vez
+    // de qué fue lo que no se pudo hacer.
+    ChatErrorCode["CHAT_GROUP_CREATE_FAILED"] = "CHAT_GROUP_CREATE_FAILED";
+    ChatErrorCode["CHAT_GROUP_UPDATE_FAILED"] = "CHAT_GROUP_UPDATE_FAILED";
+    ChatErrorCode["CHAT_GROUP_DELETE_FAILED"] = "CHAT_GROUP_DELETE_FAILED";
+    ChatErrorCode["CHAT_GROUP_JOIN_FAILED"] = "CHAT_GROUP_JOIN_FAILED";
+    ChatErrorCode["CHAT_GROUP_LEAVE_FAILED"] = "CHAT_GROUP_LEAVE_FAILED";
+    ChatErrorCode["CHAT_MEMBER_INVITE_FAILED"] = "CHAT_MEMBER_INVITE_FAILED";
+    ChatErrorCode["CHAT_INVITATION_REJECT_FAILED"] = "CHAT_INVITATION_REJECT_FAILED";
+    ChatErrorCode["CHAT_MUTE_TOGGLE_FAILED"] = "CHAT_MUTE_TOGGLE_FAILED";
+    ChatErrorCode["CHAT_MEMBER_PROMOTE_FAILED"] = "CHAT_MEMBER_PROMOTE_FAILED";
+    ChatErrorCode["CHAT_MEMBER_DEMOTE_FAILED"] = "CHAT_MEMBER_DEMOTE_FAILED";
+    ChatErrorCode["CHAT_MEMBER_REMOVE_FAILED"] = "CHAT_MEMBER_REMOVE_FAILED";
+    ChatErrorCode["CHAT_PINNED_MESSAGE_PIN_FAILED"] = "CHAT_PINNED_MESSAGE_PIN_FAILED";
+    ChatErrorCode["CHAT_PINNED_MESSAGE_UNPIN_FAILED"] = "CHAT_PINNED_MESSAGE_UNPIN_FAILED";
+    ChatErrorCode["CHAT_PINNED_MESSAGE_LIST_FAILED"] = "CHAT_PINNED_MESSAGE_LIST_FAILED";
 })(ChatErrorCode || (exports.ChatErrorCode = ChatErrorCode = {}));

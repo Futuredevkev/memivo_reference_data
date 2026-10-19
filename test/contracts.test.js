@@ -194,10 +194,16 @@ const social = require('../dist/social/index.js');
 // —salir, sacarlo, bajarle el rol— salían con `CHAT_ADMIN_REQUIRED`, cuya frase
 // («hace falta ser admin») era falsa en los tres casos. Entra con su emisor en
 // el api y, por el mismo motivo que el de arriba, viaja con 409.
-test('el catálogo consolidado expone 209 códigos de error únicos', () => {
+// v60.0.0: **+60**, y casi todos son una sola clase. Uno es
+// `ALBUM_ANNOUNCEMENT_UNAVAILABLE`, el rechazo de avisarle a todo el álbum, con
+// 409 por lo mismo que los dos de arriba. Los otros 59 son la ficha #68: las
+// operaciones que ante una falla inesperada contestaban «Error interno del
+// servidor» pasan a nombrar qué no se pudo hacer, una por operación del borde
+// (`*_FAILED`, 500). Entran todos con su emisor en el api, en la misma ola.
+test('el catálogo consolidado expone 269 códigos de error únicos', () => {
   const values = Object.values(errors.ErrorCode);
 
-  assert.equal(values.length, 209);
+  assert.equal(values.length, 269);
   assert.equal(new Set(values).size, values.length);
 });
 

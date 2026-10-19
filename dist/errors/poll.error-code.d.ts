@@ -11,5 +11,12 @@ export declare enum PollErrorCode {
     POLL_MAX_DURATION = "POLL_MAX_DURATION",
     POLL_NOT_FOUND = "POLL_NOT_FOUND",
     POLL_NOT_ACTIVE = "POLL_NOT_ACTIVE",
-    POLL_EXPIRED = "POLL_EXPIRED"
+    POLL_EXPIRED = "POLL_EXPIRED",
+    POLL_CREATE_FAILED = "POLL_CREATE_FAILED",
+    /**
+     * Un solo código para votar en la encuesta de un chat o en la de una
+     * historia: el hecho (tu voto no quedó) y el remedio (volver a votar) son
+     * los mismos, y lo que cambia es qué tabla guarda el voto.
+     */
+    POLL_VOTE_FAILED = "POLL_VOTE_FAILED"
 }

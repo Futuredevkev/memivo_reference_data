@@ -1,3 +1,4 @@
+import type { AlbumAnnouncementUnavailableReason } from '../album/enums/album-announcement-unavailable-reason.enum';
 import type { AlbumPostingClosedReason } from '../album/enums/album-posting-closed-reason.enum';
 import type { ModerationReason } from '../moderation';
 
@@ -91,6 +92,24 @@ export interface ApiErrorEnvelope {
    * convierte zonas.
    */
   postingNextChangeAt?: string | null;
+  /**
+   * POR QUÉ quien pide no puede avisarle a todo el álbum. Sólo con
+   * `ALBUM_ANNOUNCEMENT_UNAVAILABLE`.
+   *
+   * Viaja la LLAVE por lo mismo que el motivo de publicación cerrada: el mismo
+   * código cubre cinco estados que se cuentan distinto —«esta publicación ya
+   * avisó», «podés volver a avisar a las 21:30», «el álbum está oculto»—, y
+   * la frase la arma el cliente en su idioma.
+   */
+  announcementUnavailableReason?: AlbumAnnouncementUnavailableReason;
+  /**
+   * Desde cuándo vuelve a poder avisar, en instante absoluto. Sólo con
+   * `ALBUM_ANNOUNCEMENT_UNAVAILABLE`, y `null` cuando no depende del reloj.
+   *
+   * Va en el sobre para que la pantalla se corrija sin un viaje más: el
+   * rechazo llega justo cuando el estado que la app tenía quedó viejo.
+   */
+  announcementNextAvailableAt?: string | null;
   /**
    * Sólo presente cuando errorCode === AUTH_NOT_VERIFIED: es lo que el cliente
    * canjea por un reenvío del código de verificación.

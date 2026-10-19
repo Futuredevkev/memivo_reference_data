@@ -23,6 +23,7 @@ const like_error_code_1 = require("./like.error-code");
 const oauth_error_code_1 = require("./oauth.error-code");
 const sticker_error_code_1 = require("./sticker.error-code");
 const mention_error_code_1 = require("./mention.error-code");
+const notification_error_code_1 = require("./notification.error-code");
 /**
  * Enum consolidado para retrocompatibilidad
  * Combina todos los códigos de error en un solo objeto
@@ -85,4 +86,6 @@ exports.ErrorCode = {
     ...sticker_error_code_1.StickerErrorCode,
     // Mentions
     ...mention_error_code_1.MentionErrorCode,
+    // Notifications
+    ...notification_error_code_1.NotificationErrorCode,
 };

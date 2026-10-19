@@ -36,4 +36,17 @@ var PhotoErrorCode;
     PhotoErrorCode["UPLOAD_ALBUM_MISMATCH"] = "UPLOAD_ALBUM_MISMATCH";
     // Media Types
     PhotoErrorCode["IMAGE_NOT_FOUND"] = "IMAGE_NOT_FOUND";
+    // ── LA OPERACIÓN QUE PIDIÓ LA PERSONA FALLÓ POR ALGO INESPERADO ──────────
+    // Status 500 y sufijo `_FAILED`. Cada código nombra la operación del BORDE
+    // —lo que la persona pidió—, no un paso de adentro. Antes caían en
+    // `INTERNAL_SERVER_ERROR` y la app decía «Error interno del servidor» en vez
+    // de qué fue lo que no se pudo hacer.
+    PhotoErrorCode["GUEST_POST_CREATE_FAILED"] = "GUEST_POST_CREATE_FAILED";
+    PhotoErrorCode["GUEST_POST_UPDATE_FAILED"] = "GUEST_POST_UPDATE_FAILED";
+    PhotoErrorCode["GUEST_POST_DELETE_FAILED"] = "GUEST_POST_DELETE_FAILED";
+    PhotoErrorCode["GUEST_POST_MEDIA_DELETE_FAILED"] = "GUEST_POST_MEDIA_DELETE_FAILED";
+    PhotoErrorCode["PHOTO_DELETE_FAILED"] = "PHOTO_DELETE_FAILED";
+    PhotoErrorCode["PHOTO_TAG_CREATE_FAILED"] = "PHOTO_TAG_CREATE_FAILED";
+    PhotoErrorCode["PHOTO_TAG_UPDATE_FAILED"] = "PHOTO_TAG_UPDATE_FAILED";
+    PhotoErrorCode["PHOTO_TAG_DELETE_FAILED"] = "PHOTO_TAG_DELETE_FAILED";
 })(PhotoErrorCode || (exports.PhotoErrorCode = PhotoErrorCode = {}));
