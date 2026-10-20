@@ -1,4 +1,4 @@
-import type { AlbumAnnouncementState } from './album-announcement-state.interface';
+import type { AlbumAnnouncementState } from './album-announcement-state.type';
 import type { AlbumListItemResponse } from './album-list-item-response.interface';
 import type { AlbumPostingState } from './album-posting-state.interface';
 

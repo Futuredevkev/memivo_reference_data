@@ -3,7 +3,7 @@ export * from './album-access-response.interface';
 export * from './album-action-detail.interface';
 export * from './album-activity-entry.interface';
 export * from './album-activity-query-request.interface';
-export * from './album-announcement-state.interface';
+export * from './album-announcement-state.type';
 export * from './album-detail-response.interface';
 export * from './album-guest.interface';
 export * from './album-people-query-request.interface';

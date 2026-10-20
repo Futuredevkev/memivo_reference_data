@@ -1,4 +1,4 @@
-import type { AlbumAnnouncementState } from '../../album/interfaces/album-announcement-state.interface';
+import type { AlbumAnnouncementState } from '../../album/interfaces/album-announcement-state.type';
 import type { GuestPostResponse } from './guest-post-response.interface';
 /**
  * La respuesta de avisarle a todos con una publicación ya publicada (la

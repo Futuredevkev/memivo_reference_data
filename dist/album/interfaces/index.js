@@ -19,7 +19,7 @@ __exportStar(require("./album-access-response.interface"), exports);
 __exportStar(require("./album-action-detail.interface"), exports);
 __exportStar(require("./album-activity-entry.interface"), exports);
 __exportStar(require("./album-activity-query-request.interface"), exports);
-__exportStar(require("./album-announcement-state.interface"), exports);
+__exportStar(require("./album-announcement-state.type"), exports);
 __exportStar(require("./album-detail-response.interface"), exports);
 __exportStar(require("./album-guest.interface"), exports);
 __exportStar(require("./album-people-query-request.interface"), exports);

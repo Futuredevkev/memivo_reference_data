@@ -200,10 +200,10 @@ const social = require('../dist/social/index.js');
 // operaciones que ante una falla inesperada contestaban «Error interno del
 // servidor» pasan a nombrar qué no se pudo hacer, una por operación del borde
 // (`*_FAILED`, 500). Entran todos con su emisor en el api, en la misma ola.
-test('el catálogo consolidado expone 269 códigos de error únicos', () => {
+test('el catálogo consolidado expone 270 códigos de error únicos', () => {
   const values = Object.values(errors.ErrorCode);
 
-  assert.equal(values.length, 269);
+  assert.equal(values.length, 270);
   assert.equal(new Set(values).size, values.length);
 });
 
