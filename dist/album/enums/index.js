@@ -19,6 +19,7 @@ __exportStar(require("./album-access-password-change-kinds.constant"), exports);
 __exportStar(require("./album-action-target-type.enum"), exports);
 __exportStar(require("./album-action-type.enum"), exports);
 __exportStar(require("./album-actor-role.enum"), exports);
+__exportStar(require("./album-announcement-unavailable-reason.enum"), exports);
 __exportStar(require("./album-invite-type.enum"), exports);
 __exportStar(require("./album-member-role.constant"), exports);
 __exportStar(require("./album-posting-closed-reason.enum"), exports);

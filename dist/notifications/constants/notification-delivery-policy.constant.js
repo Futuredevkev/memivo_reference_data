@@ -450,6 +450,21 @@ exports.NOTIFICATION_DELIVERY_POLICY = {
         replacedBy: null,
         anonymousActor: false,
     }),
+    /**
+     * El aviso de quien organiza: es la notificación por la que existe el
+     * aviso, así que se entrega siempre.
+     *
+     * No se suprime con el álbum abierto por el mismo agujero que las fotos
+     * profesionales: el feed no inserta publicaciones en vivo, así que mirar el
+     * álbum no muestra el aviso. Y la fila queda en la campanita porque es la
+     * que lleva hasta el texto completo.
+     */
+    [enums_1.NotificationType.ALBUM_ANNOUNCEMENT]: policy({
+        foreground: 'none',
+        bellRow: true,
+        replacedBy: null,
+        anonymousActor: false,
+    }),
     [enums_1.NotificationType.CHAT_INVITATION]: policy({
         // La fila de la campanita trae sus propios botones aceptar/rechazar, pero
         // no hay ninguna superficie que la anuncie sola: sin push no te enterás.

@@ -30,4 +30,11 @@ export enum AuthErrorCode {
   AUTH_TOKEN_MALFORMED = 'AUTH_TOKEN_MALFORMED',
   AUTH_ACCESS_DENIED = 'AUTH_ACCESS_DENIED',
   AUTH_SESSION_NOT_FOUND = 'AUTH_SESSION_NOT_FOUND',
+
+  // ── LA OPERACIÓN QUE PIDIÓ LA PERSONA FALLÓ POR ALGO INESPERADO ──────────
+  // Status 500 y sufijo `_FAILED`. Cada código nombra la operación del BORDE
+  // —lo que la persona pidió—, no un paso de adentro. Antes caían en
+  // `INTERNAL_SERVER_ERROR` y la app decía «Error interno del servidor» en vez
+  // de qué fue lo que no se pudo hacer.
+  AUTH_PASSWORD_RESET_FAILED = 'AUTH_PASSWORD_RESET_FAILED',
 }

@@ -218,8 +218,13 @@ test('los tipos que dejan fila en la campanita son 39 de 53', () => {
   // v46.0.0, segunda mitad: **sube SOLO el total otra vez**, con el aviso de
   // que la ventana está por cerrarse. Tampoco deja fila, y por lo mismo que su
   // hermano: vive mientras dura la ventana, y leído después es falso.
-  assert.equal(entries().length, 53);
-  assert.equal(withBellRow.length, 39);
+  //
+  // v60.0.0 / v61.0.0: **los dos suben en UNO**, el aviso de quien organiza
+  // (`ALBUM_ANNOUNCEMENT`). Deja fila porque el aviso se lee completo adentro
+  // de la app y la fila es la que lleva hasta él: sin ella, quien no vio la
+  // push no se entera nunca.
+  assert.equal(entries().length, 54);
+  assert.equal(withBellRow.length, 40);
 });
 
 test('getNotificationDeliveryPolicy devuelve null ante un tipo desconocido', () => {

@@ -35,4 +35,14 @@ var UserErrorCode;
     UserErrorCode["USER_BAN_FAILED"] = "USER_BAN_FAILED";
     UserErrorCode["USER_UNBAN_FAILED"] = "USER_UNBAN_FAILED";
     UserErrorCode["USER_BAN_INVALID_EXPIRES_AT"] = "USER_BAN_INVALID_EXPIRES_AT";
+    // ── LA OPERACIÓN QUE PIDIÓ LA PERSONA FALLÓ POR ALGO INESPERADO ──────────
+    // Status 500 y sufijo `_FAILED`. Cada código nombra la operación del BORDE
+    // —lo que la persona pidió—, no un paso de adentro. Antes caían en
+    // `INTERNAL_SERVER_ERROR` y la app decía «Error interno del servidor» en vez
+    // de qué fue lo que no se pudo hacer.
+    UserErrorCode["USER_PROFILE_UPDATE_FAILED"] = "USER_PROFILE_UPDATE_FAILED";
+    UserErrorCode["USER_PROFILE_CHANGES_CONFIRM_FAILED"] = "USER_PROFILE_CHANGES_CONFIRM_FAILED";
+    UserErrorCode["USER_AVATAR_UPDATE_FAILED"] = "USER_AVATAR_UPDATE_FAILED";
+    UserErrorCode["USER_AVATAR_DELETE_FAILED"] = "USER_AVATAR_DELETE_FAILED";
+    UserErrorCode["USER_NOTIFICATION_SETTINGS_UPDATE_FAILED"] = "USER_NOTIFICATION_SETTINGS_UPDATE_FAILED";
 })(UserErrorCode || (exports.UserErrorCode = UserErrorCode = {}));

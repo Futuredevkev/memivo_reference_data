@@ -243,4 +243,27 @@ var NotificationType;
      * comentario» a quien no era el dueño del comentario respondido.
      */
     NotificationType["REPLY_ON_COMMENTED_POST"] = "REPLY_ON_COMMENTED_POST";
+    /**
+     * Quien organiza el álbum le avisó a todo el álbum sobre una publicación
+     * suya: «Ana publicó un aviso en Boda».
+     *
+     * ── POR QUÉ EXISTE, SI `NEW_GUEST_POST` SE BORRÓ ─────────────────────────
+     * Aquél avisaba CADA publicación de CUALQUIER persona, así que escalaba con
+     * la gente: un álbum de 300 invitados era un ruido constante. Éste lo decide
+     * una persona que organiza, a propósito, sobre UNA publicación suya, y con un
+     * tope del álbum (uno por publicación, uno cada 30 minutos y seis por día),
+     * así que no puede volver a ser el ruido que mató al otro.
+     *
+     * ── POR QUÉ LO SILENCIA EL BLOQUEO ───────────────────────────────────────
+     * Lo que se avisa es la EXPRESIÓN de otra persona: su publicación. El feed ya
+     * le esconde ese post a quien tiene un bloqueo con el autor, así que avisarle
+     * lo llevaría a algo que no puede ver. Es la misma clase que las fotos
+     * profesionales.
+     *
+     * ── POR QUÉ DEJA FILA ────────────────────────────────────────────────────
+     * Porque el aviso se lee completo adentro de la app, y la fila de la
+     * campanita es la que lleva hasta él. Sin fila, quien no vio la push no se
+     * entera nunca.
+     */
+    NotificationType["ALBUM_ANNOUNCEMENT"] = "ALBUM_ANNOUNCEMENT";
 })(NotificationType || (exports.NotificationType = NotificationType = {}));

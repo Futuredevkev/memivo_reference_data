@@ -25,6 +25,7 @@ const sticker_error_code_1 = require("./sticker.error-code");
 const plan_error_code_1 = require("./plan.error-code");
 const billing_error_code_1 = require("./billing.error-code");
 const mention_error_code_1 = require("./mention.error-code");
+const notification_error_code_1 = require("./notification.error-code");
 /**
  * Enum consolidado para retrocompatibilidad
  * Combina todos los códigos de error en un solo objeto
@@ -91,4 +92,6 @@ exports.ErrorCode = {
     ...billing_error_code_1.BillingErrorCode,
     // Mentions
     ...mention_error_code_1.MentionErrorCode,
+    // Notifications
+    ...notification_error_code_1.NotificationErrorCode,
 };

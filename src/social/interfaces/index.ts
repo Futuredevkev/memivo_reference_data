@@ -11,6 +11,8 @@ export * from './failed-upload.interface';
 export * from './get-guest-posts-query-request.interface';
 export * from './get-comment-context-query-request.interface';
 export * from './guest-post-album-summary.interface';
+export * from './guest-post-announce-response.interface';
+export * from './guest-post-announcement-skip.interface';
 export * from './guest-post-detail-response.interface';
 export * from './guest-post-operation-response.interface';
 export * from './guest-post-photo.interface';

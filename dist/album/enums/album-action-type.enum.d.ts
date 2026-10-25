@@ -68,6 +68,15 @@ export declare enum AlbumActionType {
      * decidir de nuevo cada vez que entre un modo nuevo.
      */
     ALBUM_POSTING_CHANGED = "ALBUM_POSTING_CHANGED",
+    /**
+     * Alguien que organiza le avisó a todo el álbum sobre una publicación suya.
+     *
+     * Deja rastro por la misma razón que el interruptor de publicación: la
+     * palanca la mueven el dueño Y los organizadores, y un aviso le llega a
+     * todos. Sin la fila, el dueño vería notificaciones salir de su álbum y no
+     * sabría quién las mandó.
+     */
+    ALBUM_ANNOUNCEMENT_SENT = "ALBUM_ANNOUNCEMENT_SENT",
     FOLDER_CREATED = "FOLDER_CREATED",
     FOLDER_RENAMED = "FOLDER_RENAMED",
     FOLDER_COVER_SET = "FOLDER_COVER_SET",

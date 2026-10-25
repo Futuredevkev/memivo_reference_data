@@ -3,6 +3,7 @@ export * from './album-access-password-change-kinds.constant';
 export * from './album-action-target-type.enum';
 export * from './album-action-type.enum';
 export * from './album-actor-role.enum';
+export * from './album-announcement-unavailable-reason.enum';
 export * from './album-invite-type.enum';
 export * from './album-member-role.constant';
 export * from './album-posting-closed-reason.enum';

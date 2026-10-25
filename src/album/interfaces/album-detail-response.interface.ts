@@ -1,3 +1,4 @@
+import type { AlbumAnnouncementState } from './album-announcement-state.type';
 import type { AlbumListItemResponse } from './album-list-item-response.interface';
 import type { AlbumPostingState } from './album-posting-state.interface';
 
@@ -20,4 +21,10 @@ import type { AlbumPostingState } from './album-posting-state.interface';
 export interface AlbumDetailResponse<TTimestamp = string>
   extends AlbumListItemResponse<TTimestamp> {
   readonly posting: AlbumPostingState<TTimestamp>;
+  /**
+   * Si quien mira puede avisarle a todo el álbum. `null` para quien no
+   * organiza: es requerido para que el servidor tenga que decidirlo siempre, y
+   * `null` dice «no te toca» sin que nadie lo confunda con «no vino».
+   */
+  readonly announcement: AlbumAnnouncementState<TTimestamp> | null;
 }
