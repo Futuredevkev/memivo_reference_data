@@ -29,7 +29,6 @@ __exportStar(require("./get-comment-context-query-request.interface"), exports);
 __exportStar(require("./guest-post-album-summary.interface"), exports);
 __exportStar(require("./guest-post-announce-response.interface"), exports);
 __exportStar(require("./guest-post-announcement-skip.interface"), exports);
-__exportStar(require("./guest-post-announcement.interface"), exports);
 __exportStar(require("./guest-post-detail-response.interface"), exports);
 __exportStar(require("./guest-post-operation-response.interface"), exports);
 __exportStar(require("./guest-post-photo.interface"), exports);
