@@ -1,4 +1,5 @@
-import type { PaginationRequest } from '../../common';
-export interface GetGuestPostsQueryRequest extends PaginationRequest {
+import type { TimelinePaginationRequest } from '../../common';
+/** El feed del álbum: texto, persona etiquetada e «ir a una fecha» (`before`). */
+export interface GetGuestPostsQueryRequest extends TimelinePaginationRequest {
     taggedUserId?: string;
 }

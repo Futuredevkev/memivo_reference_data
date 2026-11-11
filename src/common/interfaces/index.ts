@@ -8,3 +8,5 @@ export * from './paginated-response.interface';
 export * from './pagination-meta.interface';
 export * from './pagination-request.interface';
 export * from './sorted-pagination-request.interface';
+export * from './timeline-pagination-request.interface';
+export * from './timeline-window-pagination-request.interface';
