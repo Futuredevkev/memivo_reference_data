@@ -24,3 +24,5 @@ __exportStar(require("./paginated-response.interface"), exports);
 __exportStar(require("./pagination-meta.interface"), exports);
 __exportStar(require("./pagination-request.interface"), exports);
 __exportStar(require("./sorted-pagination-request.interface"), exports);
+__exportStar(require("./timeline-pagination-request.interface"), exports);
+__exportStar(require("./timeline-window-pagination-request.interface"), exports);

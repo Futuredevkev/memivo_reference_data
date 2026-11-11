@@ -1,6 +1,7 @@
-import type { PaginationRequest } from '../../common';
+import type { TimelinePaginationRequest } from '../../common';
 import type { ChatMessageType } from '../enums';
 
-export interface GetGroupMediaQueryRequest extends PaginationRequest {
+/** La galería de un grupo: tipo, texto e «ir a una fecha» (`before`). */
+export interface GetGroupMediaQueryRequest extends TimelinePaginationRequest {
   type?: ChatMessageType;
 }

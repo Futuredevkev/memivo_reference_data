@@ -1,4 +1,4 @@
-import type { PaginationRequest } from '../../common';
+import type { TimelineWindowPaginationRequest } from '../../common';
 
 /**
  * Query de la grilla del Baúl.
@@ -6,10 +6,11 @@ import type { PaginationRequest } from '../../common';
  * `search` se hereda de `PaginationRequest` y se IGNORA: lo único buscable sería
  * `caption`, que es opcional, mayormente vacío y sin índice de texto.
  *
- * No existe `to`: el filtro de fechas de la UI son presets rodantes hacia atrás
- * ("últimos 7/30/90/365 días"), así que un límite superior no tendría emisor.
+ * La fecha es la ventana de toda línea de tiempo
+ * (`TimelineWindowPaginationRequest`): los presets rodantes («últimos 7/30/90/
+ * 365 días») por `from`, e «ir a una fecha» por `before`.
  */
-export interface ArchivedStoriesQueryRequest extends PaginationRequest {
+export interface ArchivedStoriesQueryRequest extends TimelineWindowPaginationRequest {
   /** Filtra por autor. El scope `albumId` de la ruta es el que autoriza. */
   authorId?: string;
   /**
@@ -21,6 +22,4 @@ export interface ArchivedStoriesQueryRequest extends PaginationRequest {
    * el cliente no tenga dos nombres para la misma pregunta.
    */
   taggedUserId?: string;
-  /** Límite inferior inclusivo sobre `created_at`, ISO-8601. */
-  from?: string;
 }
