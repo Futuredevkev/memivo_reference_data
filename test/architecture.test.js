@@ -78,6 +78,7 @@ test('el root no acumula contratos sueltos', () => {
 const SORTED_BARRELS = [
   'album/enums/index.ts',
   'album/index.ts',
+  'album/interfaces/index.ts',
   'album/rules/index.ts',
   'auth/constants/index.ts',
   'auth/enums/index.ts',
@@ -161,7 +162,6 @@ const SORTED_BARRELS = [
  *
  * La primera divergencia de cada uno, para que se vea que son desórdenes viejos
  * y no una línea suelta:
- *   album/interfaces   línea  1  `album-access-response-album` antes que `album-access-password-response`
  *   auth/interfaces    línea 24  `register-push-device-request` antes que `regenerate-backup-codes-response`
  *   index.ts           línea  1  `reference-data` primero, delante de `album`
  *   social/interfaces  línea  2  `comment-created-response` antes que `comment-context-response`
@@ -169,7 +169,6 @@ const SORTED_BARRELS = [
  *   stories/interfaces línea  4  `story-overlay-position` antes que `story-author`
  */
 const UNSORTED_BARRELS = [
-  'album/interfaces/index.ts',
   'auth/interfaces/index.ts',
   'index.ts',
   'social/interfaces/index.ts',
